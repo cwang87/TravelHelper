@@ -1,4 +1,4 @@
-package cs601.model.PO;
+package cs601.model;
 
 /**
  * A class - represent the "users" table in database
@@ -6,32 +6,38 @@ package cs601.model.PO;
 
 public class User {
 	
+	private int userId;
 	private String username;
-	private String hasedSalt;
-	private String hasedPwSalt;
+	private String usersalt;
+	private String password;
 	
-	public User(String username, String hasedSalt, String hasedPwSalt) {
+	public User( int userId,String username, String usersalt, String hashedpw) {
+		this.userId = userId;
 		this.username = username;
-		this.hasedSalt = hasedSalt;
-		this.hasedPwSalt = hasedPwSalt;
+		this.usersalt = usersalt;
+		this.password = hashedpw;
 	}
 
 	
 	// getters
+	public int getUserId(){
+		return userId;
+	}
+	
 	public String getUsername() {
 		return username;
 	}
 
-	public String getHasedSalt() {
-		return hasedSalt;
+	public String getUsersalt() {
+		return usersalt;
 	}
 
-	public String getHasedPwSalt() {
-		return hasedPwSalt;
+	public String getPassword() {
+		return password;
 	}
 
 	
-	// setters
+	/* setters
 	public void setUsername(String username) {
 		this.username = username;
 	}
@@ -44,7 +50,7 @@ public class User {
 		this.hasedPwSalt = hasedPwSalt;
 	}
 	
-	
+	*/
 	
 	
 	

@@ -1,4 +1,4 @@
-package cs601.model.PO;
+package cs601.model;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,38 +27,51 @@ public class Review implements Comparable<Review> {
 			String date, String username) throws ParseException {
 		this.reviewId = reviewId;
 		this.hotelId = hotelId;
+		overallRating = rating;
 		this.reviewTitle = reviewTitle;
 		this.reviewText = reviewText;
-		overallRating = rating;
 		isRecommended = isRecom;
-		// the username is defaulted as anonymous if absent
-		if (username.isEmpty())
-			this.username = "anonymous";
-		else
-			this.username = username;
-		// parse the date
-		reviewDate = parseDate(date);
+		reviewDate = toDateFull(date);
+		this.username = formatUsername(username);
 	}
 	
-
-	public Date parseDate(String reviewDate) {
-		SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
+	//format usernames
+	public String formatUsername(String username){
+		if (username.isEmpty())
+			this.username = "anonymous";
+		return this.username;
+	}
+	
+	
+	
+	//Date formats
+	public Date toDateFull(String reviewDate) {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date = null;
 		try {
-			date = parser.parse(reviewDate);
+			date = formatter.parse(reviewDate);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		return date;
 	}
 
-	public String getNewReviewDate() {
+	public String toStringDate1(Date reviewDate){
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		String date = formatter.format(reviewDate);
+		return date;
+	}
+	public String toStringDate2() {
 		SimpleDateFormat formatter = new SimpleDateFormat("MM:dd:yy");
 		String date = formatter.format(reviewDate);
 		return date;
 	}
 	
 	
+	
+	/**
+	 * A method to decide the order of reviews stored in the data structure.
+	 */
 	@Override
 	public int compareTo(Review review) {
 		if (reviewDate.compareTo(review.reviewDate) == 0)
@@ -70,12 +83,27 @@ public class Review implements Comparable<Review> {
 			return reviewDate.compareTo(review.reviewDate);
 	}
 
-	public String getReview() {
+	
+	/**
+	 * A method - to return a string representing information about a review.
+	 * Format is as follows:
+	 * -------------------- 
+	 * Review by username: rating
+	 * ReviewTitle
+	 * ReviewText 
+	 * -------------------- 
+	 * Review by username: rating
+	 * ReviewTitle
+	 * ReviewText
+	 * ...
+	 */
+	public String toString() {
 		return "--------------------\nReview by " + username + ": " + Integer.toString(overallRating) + "\n"
 				+ reviewTitle + "\n" + reviewText + "\n";
 	}
 
-	//getters
+	
+	/*getters*/
 	public String getReviewId() {
 		return reviewId;
 	}
@@ -108,7 +136,13 @@ public class Review implements Comparable<Review> {
 		return reviewDate;
 	}
 
-	//setters
+	
+	
+	
+	
+	
+	/*setters
+	
 	public void setReviewDate(Date reviewDate) {
 		this.reviewDate = reviewDate;
 	}
@@ -148,7 +182,7 @@ public class Review implements Comparable<Review> {
 		this.overallRating = overallRating;
 	}
 	
-	
+	*/
 
 }
 

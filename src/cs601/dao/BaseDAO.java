@@ -54,11 +54,8 @@ public class BaseDAO {
 	
 	
 
-	/**
-	 * A method - attempts to connect to database using default configuration.
-	 * 
-	 * @return database connection
-	 */
+	/** A method - attempts to connect to database using default configuration. */
+	
 	public Connection createConnection() {
 		try {
 			ct = connector.getConnection();
@@ -122,12 +119,8 @@ public class BaseDAO {
 	
 	
 	
-	/**
-	 * A method - to execute one add/update/delete sql
-	 * 
-	 * @param sql
-	 * @param parameters
-	 */
+	/** A method - to execute one add/update/delete sql	 */
+	
 	public void executeUpdate(String sql, String[] parameters) {
 		try {
 			ct = connector.getConnection();
@@ -140,12 +133,15 @@ public class BaseDAO {
 				ps.executeUpdate();
 			}
 		} catch (SQLException e) {
-			System.out.println(Status.SQL_EXCEPTION);
+			System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
 		} finally {
 			close(rs, ps, ct);
 		}
 	}
 
+	
+	
+	
 	/**
 	 * A method - to execute multiple add/update/delete sql at a time
 	 * 

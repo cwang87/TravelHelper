@@ -1,4 +1,4 @@
-package cs601.model.PO;
+package cs601.model;
 
 /**
  * A class - represent the address part of "hotels" table in database
@@ -46,7 +46,8 @@ public class Address {
 		return longitude;
 	}
 
-	//setters
+	/*setters
+
 	public void setStreetAddress(String streetAddress) {
 		this.streetAddress = streetAddress;
 	}
@@ -76,6 +77,6 @@ public class Address {
 		this.latitude = latitude;
 	}
 
-	
+	*/
 	
 }
