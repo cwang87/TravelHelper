@@ -5,21 +5,20 @@ package cs601.model;
  */
 public class Address {
 
-	private String streetAddress;
 	private String city;
 	private String state;
+	private String streetAddress;
 	private String country;
-	private double longitude;
-	private double latitude;
 
-	public Address(String ci, String st, String str, String c, double lat, double lon) {
-		country = c;
+	
+	public Address(String ci, String st, String str, String c) {
 		city = ci;
 		state = st;
 		streetAddress = str;
-		longitude = lon;
-		latitude = lat;
+		country = c;
 	}
+	
+	
 
 	//getters
 	public String getStreetAddress() {
@@ -38,13 +37,6 @@ public class Address {
 		return state;
 	}
 
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public double getLongitude() {
-		return longitude;
-	}
 
 	/*setters
 

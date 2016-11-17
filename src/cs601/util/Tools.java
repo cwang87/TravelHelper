@@ -1,6 +1,7 @@
 package cs601.util;
 
 import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -62,6 +63,10 @@ public class Tools {
 	
 	
 	
+	
+	
+	
+	
 	/**  Returns the hex encoding of a byte array  */
 	public static String encodeHex(byte[] bytes, int length) {
 		BigInteger bigint = new BigInteger(1, bytes);
@@ -72,6 +77,21 @@ public class Tools {
 	}
 	
 	
+	/** Calculates the hash of a password and hashed salt using SHA-256. */
+	public static String getHash(String password, String salt) {
+		
+		String salted = salt + password;
+		String hashed = salted;
+		
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			md.update(salted.getBytes());
+			hashed = Tools.encodeHex(md.digest(), 64);
+		} catch (Exception ex) {
+			System.out.println("Unable to properly hash password." + ex);
+		}
+		return hashed;
+	}
 	
 	
 }

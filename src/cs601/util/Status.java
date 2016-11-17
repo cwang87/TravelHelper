@@ -13,6 +13,7 @@ public enum Status {
 	MISSING_VALUES("Missing values in configuration file."),
 	CONNECTION_FAILED("Failed to establish a database connection."),
 	CREATE_FAILED("Failed to create necessary tables."),
+	INVALID_REGISTER("Invalid regiser information."),
 	INVALID_LOGIN("Invalid username and/or password."),
 	INVALID_USER("User does not exist."),
 	DUPLICATE_USER("User with that username already exists."),

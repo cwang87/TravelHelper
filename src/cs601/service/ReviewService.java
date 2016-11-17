@@ -9,14 +9,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import cs601.dao.BaseDAO;
+import cs601.dao.DAO;
 import cs601.model.Review;
 
 public class ReviewService {
 
 	private static ReviewService singleton = new ReviewService();
 	
-	private BaseDAO dao;
+	private DAO dao;
 	
 	
 	private static final String SEARCH_REVIEW = "SELECT * FROM reviews WHERE hotelId = ?";
@@ -25,7 +25,7 @@ public class ReviewService {
 	
 	
 	public ReviewService() {
-		dao = new BaseDAO();
+		dao = new DAO();
 	}
 	
 	
@@ -74,7 +74,7 @@ public class ReviewService {
 		String title = review.getReviewTitle();
 		String text = review.getReviewText();
 		Date date = review.getReviewDate();
-		Boolean isRecom= review.getIsRecommended();
+		Boolean isRecom= review.getIsRecom();
 		int rating = review.getOverallRating();
 		
 		Connection ct = dao.createConnection();

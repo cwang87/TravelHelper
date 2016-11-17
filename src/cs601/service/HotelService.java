@@ -1,13 +1,13 @@
 package cs601.service;
 
-import cs601.dao.BaseDAO;
+import cs601.dao.DAO;
 
 public class HotelService {
 
 	
 private static HotelService singleton = new HotelService();
 	
-	private BaseDAO dao;
+	private DAO dao;
 	
 	
 	private static final String SEARCH_HOTELLIST = "SELECT * FROM reviews WHERE hotelId = ?";
@@ -16,7 +16,7 @@ private static HotelService singleton = new HotelService();
 	
 	
 	public HotelService() {
-		dao = new BaseDAO();
+		dao = new DAO();
 	}
 	
 	

@@ -9,17 +9,38 @@ public class Hotel implements Comparable<Hotel> {
 	private String hotelId;
 	private String hotelName;
 	private Address hotelAddress;
+	
 
-	public Hotel(String id, String hName, String city, String state, String streetAddress, String country, double lat,
-			double lon) {
+	public Hotel(String id, String hName, String city, String state, String streetAddress, String country) {
 		hotelId = id;
 		hotelName = hName;
-		hotelAddress = new Address(city, state, streetAddress, country, lat, lon);
+		hotelAddress = new Address(city, state, streetAddress, country);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/** A method to decide the order of hotels stored in the data structure. */
+	
+	public int compareTo(Hotel h) {
+		return hotelName.compareTo(h.hotelName); 
+	}
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * A method - to return a string representing information about a review.
 	 * Format is as follows:
+	 * 
 	 * HoteName: hotelId
 	 * streetAddress
 	 * city, state, country	
@@ -41,12 +62,10 @@ public class Hotel implements Comparable<Hotel> {
 	
 	
 	
-	public int compareTo(Hotel h) {
-		return hotelName.compareTo(h.hotelName); 
-	}
-
 	
-	// getters
+	
+	/* ----------------------------------------*/
+
 	public String getHotelId() {
 		return hotelId;
 	}
@@ -60,21 +79,21 @@ public class Hotel implements Comparable<Hotel> {
 	}
 
 	
-	/* setters
-	 
-	public void setHotelId(String hotelId) {
-		this.hotelId = hotelId;
-	}
-
-	public void setHotelName(String hotelName) {
-		this.hotelName = hotelName;
-	}
-
-	public void setHotelAddress(Address hotelAddress) {
-		this.hotelAddress = hotelAddress;
-	}
+//	/* ----------------------------------------*/
+//	 
+//	public void setHotelId(String hotelId) {
+//		this.hotelId = hotelId;
+//	}
+//
+//	public void setHotelName(String hotelName) {
+//		this.hotelName = hotelName;
+//	}
+//
+//	public void setHotelAddress(Address hotelAddress) {
+//		this.hotelAddress = hotelAddress;
+//	}
+//	
 	
-	*/
 	
 }
 
