@@ -92,6 +92,12 @@ public class BaseServlet extends HttpServlet {
 		return dateFormat.format(Calendar.getInstance().getTime());
 	}
 	
+	protected String getDate2() {
+		String format = "yyyyMMddHHmmssZ";
+		DateFormat dateFormat = new SimpleDateFormat(format);
+		return dateFormat.format(Calendar.getInstance().getTime());
+	}
+	
 	/*-----------------------------------------------Hotel Table----------------------------------------------------*/
 	
 	protected String addHotelTbl1(String hotelId, String hotelName, 

@@ -183,11 +183,12 @@ public class AddReviewServlet extends BaseServlet {
 
 			// get reviewId
 			Random random = new Random(System.currentTimeMillis());
-			byte[] saltBytes = new byte[16];
-			random.nextBytes(saltBytes);
-			String salt = Tools.encodeHex(saltBytes, 32);
-			String reviewId = Tools.getHash("000", salt);
+			String dateId = getDate2().substring(0, 13);
+			int salt = random.nextInt(888);
+			String reviewId = dateId + Integer.toString(salt);
 
+			
+			
 			int userId = userService.getUserId(username);
 
 			reviewService.addReview(hotelId, reviewId, username.toLowerCase(), reviewTitle, reviewText, isRecom, rating,
