@@ -4,17 +4,17 @@ package cs601.model;
  * A class - represent the "hotels" table in database
  */
 
-public class Hotel implements Comparable<Hotel> {
+public class HotelPO implements Comparable<HotelPO> {
 
 	private String hotelId;
 	private String hotelName;
-	private Address hotelAddress;
+	private AddressPO hotelAddress;
 	
 
-	public Hotel(String id, String hName, String city, String state, String streetAddress, String country) {
-		hotelId = id;
-		hotelName = hName;
-		hotelAddress = new Address(city, state, streetAddress, country);
+	public HotelPO(String hotelId, String hotelName, String city, String state, String strAddr, String country, double lat, double lon) {
+		this.hotelId = hotelId;
+		this.hotelName = hotelName;
+		hotelAddress = new AddressPO(city, state, strAddr, country, lat, lon);
 	}
 	
 	
@@ -27,7 +27,7 @@ public class Hotel implements Comparable<Hotel> {
 	
 	/** A method to decide the order of hotels stored in the data structure. */
 	
-	public int compareTo(Hotel h) {
+	public int compareTo(HotelPO h) {
 		return hotelName.compareTo(h.hotelName); 
 	}
 	
@@ -50,7 +50,7 @@ public class Hotel implements Comparable<Hotel> {
 		StringBuffer sBuffer = new StringBuffer();
 		
 		sBuffer.append(hotelName).append(": ").append(hotelId).append("\n");
-		sBuffer.append(hotelAddress.getStreetAddress()).append("\n");
+		sBuffer.append(hotelAddress.getStrAddr()).append("\n");
 		sBuffer.append(hotelAddress.getCity()).append(", ")
 				.append(hotelAddress.getState()).append(", ")
 				.append(hotelAddress.getCountry()).append("\n");
@@ -74,7 +74,7 @@ public class Hotel implements Comparable<Hotel> {
 		return hotelName;
 	}
 
-	public Address getHotelAddress() {
+	public AddressPO getHotelAddress() {
 		return hotelAddress;
 	}
 

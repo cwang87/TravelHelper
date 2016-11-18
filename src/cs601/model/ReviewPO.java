@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * A class - represent the one row record of table "reviews" in database
  */
-public class Review implements Comparable<Review> {
+public class ReviewPO implements Comparable<ReviewPO> {
 
 	private String hotelId;
 	private String reviewId;
@@ -19,7 +19,7 @@ public class Review implements Comparable<Review> {
 	
 	
 	/** Constructor (convert the Data type of date from String to Date) */
-	public Review(String hotelId, String reviewId, String username, String reviewTitle, String reviewText, Date reviewDate, 
+	public ReviewPO(String hotelId, String reviewId, String username, String reviewTitle, String reviewText, Date reviewDate, 
 			boolean isRecom, int overallRating, int userId ) {
 		
 		this.hotelId = hotelId;
@@ -44,7 +44,7 @@ public class Review implements Comparable<Review> {
 	
 	/** A method to decide the order of reviews stored in the data structure. */
 	@Override
-	public int compareTo(Review review) {
+	public int compareTo(ReviewPO review) {
 		if (reviewDate.compareTo(review.reviewDate) == 0)
 			if (username.compareTo(review.username) == 0)
 				return reviewId.compareTo(review.reviewId);

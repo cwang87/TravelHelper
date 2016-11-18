@@ -4,14 +4,14 @@ package cs601.model;
  * A class - represent the "users" table in database
  */
 
-public class User {
+public class UserPO {
 	
 	private int userId;
 	private String username;
 	private String usersalt;
 	private String password;
 	
-	public User( int userId,String username, String usersalt, String hashedpw) {
+	public UserPO( int userId,String username, String usersalt, String hashedpw) {
 		this.userId = userId;
 		this.username = username;
 		this.usersalt = usersalt;

@@ -302,6 +302,8 @@ public class DAO {
 		ct = getConnection();
 		
 		try {
+			ps = ct.prepareStatement(sql);
+			
 			if(parameter != null && !parameter.equals("")){
 				ps.setString(1, parameter);
 			}
@@ -322,6 +324,7 @@ public class DAO {
 		ct = getConnection();
 		
 		try {
+			st = ct.createStatement();
 			rs = st.executeQuery(sql);
 		} catch (SQLException e) {
 			System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());

@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
 
 /**
  * A util class to provide general static methods conveniently.
@@ -30,6 +31,14 @@ public class Tools {
 	}
 	
 	
+	/**  two decimals */
+	@SuppressWarnings("resource")
+	public static String formatDouble(double value){
+		return new Formatter().format("%.2f", value).toString();  
+	}
+	
+	
+	
 	
 	/** convert Java Date to SQL Timestamp */
 	public static Timestamp getTimestamp(Date date) {
@@ -42,6 +51,7 @@ public class Tools {
 	}
 	
 	
+	/*-----------------------------------------isRecom---------------------------------------------*/
 	
 	/** convert Java boolean to SQL Tinyint(1) */
 	public static int toSQLBoolean(Boolean bool){
@@ -51,6 +61,39 @@ public class Tools {
 			return 0;
 		}
 	}
+	
+	/** convert SQL Tinyint(1) to boolen */
+	public static boolean intToBool(int isRecom){
+		if(isRecom == 1){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	
+	/** convert boolean to String YES/NO */
+	public static String boolToString(boolean isRecom){
+		if(isRecom){
+			return "YES";
+		}else{
+			return "NO";
+		}
+	}
+	
+	
+	public static int YNToInt(String isRecom){
+		if(isRecom.equals("YES")){
+			return 1;
+		}else{
+			return 0;
+		}
+	}
+	
+	
+	
+	
+	
 	
 	
 

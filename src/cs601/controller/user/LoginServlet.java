@@ -1,4 +1,4 @@
-package cs601.controller;
+package cs601.controller.user;
 
 
 import java.io.IOException;
@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
+import cs601.controller.main.BaseServlet;
 import cs601.service.UserService;
 import cs601.util.Status;
 
@@ -25,17 +26,23 @@ public class LoginServlet extends BaseServlet {
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-		prepareResponse("Please Login", response);
-		PrintWriter out = response.getWriter();
 		
-		String error = request.getParameter("error");
-		if(error != null) {
-			String errorMessage = getStatusMessage(error);
-			out.println("<p style=\"color: red;\">" + errorMessage + "</p>");
+		HttpSession session = request.getSession(false);
+		String pass = "";
+//		String username = (String)session.getAttribute("username");
+		if(session != null){
+			pass = (String)session.getAttribute("pass");
 		}
-
-		displayForm(out); 
+		
+		prepareResponse("Login", response);
+		PrintWriter out = response.getWriter();
+		checkRequestError(request, out);
+			
+		if(pass.equals("ok")){
+			redirect(response, "/user/account");
+		}else{
+			displayForm(out); 
+		}
 		finishResponse(response);
 	}
 
@@ -50,30 +57,20 @@ public class LoginServlet extends BaseServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		prepareResponse("Please Login", response);
 
-		String existUser = request.getParameter("user");
+		String user = request.getParameter("user");
 		String userpw = request.getParameter("pw");
 		
-		existUser = StringEscapeUtils.escapeHtml4(existUser);
-		userpw = StringEscapeUtils.escapeHtml4(userpw);
+		String dbuser = StringEscapeUtils.escapeHtml4(user);
+		String dbuserpw = StringEscapeUtils.escapeHtml4(userpw);
 		
-		Status status = userService.authLogin(existUser, userpw);
+		Status status = userService.loginUser(dbuser, dbuserpw);
 		
 		if(status == Status.OK) {
-			response.getWriter().println("Login Successfully!.");
-			
-			HttpSession session = request.getSession();
-			session.setMaxInactiveInterval(24*60*60);
-			session.setAttribute("username", existUser);
-			session.setAttribute("pass", "ok");
-			
-			String url = "/account" + status.name();
-			url = response.encodeRedirectURL(url);
-			response.sendRedirect("url");
+			setSession(request, user);
+			redirect(response, "/user/account");
 		}
 		else {
-			String url = "/login?error=" + status.name();
-			url = response.encodeRedirectURL(url);
-			response.sendRedirect(url); 
+			redirect(response, "/user/login?error=" + status.name());
 		}
 	}
 
@@ -89,8 +86,12 @@ public class LoginServlet extends BaseServlet {
 	/** Writes and HTML form that shows two textfields and a button to the PrintWriter */
 	private void displayForm(PrintWriter out) {
 		assert out != null;
+		
+		out.println("<p style=\"font-size: 18pt;\">");
+		out.println("Please user your username and password to login<br><br>");
+		out.println("</p>");
 
-		out.println("<form action=\"/login\" method=\"post\">"); 
+		out.println("<form action=\"/user/login\" method=\"post\">"); 
 		out.println("<table border=\"0\">");
 		out.println("\t<tr>");
 		out.println("\t\t<td>Usename:</td>");
@@ -100,8 +101,12 @@ public class LoginServlet extends BaseServlet {
 		out.println("\t\t<td>Password:</td>");
 		out.println("\t\t<td><input type=\"password\" name=\"pw\" size=\"30\"></td>");
 		out.println("</tr>");
+		
+		out.println("\t<tr>");
+		out.println("\t\t<td><button type=\"button\" onclick=\"{location.href='/user/register'}\">register</button></td>");
+		out.println("\t\t<td><input type=\"submit\" value=\"Login\"></td>");
 		out.println("</table>");
-		out.println("<p><input type=\"submit\" value=\"Login\"></p>");
 		out.println("</form>");
+	
 	}
 }

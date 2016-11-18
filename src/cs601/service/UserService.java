@@ -1,11 +1,8 @@
 package cs601.service;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
-
 
 import cs601.dao.DAO;
 import cs601.util.Status;
@@ -22,16 +19,29 @@ public class UserService {
 
 	private Random random;
 
+	/*---------------------------------------------Register users--------------------------------------------------*/
 	
 	private static final String REGISTER_SQL = "INSERT INTO users (username, usersalt, password) VALUES (?, ?, ?);";
-//	private static final String DELETE_SQL = "DELETE FROM users WHERE username = ?";
 	private static final String USER_SQL = "SELECT username FROM users WHERE username = ?";
-//	private static final String SALT_SQL = "SELECT usersalt FROM users WHERE username = ?";
-//	private static final String AUTH_SQL = "SELECT username FROM users WHERE username = ? AND password = ?";
+	
+	
+	/*---------------------------------------------Login users--------------------------------------------------*/
+	
+	private static final String SALT_SQL = "SELECT usersalt FROM users WHERE username = ? ;";
 
+	private static final String AUTH_SQL = "SELECT username FROM users WHERE username = ? AND password = ? ;";
+
+	private static final String SEARCH_USERID_SQL = "SELECT userId FROM users WHERE username = ? ;";
+
+
+	
+	
+	
 	private UserService() {
 		random = new Random(System.currentTimeMillis());
 	}
+	
+	
 	
 	
 	
@@ -43,7 +53,31 @@ public class UserService {
 	}
 
 	
-	/*-------------------------------------------Register users-------------------------------------*/
+	
+	public int getUserId(String username){
+		
+		int userId = 0;
+		
+		ResultSet rs = DAO.executeQuery(SEARCH_USERID_SQL, username);
+		try {
+			if(rs.next()){
+				userId = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
+			e.printStackTrace();
+		}finally {
+			DAO.close(DAO.getRs(), DAO.getPs(), DAO.getCt());
+		}
+		
+		return userId;
+	}
+	
+	
+	
+	
+	
+	/*---------------------------------------------Register users--------------------------------------------------*/
 	
 	/**
 	 * Registers a new user, placing the username, password hash, and salt into
@@ -64,8 +98,7 @@ public class UserService {
 		}
 		// check if the username is already exist
 		
-		Connection ct = DAO.getConnection(); 
-		status = duplicateUser(ct, newuser);
+		status = duplicateUser(newuser);
 			
 		if (status == Status.OK) {
 			
@@ -84,12 +117,6 @@ public class UserService {
 			status = Status.OK;
 		}
 
-		// close the connection
-		try {
-			ct.close();
-		} catch (SQLException e) {
-			System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
-		}
 		
 		return status;
 	}
@@ -99,104 +126,92 @@ public class UserService {
 	
 	
 	/** Tests if a user already exists in the database. */
-	private Status duplicateUser(Connection connection, String user) {
-
-		assert connection != null;
-		assert user != null;
+	private Status duplicateUser(String user) {
 
 		Status status = Status.ERROR;
-
-		try (PreparedStatement statement = connection.prepareStatement(USER_SQL);) {
-			statement.setString(1, user);
-
-			ResultSet results = statement.executeQuery();
-			status = results.next() ? Status.DUPLICATE_USER : Status.OK;
+		
+		ResultSet rs = DAO.executeQuery(USER_SQL, user);
+		
+		try {
+			if(rs.next()){
+				status = Status.DUPLICATE_USER;
+			}else{
+				status = Status.OK;
+			}
 		} catch (SQLException e) {
-			status = Status.SQL_EXCEPTION;
-			System.out.println("Exception occured while processing SQL statement:" + e);
+			System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
+			e.printStackTrace();
+		}finally {
+			DAO.close(DAO.getRs(), DAO.getPs(), DAO.getCt());
 		}
-
+			
 		return status;
 	}
 	
 	
-	
+	/*---------------------------------------------Login users--------------------------------------------------*/
 	
 
+	
+	/** login a user if both username and password match the record in users table */
+	
+	public Status loginUser(String username, String password){
+		Status status = Status.ERROR;
+		System.out.println("Logging in " + username + ".");
 
+		// check if leave any field blank
+		if(Tools.isBlank(username) || Tools.isBlank(password)){
+			status = Status.INVALID_LOGIN;
+			System.out.println("Invalid login info");
+			return status;
+			
+		// check if leave any field blank	
+		}else if(duplicateUser(username) != Status.DUPLICATE_USER){
+			status = Status.INVALID_USER;
+			return status;
+			
+		}else {
+			String hashedPW = Tools.getHash(password, getSalt(username));
+			String[] parameters = {username, hashedPW};
+			ResultSet rs = DAO.executeQuery(AUTH_SQL, parameters);
+			try {
+				if (rs.next()){
+					status = Status.OK;
+				}else{
+					status = Status.INVALID_LOGIN;
+				}
+			} catch (SQLException e) {
+				System.out.println(Status.SQL_EXCEPTION + e.getMessage());
+			}finally {
+				DAO.close(DAO.getRs(), DAO.getPs(), DAO.getCt());
+			}
+			return status;
+		}
+		
+	}
+	
 
 	
+	/** Gets the salt for a specific user */
+	private String getSalt(String user) {
+		
+		String salt = null;
+		
+		ResultSet rs = DAO.executeQuery(SALT_SQL, user);
+		
+		try {
+			if(rs.next()){
+				salt = rs.getString("usersalt");
+			}
+		} catch (SQLException e) {
+			System.out.println(Status.SQL_EXCEPTION + e.getMessage());
+		}finally {
+			DAO.close(DAO.getRs(), DAO.getPs(), DAO.getCt());
+		}
+
+		return salt;
+	}
+
 	
-	
-	
-//	
-//	public Status authLogin(String existUser, String userpw){
-//		Status status = Status.ERROR;
-//		System.out.println("Loging " + existUser + ".");
-//
-//		// check if leave any field blank
-//		if(Tools.isBlank(existUser) || Tools.isBlank(userpw)){
-//			status = Status.INVALID_LOGIN;
-//			System.out.println("Invalid login info");
-//			return status;
-//		}else if(existUser(existUser) != Status.DUPLICATE_USER){
-//			status = Status.INVALID_USER;
-//			return status;
-//		}else {
-//			String hashedPW = getHash(userpw, getSalt(existUser));
-//			String[] parameters = {existUser, hashedPW};
-//			ResultSet rSet = dao.executeQuery(AUTH_SQL, parameters);
-//			try {
-//				if (rSet.next()){
-//					status = Status.OK;
-//				}else{
-//					status = Status.INVALID_LOGIN;
-//				}
-//			} catch (SQLException e) {
-//				System.out.println(Status.SQL_EXCEPTION + e.getMessage());
-//			}
-//		
-//		}
-//		return status;
-//	}
-//	
-//
-//	
-//	
-//	
-//	
-//	
-//	
-//
-//	
-//
-//	
-//
-//	
-//	
-//	
-//	
-//	
-//	
-//	/**
-//	 * Gets the salt for a specific user 
-//	 * @param user - which user to retrieve salt for
-//	 * @return salt for the specified user or null if user does not exist
-//	 */
-//	private String getSalt(String user) {
-//		String salt = null;
-//		assert user != null;
-//		
-//		ResultSet rSet = dao.executeQuery(SALT_SQL, user);
-//		try {
-//			if(rSet.next()){
-//				salt = rSet.getString("usersalt");
-//			}
-//		} catch (SQLException e) {
-//			System.out.println(Status.SQL_EXCEPTION + e.getMessage());
-//		}
-//
-//		return salt;
-//	}
 	
 }
