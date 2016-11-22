@@ -18,7 +18,18 @@ public class ReviewPO implements Comparable<ReviewPO> {
 	private int userId;
 	
 	
-	/** Constructor (convert the Data type of date from String to Date) */
+	/** Constructor (convert the Data type of date from String to Date)
+	 * 
+	 * @param hotelId
+	 * @param reviewId
+	 * @param username
+	 * @param reviewTitle
+	 * @param reviewText
+	 * @param reviewDate
+	 * @param isRecom
+	 * @param overallRating
+	 * @param userId
+	 */
 	public ReviewPO(String hotelId, String reviewId, String username, String reviewTitle, String reviewText, Date reviewDate, 
 			boolean isRecom, int overallRating, int userId ) {
 		
@@ -79,6 +90,9 @@ public class ReviewPO implements Comparable<ReviewPO> {
 
 	
 	
+	
+	
+	
 	/* ----------------------------------------*/
 
 	public String getHotelId() {
@@ -125,52 +139,6 @@ public class ReviewPO implements Comparable<ReviewPO> {
 		return userId;
 	}
 	
-	
-//	/* ----------------------------------------*/
-//
-//	public void setHotelId(String hotelId) {
-//		this.hotelId = hotelId;
-//	}
-//
-//
-//	public void setReviewId(String reviewId) {
-//		this.reviewId = reviewId;
-//	}
-//
-//
-//	public void setUsername(String username) {
-//		this.username = username;
-//	}
-//
-//
-//	public void setReviewTitle(String reviewTitle) {
-//		this.reviewTitle = reviewTitle;
-//	}
-//
-//
-//	public void setReviewText(String reviewText) {
-//		this.reviewText = reviewText;
-//	}
-//
-//
-//	public void setReviewDate(Date reviewDate) {
-//		this.reviewDate = reviewDate;
-//	}
-//
-//
-//	public void setRecom(boolean isRecom) {
-//		this.isRecom = isRecom;
-//	}
-//
-//
-//	public void setOverallRating(int overallRating) {
-//		this.overallRating = overallRating;
-//	}
-//
-//
-//	public void setUserId(int userId) {
-//		this.userId = userId;
-//	}
 
 
 

@@ -19,27 +19,33 @@ public class JettyWebServer {
 		
 		Server server = new Server(PORT2);
 		
-		// search related
-		ServletContextHandler contextSearch = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		contextSearch.setContextPath("/");
+		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		context.setContextPath("/");
 
-		contextSearch.addServlet(HomeServlet.class, "/home");
-		contextSearch.addServlet(HotelsServlet.class, "/hotels");
-		contextSearch.addServlet(ReviewsServlet.class, "/reviews");
-//		contextSearch.addServlet(AttractionsServlet.class, "/attractions");
 		
 		
-		contextSearch.addServlet(RegisterServlet.class, "/user/register");
-		contextSearch.addServlet(LoginServlet.class, "/user/login");
-		contextSearch.addServlet(LogoutServlet.class, "/user/logout");
-		contextSearch.addServlet(AccountServlet.class, "/user/account");
-		contextSearch.addServlet(AddReviewServlet.class, "/user/add_review");
-		contextSearch.addServlet(MyReview.class, "/user/my_review");
-//		contextSearch.addServlet(AccountServlet.class, "user/modify_review");
+		
+		context.addServlet(HomeServlet.class, "/home");
+		context.addServlet(HotelsServlet.class, "/hotels");
+		context.addServlet(ReviewsServlet.class, "/reviews");
+//		context.addServlet(AttractionsServlet.class, "/attractions");
+		
+		
+		context.addServlet(RegisterServlet.class, "/user/register");
+		context.addServlet(LoginServlet.class, "/user/login");
+		context.addServlet(LogoutServlet.class, "/user/logout");
+		context.addServlet(AccountServlet.class, "/user/account");
+		context.addServlet(AddReviewServlet.class, "/user/add_review");
+		context.addServlet(MyReview.class, "/user/my_review");
+//		context.addServlet(AccountServlet.class, "user/modify_review");
 
+		
+		
+		
+		
 		
 		HandlerList handlers = new HandlerList();
-		handlers.setHandlers(new Handler[] {contextSearch});
+		handlers.setHandlers(new Handler[] {context});
 		server.setHandler(handlers);
 		
 		try {

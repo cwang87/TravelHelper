@@ -6,11 +6,11 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import cs601.controller.main.BaseServlet;
+import cs601.controller.main.JettyWebServer;
 import cs601.model.HotelPO;
-import cs601.service.HotelService;
+import cs601.tablesHandler.HotelsHandler;
 import cs601.util.Tools;
 
 /**
@@ -21,31 +21,26 @@ import cs601.util.Tools;
 public class HotelsServlet extends BaseServlet {
 
 	
-	private static final HotelService hotelService = HotelService.getInstance();
+	private static final HotelsHandler hotelService = HotelsHandler.getInstance();
 	
 	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
+		prepareResponse("Hotel List", response);
+		
 		PrintWriter out = response.getWriter();
+		
 		checkRequestError(request, out);
-		prepareRespTbl("Hotel List", response);
 		
-		HttpSession session = request.getSession();
-		String pass = (String)session.getAttribute("pass");
-		if(pass == null){
-			session.setAttribute("pass", "no");
-			pass = (String)session.getAttribute("pass");
-		}
-		
-		if(!pass.equals("ok")){
-			out.println("Welcome!  ");
+		if(!checkSession(request)){
+			out.println("Welcome to Hotel Discover Channel!  ");
 			out.println("<button type=\"button\" onclick=\"{location.href='/user/register'}\">Register</button>");
 			out.println("<button type=\"button\" onclick=\"{location.href='/user/login'}\">Login</button>");
 			
 		}else{
-			String username = (String) session.getAttribute("username");
-			out.println("Welcome!  " + username);
+			String username = getSessionUsername(request);
+			out.println("Hello!  " + username);
 			out.println("<button type=\"button\" onclick=\"{location.href='/user/account'}\">My Account</button>");
 			out.println("<button type=\"button\" onclick=\"{location.href='/user/logout'}\">Logout</button>");
 		}
@@ -60,8 +55,6 @@ public class HotelsServlet extends BaseServlet {
 	private void createTbl(PrintWriter out){
 		out.println("<h3>Hotel List</h3>");
 		out.println("<style>table, th, td {border: 1px solid black;}</style>");
-		out.println("</head>");
-		out.println("<body>");
 		out.println("<table>");
 		
 		//table head
@@ -94,6 +87,48 @@ public class HotelsServlet extends BaseServlet {
 		out.println("</table>");
 		
 	}
+	
+	
+/*-----------------------------------------------Hotel Table----------------------------------------------------*/
+	
+	private String addHotelTbl1(String hotelId, String hotelName, 
+			String hotelAddr, String aveRating){
+		
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append("<tr>");
+		sb.append("<td>" + hotelId + "</td>");
+		
+		sb.append("<td>");
+		sb.append("<a href=\"http://localhost:" + JettyWebServer.PORT2 + "/reviews?hotelId=" + hotelId + "\">");
+		sb.append(hotelName + "</a></td>");
+		
+		sb.append("<td>" + hotelAddr + "</td>");
+		sb.append("<td>" + aveRating + "</td>");
+		sb.append("</tr>");
+		
+		return sb.toString();
+		
+	}
+	
+	
+	private String addHotelTbl2(String hotelId, String hotelName, 
+			String hotelAddr, String aveRating){
+		
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append("<tr>");
+		sb.append("<td>" + hotelId + "</td>");
+		sb.append("<td>" + hotelName + "</td>");
+		sb.append("<td>" + hotelAddr + "</td>");
+		sb.append("<td>" + aveRating + "</td>");
+		sb.append("</tr>");
+		
+		return sb.toString();
+		
+	}
+	
+	
 	
 	
 	@Override

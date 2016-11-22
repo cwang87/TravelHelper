@@ -1,4 +1,4 @@
-package cs601.dao;
+package cs601.sqlHelper;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -17,28 +17,29 @@ import cs601.util.Status;
 
 
 
-
-/** A class - load database configuration and connect to the database. */
+/** load database configuration and connect to the database. */
 
 public class DBConnector {
 	
 	/* URI to use when connecting to database. Should be in the format:jdbc:subprotocol://hostname/database */
-	public final String uri;
+	private final String uri;
 	
+	/* config file to be loaded */
 	private final Properties login;
 	
 	
 	
 	/*-------------------------------------------Constructors-------------------------------------------------*/
 	
-	/** Creates a connector from a "database.properties" file located in the current working directory. */
+	/** Create connector from the default config file - "database.properties" */
+	
 	public DBConnector() {
 		
-		// Try to load the configuration from file
+		// load configuration from file
 		Properties config = null;
 		try {
-			config = loadConfig("localDB.properties");
-//			config = loadConfig("database.properties");
+//			config = loadConfig("localDB.properties");
+			config = loadConfig("database.properties");
 		} catch (FileNotFoundException e) {
 			System.out.println(Status.MISSING_CONFIG + ": " + e.getMessage());
 		} catch (IOException e) {
@@ -47,7 +48,6 @@ public class DBConnector {
 		
 		// Create database URI in proper format
 		uri = String.format("jdbc:mysql://%s/%s", config.getProperty("hostname"), config.getProperty("database"));
-		
 		System.out.println("uri = " + uri);
 		
 		// Create database login properties
@@ -58,7 +58,11 @@ public class DBConnector {
 	
 	
 	
-	/** Creates a connector from the provided database properties file. */
+	
+	
+	
+	/** Create connector from a given config file */
+	
 	public DBConnector(String configPath) {
 		
 		Properties config = null;
@@ -71,7 +75,6 @@ public class DBConnector {
 		}
 		
 		uri = String.format("jdbc:mysql://%s/%s", config.getProperty("hostname"), config.getProperty("database"));
-		
 		System.out.println("uri = " + uri);
 		
 		login = new Properties();
@@ -81,9 +84,12 @@ public class DBConnector {
 
 	
 	
-	/*----------------------------------Methods to create a connection------------------------------------------*/
+	/*----------------------------------Methods used to create a connection--------------------------------------*/
 
-	/** A method - attempts to load properties file with database configuration. */
+	/** A method - read database config file and load reqired info into an Properties instance. 
+	 * If the info in config file is not complete, exception with info about which info is missed will be reported. 
+	 * @return Properties instance
+	 * */
 	
 	private Properties loadConfig(String configPath) throws FileNotFoundException, IOException {
 		
@@ -110,7 +116,8 @@ public class DBConnector {
 	
 	
 	
-	/** A method - attempts to connect to database using loaded configuration. */
+	/** A method - attempts to connect to database. */
+	
 	/* DriverManager.getConnection(String url, Properties info); ("info" = user + password) */
 	public Connection getConnection() throws SQLException {
 		Connection dbConnection = DriverManager.getConnection(uri+"?useSSL=false", login);
@@ -153,18 +160,16 @@ public class DBConnector {
 	
 	
 	/** Opens a database connection and returns a set of found tables. 
-	 * Will return an empty set if there are no results. */
+	 * Will return an empty set if there are no results. 
+	 * */
 	
 	public Set<String> getTables(Connection db) throws SQLException {
 		
 		Set<String> tables = new HashSet<>();
 
 		try (Statement sql = db.createStatement();) {
-			
 			if (sql.execute("SHOW TABLES;")) {
-				
 				ResultSet results = sql.getResultSet();
-				
 				while (results.next()) {
 					tables.add(results.getString(1));
 				}

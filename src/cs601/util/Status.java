@@ -16,6 +16,7 @@ public enum Status {
 	INVALID_REGISTER("Invalid regiser information."),
 	INVALID_LOGIN("Invalid username and/or password."),
 	INVALID_USER("User does not exist."),
+	INVALID_PASSWORD("Password should be at least 6 characters long, a combination of letter, digit and special character."),
 	DUPLICATE_USER("User with that username already exists."),
 	SQL_EXCEPTION("Unable to execute SQL statement.");
 
@@ -27,11 +28,16 @@ public enum Status {
 	}
 	
 	
-	public String message() {
+	
+	/** get status message */
+	public String getMessage() {
 		return message;
 	}
 
 	
+	
+	
+	/** get status message */
 	@Override
 	public String toString() {
 		return this.message;

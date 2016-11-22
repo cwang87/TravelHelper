@@ -18,29 +18,28 @@ import cs601.controller.main.BaseServlet;
 public class LogoutServlet extends BaseServlet {
 	
 	
-	
+	/**
+	 * invalid session and let users logout safely
+	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		
+		prepareResponse("Logout", response);
+		
+		PrintWriter out = response.getWriter();
+		
+		checkRequestError(request, out);
 		
 		// invalid this session
 		HttpSession session = request.getSession();
 		session.invalidate();
 		
-		PrintWriter out = response.getWriter();
-		prepareResponse("Logout", response);
+		// finished logout
+		out.println("<p style=\"font-size: 18pt;\">");
+		out.println("You have successfully logged out!");
+		out.println("</p>");
 		
-		String error = request.getParameter("error");
-		if(error != null) {
-			String errorMessage = getStatusMessage(error);
-			out.println("<p style=\"color: red;\">" + errorMessage + "</p>");
-		}else{
-			// finished logout
-			out.println("<p style=\"font-size: 18pt;\">");
-			out.println("You have successfully logged out!");
-			out.println("</p>");
-		}
-		
-		out.println("<button type=\"button\" onclick=\"{location.href='/home'}\">Back to home page</button>");
+		out.println("<button type=\"button\" onclick=\"{location.href='/home'}\">Back to Home Page</button>");
 		
 		finishResponse(response);
 		
@@ -48,6 +47,10 @@ public class LogoutServlet extends BaseServlet {
 
 	
 
+	
+	/**
+	 * invalid session and let users logout safely
+	 */
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		this.doGet(request, response);

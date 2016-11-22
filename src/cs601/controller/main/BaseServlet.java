@@ -2,9 +2,6 @@ package cs601.controller.main;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import cs601.util.Status;
+import cs601.util.Tools;
 
 /** A Servlet that provides base functionality to all servlets */
 
@@ -23,7 +21,7 @@ public class BaseServlet extends HttpServlet {
 	
 	
 	
-	/*-----------------------------------------------Headers----------------------------------------------------*/
+	/*------------------------------------------Prepare Response <body></body>---------------------------------------*/
 
 	/** prepare a title-type response, not finish response yet */
 	protected void prepareResponse(String title, HttpServletResponse response) {
@@ -43,25 +41,9 @@ public class BaseServlet extends HttpServlet {
 	}
 	
 	
-	/** prepare a header with title when we need to write script */
-	protected void prepareRespTbl(String title, HttpServletResponse response) {
-		try {
-			PrintWriter writer = response.getWriter();
-
-			writer.println("<!DOCTYPE html>");
-			writer.println("<html>");
-			writer.println("<head>");
-			writer.println("\t<title>" + title + "</title>");
-
-		} catch (IOException ex) {
-			System.out.println("IOException while preparing the response: " + ex);
-			return;
-		}
-	}
 	
 	
-	/*-----------------------------------------------Footers----------------------------------------------------*/
-
+	
 	/** finish response with date message displayed */
 	protected void finishResponse(HttpServletResponse response) {
 		try {
@@ -69,7 +51,7 @@ public class BaseServlet extends HttpServlet {
 
 			writer.println();
 			writer.println("<p style=\"font-size: 10pt; font-style: italic;\">");
-			writer.println("Last updated at " + getDate());
+			writer.println("Last updated at " + Tools.getDate());
 			writer.println("</p>");
 
 			writer.println("</body>");
@@ -83,126 +65,11 @@ public class BaseServlet extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
-
-	
-	/** get current date */
-	protected String getDate() {
-		String format = "hh:mm a 'on' EEE, MMM dd, yyyy";
-		DateFormat dateFormat = new SimpleDateFormat(format);
-		return dateFormat.format(Calendar.getInstance().getTime());
-	}
-	
-	protected String getDate2() {
-		String format = "yyyyMMddHHmmssZ";
-		DateFormat dateFormat = new SimpleDateFormat(format);
-		return dateFormat.format(Calendar.getInstance().getTime());
-	}
-	
-	/*-----------------------------------------------Hotel Table----------------------------------------------------*/
-	
-	protected String addHotelTbl1(String hotelId, String hotelName, 
-			String hotelAddr, String aveRating){
-		
-		StringBuffer sb = new StringBuffer();
-		
-		sb.append("<tr>");
-		sb.append("<td>" + hotelId + "</td>");
-		
-		sb.append("<td>");
-		sb.append("<a href=\"http://localhost:" + JettyWebServer.PORT2 + "/reviews?hotelId=" + hotelId + "\">");
-		sb.append(hotelName + "</a></td>");
-		
-		sb.append("<td>" + hotelAddr + "</td>");
-		sb.append("<td>" + aveRating + "</td>");
-		sb.append("</tr>");
-		
-		return sb.toString();
-		
-	}
-	
-	
-	protected String addHotelTbl2(String hotelId, String hotelName, 
-			String hotelAddr, String aveRating){
-		
-		StringBuffer sb = new StringBuffer();
-		
-		sb.append("<tr>");
-		sb.append("<td>" + hotelId + "</td>");
-		sb.append("<td>" + hotelName + "</td>");
-		sb.append("<td>" + hotelAddr + "</td>");
-		sb.append("<td>" + aveRating + "</td>");
-		sb.append("</tr>");
-		
-		return sb.toString();
-		
-	}
-	
-	protected void addHotelTbl3(PrintWriter out, String hotelId, String hotelName, 
-			String hotelAddr){
-		
-		out.println();
-		
-		out.println("<tr>");
-		out.println("<td>" + hotelId + "</td>");
-		
-		out.println("<td>");
-		out.println("<a href=\"http://localhost:" + JettyWebServer.PORT2 + "/user/add_review?hotelId=" + hotelId + "\">");
-		out.println(hotelName + "</a></td>");
-		
-		out.println("<td>" + hotelAddr + "</td>");
-		out.println("</tr>");
-		
-		
-	}
-	
-	
-	
-	
-	protected String addReviewTbl(String username, String reviewTitle, 
-			String reviewText, String reviewDate, String isRecom, String overallRating){
-		
-		
-		StringBuffer sb = new StringBuffer();
-		
-		sb.append("<tr>");
-		sb.append("<td>" + username + "</td>");
-		sb.append("<td>" + reviewTitle + "</td>");
-		sb.append("<td width=\"45%\">" + reviewText + "</td>");
-		sb.append("<td>" + reviewDate + "</td>");
-		sb.append("<td>" + isRecom + "</td>");
-		sb.append("<td>" + overallRating + "</td>");
-		sb.append("</tr>");
-		
-		return sb.toString();
-		
-	}
-	
-	protected String addReviewTbl2(String hotelName, String reviewTitle, 
-			String reviewText, String reviewDate, String isRecom, String overallRating){
-		
-		
-		StringBuffer sb = new StringBuffer();
-		
-		sb.append("<tr>");
-		sb.append("<td>" + hotelName + "</td>");
-		sb.append("<td>" + reviewTitle + "</td>");
-		sb.append("<td width=\"45%\">" + reviewText + "</td>");
-		sb.append("<td width=\"10%\">" + reviewDate + "</td>");
-		sb.append("<td width=\"5%\">" + isRecom + "</td>");
-		sb.append("<td width=\"5%\">" + overallRating + "</td>");
-		sb.append("</tr>");
-		
-		return sb.toString();
-		
-	}
 	
 	
 
 	
-	
-	
-	
-	/*-------------------------------------handle http request and response--------------------------------*/
+	/*------------------------------actions during request, response------------------------------*/
 	
 	/** check if the request contains error, if there's an error, print it out */
 	protected void checkRequestError(HttpServletRequest request, PrintWriter out) {
@@ -213,6 +80,7 @@ public class BaseServlet extends HttpServlet {
 		}
 	}
 	
+
 	
 	/** redirect to a new url */
 	protected void redirect(HttpServletResponse response, String url) throws IOException {
@@ -221,10 +89,31 @@ public class BaseServlet extends HttpServlet {
 	}
 	
 	
-	/** set session for 1 day */
+	/*---------------------------------------------session----------------------------------------------*/
+	
+	/** check the value of attribute "pass" to know whether the user already login before */
+	protected boolean checkSession(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String pass = (String)session.getAttribute("pass");
+		if(pass != null && pass.equals("ok")){
+			return true;
+		}
+		return false;
+	}
+	
+	
+	/** get the value of attribute "username" in session*/
+	protected String getSessionUsername(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String username = (String) session.getAttribute("username");
+		return username;
+	}
+	
+	
+	/** set session and maximum idle interval is 1 hour */
 	protected void setSession(HttpServletRequest request, String username) {
 		HttpSession session = request.getSession();
-		session.setMaxInactiveInterval(24*60*60);
+		session.setMaxInactiveInterval(60*60);
 		session.setAttribute("username", username);
 		session.setAttribute("pass", "ok");
 	}
@@ -232,7 +121,7 @@ public class BaseServlet extends HttpServlet {
 
 	
 	
-	/*---------------------------------------------Cookies--------------------------------------------------*/
+	/*------------------------------------------------Cookies--------------------------------------------------*/
 	
 	
 	
@@ -274,7 +163,7 @@ public class BaseServlet extends HttpServlet {
 	
 	
 	
-	/** Clear a particular cookie - */
+	/** Clear a particular cookie */
 	protected void clearCookie(String cookieName, HttpServletResponse response) {
 		Cookie cookie = new Cookie(cookieName, null);
 		cookie.setMaxAge(0);
@@ -286,7 +175,7 @@ public class BaseServlet extends HttpServlet {
 	
 	
 	
-	
+	/*---------------------------------------------get status message-----------------------------------------------*/
 	
 	/** get status message with errorName */
 	protected String getStatusMessage(String errorName) {

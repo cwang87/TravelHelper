@@ -12,6 +12,16 @@ public class Address {
 	private double longitude;
 	private double latitude;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param ci
+	 * @param st
+	 * @param str
+	 * @param c
+	 * @param lat
+	 * @param lon
+	 */
 	public Address(String ci, String st, String str, String c, double lat, double lon) {
 		country = c;
 		city = ci;

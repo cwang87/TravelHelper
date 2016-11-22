@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 public class HomeServlet extends BaseServlet {
 	
 	
+	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -23,9 +24,13 @@ public class HomeServlet extends BaseServlet {
 		PrintWriter out = response.getWriter();
 		
 		checkRequestError(request, out);
-
-		getBody(out); 
 		
+		if(checkSession(request)){
+			redirect(response, "/user/account");
+		}else{
+			getBody(out); 
+		}
+
 		finishResponse(response);
 	}
 
@@ -38,13 +43,13 @@ public class HomeServlet extends BaseServlet {
 		assert out != null;
 		
 		out.println("<p style=\"font-size: 25pt;\">");
-		out.println("Welcome to this wonderful website!<br><br>");
+		out.println("Welcome to Hotel Discover Channel!<br><br>");
 		out.println("</p>");
 		
-		out.println("Please choose: ");
+		out.println("Here you can: ");
 		out.println("<button type=\"button\" onclick=\"{location.href='/user/register'}\">Register</button>");
 		out.println("<button type=\"button\" onclick=\"{location.href='/user/login'}\">Login</button>");
-		out.println("<button type=\"button\" onclick=\"{location.href='/hotels'}\">Search</button>");
+		out.println("<button type=\"button\" onclick=\"{location.href='/hotels'}\">View Hotels</button>");
 		out.println("<p><br><br><br><br><br></p>");
 	}
 	

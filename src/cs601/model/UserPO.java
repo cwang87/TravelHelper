@@ -11,6 +11,17 @@ public class UserPO {
 	private String usersalt;
 	private String password;
 	
+	
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param userId
+	 * @param username
+	 * @param usersalt
+	 * @param hashedpw
+	 */
+	
 	public UserPO( int userId,String username, String usersalt, String hashedpw) {
 		this.userId = userId;
 		this.username = username;
@@ -18,6 +29,9 @@ public class UserPO {
 		this.password = hashedpw;
 	}
 
+	
+	
+	
 	
 	// getters
 	public int getUserId(){
@@ -36,21 +50,6 @@ public class UserPO {
 		return password;
 	}
 
-	
-	/* setters
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public void setHasedSalt(String hasedSalt) {
-		this.hasedSalt = hasedSalt;
-	}
-
-	public void setHasedPwSalt(String hasedPwSalt) {
-		this.hasedPwSalt = hasedPwSalt;
-	}
-	
-	*/
 	
 	
 	

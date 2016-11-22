@@ -13,7 +13,18 @@ public class AddressPO {
 	private double lon;
 
 	
-
+	
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param city
+	 * @param state
+	 * @param strAddr
+	 * @param country
+	 * @param lat
+	 * @param lon
+	 */
 	public AddressPO(String city, String state, String strAddr, String country, double lat, double lon) {
 		super();
 		this.city = city;
@@ -24,6 +35,10 @@ public class AddressPO {
 		this.lon = lon;
 	}
 
+	
+	
+	
+	
 
 	/**
 	 * return an address string in the format: streetAddr, city, state, country
@@ -85,39 +100,5 @@ public class AddressPO {
 	
 	
 
-	
-
-	/*setters
-
-	public void setStreetAddress(String streetAddress) {
-		this.streetAddress = streetAddress;
-	}
-
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
-	}
-
-
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
-	}
-
-	*/
 	
 }

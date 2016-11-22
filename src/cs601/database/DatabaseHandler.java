@@ -6,17 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.jetty.webapp.DiscoveredAnnotation;
-
-import cs601.dao.DAO;
-import cs601.dao.DBConnector;
 import cs601.hotelapp.HotelDataBuilder;
 import cs601.hotelapp.ThreadSafeHotelData;
-import cs601.service.UserService;
+import cs601.sqlHelper.SqlHelper;
+import cs601.tablesHandler.UsersHandler;
+import cs601.sqlHelper.DBConnector;
 import cs601.util.Status;
 
 /**
@@ -28,6 +25,8 @@ public class DatabaseHandler {
 
 	/* Makes sure only one database handler is instantiated. */
 	private static DatabaseHandler dbhandler = new DatabaseHandler();
+	
+	private static UsersHandler usersHandler = UsersHandler.getInstance();
 	
 	private static ThreadSafeHotelData hotelData;
 	private static HotelDataBuilder builder;
@@ -90,26 +89,30 @@ public class DatabaseHandler {
 	
 	/*-------------------------------------------Create Tables-------------------------------------------------*/
 	
-	/** to create tables for database. */
+	/** create table - users */
 	public Status createUsers(){
 		Status status = Status.CREATE_FAILED;
-		if(DAO.executeUpdate(CREATE_USERS_SQL) ){
+		if(SqlHelper.executeUpdate(CREATE_USERS_SQL) ){
 			status = Status.OK;
 		}
 		return status;
 	}
 	
+	
+	/** create table - hotels */
 	public Status createHotels(){
 		Status status = Status.CREATE_FAILED;
-		if(DAO.executeUpdate(CREATE_HOTELS_SQL) ){
+		if(SqlHelper.executeUpdate(CREATE_HOTELS_SQL) ){
 			status = Status.OK;
 		}
 		return status;
 	}
 	
+
+	/** create table - reviews */
 	public Status createReviews(){
 		Status status = Status.CREATE_FAILED;
-		if(DAO.executeUpdate(CREATE_REVIEWS_SQL) ){
+		if(SqlHelper.executeUpdate(CREATE_REVIEWS_SQL) ){
 			status = Status.OK;
 		}
 		return status;
@@ -123,7 +126,7 @@ public class DatabaseHandler {
 		
 		List<String> hotelList = hotelData.getHotels();
 		
-		Connection ct = DAO.getConnection();
+		Connection ct = SqlHelper.getConnection();
 		
 		for (String hotelId : hotelList) {
 			hotelData.writeHotel(ct, INSERT_HOTELINFO_SQL, hotelId);
@@ -148,7 +151,7 @@ public class DatabaseHandler {
 		//used to check duplicate hotelIds
 		List<String> checking = new ArrayList<>();
 		
-		Connection ct = DAO.getConnection();
+		Connection ct = SqlHelper.getConnection();
 
 		for (String hotelId : hotelList) {
 			if (!checking.contains(hotelId)) {
@@ -168,20 +171,19 @@ public class DatabaseHandler {
 	
 	/*-------------------------------------------register zombie users-------------------------------------*/
 	
-	/** register users in json files with uniform password "123456" */
+	/** register users(except for the anonymous ones) in json files with password in the following form:
+	 * "username + 123456 + *(special character)"
+	 */
 	public void registerZusers(){
 		
-		UserService userService = UserService.getInstance();
-		
-		String password = "123456";
+		String password = "123456*";
 		Set<String> username = hotelData.getUsernames();
 		
-		Iterator<String> itr = username.iterator();
-		
-		while(itr.hasNext()){
-			userService.registerUser(itr.next(), password);
+		for(String name: username){
+			if(name != "anonymous"){
+				usersHandler.registerUser(name, name+password);
+			}
 		}
-		
 	}
 	
 	
@@ -191,7 +193,7 @@ public class DatabaseHandler {
 	public void addUserIdCol(){
 		
 		String sql = "ALTER TABLE reviews ADD userId INTEGER NOT NULL;";
-		DAO.executeUpdate(sql);
+		SqlHelper.executeUpdate(sql);
 	}
 	
 	
@@ -214,12 +216,12 @@ public class DatabaseHandler {
 				String userId = Integer.toString(userid);
 				String sql = prepareUserIdSQL(userId, reviewId);
 				
-				DAO.executeUpdate(sql);
+				SqlHelper.executeUpdate(sql);
 			}
 		} catch (SQLException e) {
 			System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
 		}finally {
-			DAO.close(DAO.getRs(), DAO.getSt(), DAO.getCt());
+			SqlHelper.close(SqlHelper.getRs(), SqlHelper.getSt(), SqlHelper.getCt());
 		}
 	}
 	

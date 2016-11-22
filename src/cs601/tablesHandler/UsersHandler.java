@@ -1,0 +1,259 @@
+package cs601.tablesHandler;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import cs601.sqlHelper.SqlHelper;
+import cs601.util.Status;
+import cs601.util.Tools;
+
+/**
+ * Handles all database-related actions about Table "users", including register and query.
+ * Uses singleton design pattern.
+ */
+
+public class UsersHandler {
+
+	private static UsersHandler userService = new UsersHandler();
+
+	private Random random;
+
+	/*---------------------------------------------User Register SQL------------------------------------------*/
+	
+	private static final String REGISTER_SQL = "INSERT INTO users (username, usersalt, password) VALUES (?, ?, ?);";
+	
+	/*---------------------------------------------User Login SQL----------------------------------------------*/
+	
+	private static final String AUTH_SQL = "SELECT username FROM users WHERE username = ? AND password = ? ;";
+	
+	/*---------------------------------------------Query SQL---------------------------------------------------*/
+	
+	private static final String USERID_SQL = "SELECT userId FROM users WHERE username = ? ;";
+	
+	private static final String USER_SQL = "SELECT username FROM users WHERE username = ?";
+	
+	private static final String SALT_SQL = "SELECT usersalt FROM users WHERE username = ? ;";
+
+	
+
+	
+	
+	
+	
+	/* private constructor to keep singleton */
+	private UsersHandler() {
+		random = new Random(System.currentTimeMillis());
+	}
+	
+	
+	
+	
+	
+	/*-----------------------------------------get Singleton Instance------------------------------------------*/
+	
+	/** Gets the single instance of the database handler. */
+	public static UsersHandler getInstance() {
+		return userService;
+	}
+
+	
+	
+	
+	
+	/*---------------------------------------------Register users--------------------------------------------------*/
+	
+	/**
+	 * Registers a new user, placing the username, password hash, and salt into
+	 * the database if the username does not already exist.
+	 */
+	
+	public Status registerUser(String newuser, String newpass) {
+		
+		Status status = Status.ERROR;
+		
+		/* make sure users have input both username and password while registering */
+		if (Tools.isBlank(newuser) || Tools.isBlank(newpass)) {
+			status = Status.INVALID_REGISTER;
+			System.out.println(status);
+			return status;
+		}
+		
+		/* check duplicate users */
+		status = duplicateUser(newuser);
+		if(status != Status.OK){
+			return status;
+		}
+		
+		/* check whether the input password meet our set requirements */
+		status = validatePassword(newpass);
+		if(status != Status.OK){
+			return status;
+		}
+		
+		/* generate hashed password+salt, and store user's info in database */
+		// generate salt
+		byte[] saltBytes = new byte[16];
+		random.nextBytes(saltBytes);
+
+		// get hashed salt
+		String usersalt = Tools.encodeHex(saltBytes, 32);
+
+		// get hashed password
+		String passhash = Tools.getHash(newpass, usersalt);
+
+		String[] parameters = { newuser.toLowerCase(), usersalt, passhash };
+		SqlHelper.executeUpdate(REGISTER_SQL, parameters);
+		status = Status.OK;
+
+		
+		return status;
+	}
+	
+	
+	
+	
+	/** check if a given password meet our set requirements. */
+	public Status validatePassword(String newpass){
+		Status status = Status.ERROR;
+		
+		newpass = newpass.trim();
+		
+		//check the requirements: at least 6 characters, at least one digit and one special character
+		String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[@#$%^&+=~*])(?=\\S+$).{6,}$";
+		
+		Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+		Matcher matcher = pattern.matcher(newpass);
+		if(matcher.matches()){
+			status = Status.OK;
+			return status;
+		}else{
+			status = Status.INVALID_PASSWORD;
+			return status;
+		}
+	}
+	
+	/*---------------------------------------------Login users--------------------------------------------------*/
+	
+
+	
+	/** login a user if both username and password match the record in users table */
+	
+	public Status loginUser(String username, String password){
+		Status status = Status.ERROR;
+		username = username.trim();
+		password = password.trim();
+
+		// check if leave any field blank
+		if(Tools.isBlank(username) || Tools.isBlank(password)){
+			status = Status.INVALID_LOGIN;
+			return status;
+			
+		// check if the user exists
+		}else if(duplicateUser(username) != Status.DUPLICATE_USER){
+			status = Status.INVALID_USER;
+			return status;
+			
+		}else {
+			String hashedPW = Tools.getHash(password, getSalt(username));
+			String[] parameters = {username, hashedPW};
+			ResultSet rs = SqlHelper.executeQuery(AUTH_SQL, parameters);
+			try {
+				if (rs.next()){
+					status = Status.OK;
+				}else{
+					status = Status.INVALID_LOGIN;
+				}
+			} catch (SQLException e) {
+				System.out.println(Status.SQL_EXCEPTION + e.getMessage());
+			}finally {
+				SqlHelper.close(SqlHelper.getRs(), SqlHelper.getPs(), SqlHelper.getCt());
+			}
+			return status;
+		}
+		
+	}
+	
+	
+	/*---------------------------------------check whether a given user already exist-------------------------------*/	
+	
+	/** check if a given user already exists in the database. */
+	private Status duplicateUser(String user) {
+
+		Status status = Status.ERROR;
+		
+		ResultSet rs = SqlHelper.executeQuery(USER_SQL, user.trim().toLowerCase());
+		
+		try {
+			if(rs.next()){
+				status = Status.DUPLICATE_USER;
+			}else{
+				status = Status.OK;
+			}
+		} catch (SQLException e) {
+			System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
+			e.printStackTrace();
+		}finally {
+			SqlHelper.close(SqlHelper.getRs(), SqlHelper.getPs(), SqlHelper.getCt());
+		}
+			
+		return status;
+	}
+	
+	
+	
+	/*---------------------------------------get info from "users" with query SQL-------------------------------*/
+	
+	public int getUserId(String username){
+		
+		int userId = 0;
+		
+		ResultSet rs = SqlHelper.executeQuery(USERID_SQL, username.trim().toLowerCase());
+		try {
+			if(rs.next()){
+				userId = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
+			e.printStackTrace();
+		}finally {
+			SqlHelper.close(SqlHelper.getRs(), SqlHelper.getPs(), SqlHelper.getCt());
+		}
+		
+		return userId;
+	}
+	
+	
+	
+
+	
+	/** Gets the salt for a specific user */
+	private String getSalt(String user) {
+		
+		String salt = null;
+		
+		ResultSet rs = SqlHelper.executeQuery(SALT_SQL, user.trim().toLowerCase());
+		
+		try {
+			if(rs.next()){
+				salt = rs.getString("usersalt");
+			}
+		} catch (SQLException e) {
+			System.out.println(Status.SQL_EXCEPTION + e.getMessage());
+		}finally {
+			SqlHelper.close(SqlHelper.getRs(), SqlHelper.getPs(), SqlHelper.getCt());
+		}
+
+		return salt;
+	}
+
+	
+	
+	
+	
+	
+	
+	
+}

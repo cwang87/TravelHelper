@@ -10,6 +10,18 @@ public class Hotel implements Comparable<Hotel> {
 	private String hotelName;
 	private Address hotelAddress;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param id
+	 * @param hName
+	 * @param city
+	 * @param state
+	 * @param streetAddress
+	 * @param country
+	 * @param lat
+	 * @param lon
+	 */
 	public Hotel(String id, String hName, String city, String state, String streetAddress, String country, double lat,
 			double lon) {
 		hotelId = id;

@@ -11,6 +11,19 @@ public class HotelPO implements Comparable<HotelPO> {
 	private AddressPO hotelAddress;
 	
 
+	/**
+	 * Constructor
+	 * 
+	 * @param hotelId
+	 * @param hotelName
+	 * @param city
+	 * @param state
+	 * @param strAddr
+	 * @param country
+	 * @param lat
+	 * @param lon
+	 */
+	
 	public HotelPO(String hotelId, String hotelName, String city, String state, String strAddr, String country, double lat, double lon) {
 		this.hotelId = hotelId;
 		this.hotelName = hotelName;
@@ -79,21 +92,7 @@ public class HotelPO implements Comparable<HotelPO> {
 	}
 
 	
-//	/* ----------------------------------------*/
-//	 
-//	public void setHotelId(String hotelId) {
-//		this.hotelId = hotelId;
-//	}
-//
-//	public void setHotelName(String hotelName) {
-//		this.hotelName = hotelName;
-//	}
-//
-//	public void setHotelAddress(Address hotelAddress) {
-//		this.hotelAddress = hotelAddress;
-//	}
-//	
-	
+
 	
 }
 

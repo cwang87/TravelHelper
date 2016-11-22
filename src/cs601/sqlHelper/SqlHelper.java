@@ -1,4 +1,4 @@
-package cs601.dao;
+package cs601.sqlHelper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,11 +9,11 @@ import java.sql.Statement;
 import cs601.util.Status;
 
 /**
- * A class to provide basic operations towards database, 
- * including: connect database, close database, do CRUD to database (query and update)
+ * A class - provide static methods to perform general sql operations on mySQL database, 
+ * including: connect database, close database, test database connection, update and query database.
  */
 
-public class DAO {
+public class SqlHelper {
 
 	private static DBConnector connector = new DBConnector();
 	private static Connection ct = null;
@@ -24,10 +24,10 @@ public class DAO {
 	
 	
 	
-	/*----------------------------------Methods to create and test a connection ------------------------------------------*/
+	/*----------------------------------Methods to create and test a connection --------------------------------*/
 	
 
-	/** A method to get connection. */
+	/** A method to get connection from dabatase. */
 	public static Connection getConnection() {
 		
 		try {
@@ -39,15 +39,68 @@ public class DAO {
 	}
 	
 	
-	/** A method to test connection. */
+	/** A method used to test connection to database before any further db operation. */
 	public static boolean testConnection(){
 		return connector.testConnection();
 	}
 	
 	
 	
-	/*----------------------------------Methods to close resourses----------------------------------------------*/
+	/*----------------------------------Overload Method to close resourses--------------------------------------*/
 
+	
+	
+	/** A method - close database connection resources
+	 * including PreparedStatement and Connection after an update */
+	public static void close(PreparedStatement ps, Connection ct) {
+		
+		if (ps != null) {
+			try {
+				ps.close();
+			} catch (SQLException e) {
+				System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
+			}
+			ps = null;
+		}
+
+		if (ct != null) {
+			try {
+				ct.close();
+			} catch (SQLException e) {
+				System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
+			}
+			ct = null;
+		}
+
+	}
+
+	/** A method - close database connection resources
+	 * including Statement and Connection after an update */
+	public static void close(Statement st, Connection ct) {
+
+		if (st != null) {
+			try {
+				st.close();
+			} catch (SQLException e) {
+				System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
+			}
+			st = null;
+		}
+
+		if (ct != null) {
+			try {
+				ct.close();
+			} catch (SQLException e) {
+				System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
+			}
+			ct = null;
+		}
+
+	}
+	
+	
+	/** A method - close database connection resources
+	 * including ResultSet, PreparedStatement and Connection after a query */
 	public static void close(ResultSet rs, PreparedStatement ps, Connection ct) {
 		if (rs != null) {
 			try {
@@ -79,6 +132,8 @@ public class DAO {
 	}
 
 	
+	/** A method - close database connection resources
+	 * including ResultSet, Statement and Connection after a query*/
 	public static void close(ResultSet rs, Statement st, Connection ct) {
 		if (rs != null) {
 			try {
@@ -109,60 +164,11 @@ public class DAO {
 
 	}
 	
-
-	public static void close(PreparedStatement ps, Connection ct) {
-		
-		if (ps != null) {
-			try {
-				ps.close();
-			} catch (SQLException e) {
-				System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
-			}
-			ps = null;
-		}
-
-		if (ct != null) {
-			try {
-				ct.close();
-			} catch (SQLException e) {
-				System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
-			}
-			ct = null;
-		}
-
-	}
-
-	
-	public static void close(Statement st, Connection ct) {
-
-		if (st != null) {
-			try {
-				st.close();
-			} catch (SQLException e) {
-				System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
-			}
-			st = null;
-		}
-
-		if (ct != null) {
-			try {
-				ct.close();
-			} catch (SQLException e) {
-				System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
-			}
-			ct = null;
-		}
-
-	}
 	
 	
+	/*----------------------------------Overload Methods to executeUpdate()----------------------------------------------*/
 	
-	
-	
-	
-	/*----------------------------------Methods to executeUpdate()----------------------------------------------*/
-	
-	/** A method - to execute one add/update/delete statement without parameters */
+	/** A method - to execute one add/update/delete statement */
 	
 	public static boolean executeUpdate(String sql){
 		
@@ -186,7 +192,12 @@ public class DAO {
 	}
 	
 	
-	/** A method - to execute one add/update/delete sql	 */
+	
+	
+	
+	
+	
+	/** A method - to execute one add/update/delete sql with parameters*/
 	
 	public static boolean executeUpdate(String sql, String[] parameters) {
 		
@@ -218,84 +229,38 @@ public class DAO {
 
 	
 	
-	/** A method - to execute multiple add/update/delete sql at a time. */
-
-	public static boolean executeUpdate(String[] sql, String[][] parameters) {
-		
-		boolean okey = false;
-		
-		ct = getConnection();
-		
-		try {
-			// prevent sql from executing one by one
-			ct.setAutoCommit(false);
-
-			for (int i = 0; i < sql.length; i++) {
-				if (parameters[i] != null) {
-					ps = ct.prepareStatement(sql[i]);
-					for (int j = 0; j < parameters[i].length; j++) {
-						ps.setString(j + 1, parameters[i][j]);
-					}
-					ps.executeUpdate();
-					ps.close();
-				}
-			}
-
-			ct.commit();
-			
-			okey = true;
-			
-		} catch (SQLException e) {
-			System.out.println(Status.SQL_EXCEPTION);
-			try {
-				ct.rollback();
-			} catch (SQLException e1) {
-				System.out.println(Status.SQL_EXCEPTION);
-			}
-		} finally {
-			try {
-				ct.close();
-			} catch (SQLException e) {
-				System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
-			}
-		}
-		
-		return okey;
-	}
 	
 	
 	
+	/*----------------------------------Overload Methods to executeQuery()----------------------------------------------*/
 	
 	
 	
-	/*----------------------------------Methods to executeQuery()----------------------------------------------*/
+	/** A method - to execute a sql query*/
 	
-	
-	
-	public static ResultSet executeQuery(String sql, String[] parameters){
+	public static ResultSet executeQuery(String sql){
 		
 		ct = getConnection();
 		
 		try {
-			ps = ct.prepareStatement(sql);
-			
-			if(parameters != null){
-				for (int i = 0; i < parameters.length; i++) {
-					ps.setString(i+1, parameters[i]);
-				}
-			}
-			
-			rs = ps.executeQuery();
-			
+			st = ct.createStatement();
+			rs = st.executeQuery(sql);
 		} catch (SQLException e) {
 			System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
 		}
-		
+			
 		return rs;
 	}
 
 	
 	
+	
+	
+	
+	
+	
+	
+	/** A method - to execute a sql query with only one parameter*/
 	
 	public static ResultSet executeQuery(String sql, String parameter){
 		
@@ -319,44 +284,71 @@ public class DAO {
 	
 	
 	
-	public static ResultSet executeQuery(String sql){
+	
+
+	
+	
+	
+	
+	/** A method - to execute a sql query with a parameter array*/
+	
+	public static ResultSet executeQuery(String sql, String[] parameters){
 		
 		ct = getConnection();
 		
 		try {
-			st = ct.createStatement();
-			rs = st.executeQuery(sql);
+			ps = ct.prepareStatement(sql);
+			
+			if(parameters != null){
+				for (int i = 0; i < parameters.length; i++) {
+					ps.setString(i+1, parameters[i]);
+				}
+			}
+			
+			rs = ps.executeQuery();
+			
 		} catch (SQLException e) {
 			System.out.println(Status.SQL_EXCEPTION + ": " + e.getMessage());
 		}
-			
+		
 		return rs;
 	}
+	
+	
+	
+	
+	
 
 
 
 	
 	
-	/*----------------------------------getters to close resourses----------------------------------------------*/
+	/*----------------------------------getters used to close resourses----------------------------------------------*/
 	
+	/** get Connection **/
 	public static Connection getCt() {
 		return ct;
 	}
 
-
+	/** get PreparedStatement **/
 	public static PreparedStatement getPs() {
 		return ps;
 	}
 
-
+	/** get Statement **/
 	public static Statement getSt() {
 		return st;
 	}
 
-
+	/** get ResultSet **/
 	public static ResultSet getRs() {
 		return rs;
 	}
+	
+	
+	
+	
+	
 	
 	
 	

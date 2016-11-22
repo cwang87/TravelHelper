@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import cs601.controller.main.BaseServlet;
-import cs601.service.UserService;
+import cs601.tablesHandler.UsersHandler;
 import cs601.util.Status;
 
 
@@ -19,18 +19,24 @@ import cs601.util.Status;
 @SuppressWarnings("serial")
 public class RegisterServlet extends BaseServlet {
 	
-	private static final UserService userService = UserService.getInstance();
+	private static final UsersHandler userService = UsersHandler.getInstance();
 	
 
+	
+	/**
+	 * display form for users to register
+	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		prepareResponse("Register New User", response);
+		
 		PrintWriter out = response.getWriter();
 		
 		checkRequestError(request, out);
 		
 		displayForm(out); 
+		
 		finishResponse(response);
 	}
 
@@ -39,7 +45,11 @@ public class RegisterServlet extends BaseServlet {
 	
 	
 	
-	
+	/** Get register info from the form submitted by user.
+	 * If username or password is invalid, user will be directed back to register page and informed error status.
+	 * If both usernam and password are valid, user will register successfully and be directed to account page.
+	 * Meanwhile, database will be updated.
+	 */
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		prepareResponse("Register New User", response);
@@ -75,10 +85,10 @@ public class RegisterServlet extends BaseServlet {
 		assert out != null;
 
 		out.println("<p style=\"font-size: 18pt;\">");
-		out.println("Please register<br><br>");
+		out.println("Please register here<br><br>");
 		out.println("</p>");
 		
-		out.println("<form action=\"/user/register\" method=\"post\">"); // the form will be processed by POST
+		out.println("<form action=\"/user/register\" method=\"post\">"); 
 		out.println("<table border=\"0\">");
 		out.println("\t<tr>");
 		out.println("\t\t<td>Username:</td>");
@@ -91,7 +101,7 @@ public class RegisterServlet extends BaseServlet {
 		
 		out.println("\t<tr>");
 		out.println("\t\t<td><input type=\"submit\" value=\"Register\"></td>");
-		out.println("\t\t<td><button type=\"button\" onclick=\"{location.href='/user/login'}\">login</button></td>");
+		out.println("\t\t<td><button type=\"button\" onclick=\"{location.href='/home'}\">Back to Home Page</button></td>");
 		out.println("</table>");
 		out.println("</form>");
 	}

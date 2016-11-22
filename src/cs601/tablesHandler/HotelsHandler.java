@@ -1,17 +1,17 @@
-package cs601.service;
+package cs601.tablesHandler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import cs601.dao.DAO;
 import cs601.model.HotelPO;
+import cs601.sqlHelper.SqlHelper;
 import cs601.util.Status;
 
-public class HotelService {
+public class HotelsHandler {
 
-	private static HotelService hotelService = new HotelService();
+	private static HotelsHandler hotelService = new HotelsHandler();
 	private static List<String> hotelList;
 	
 	
@@ -28,25 +28,32 @@ public class HotelService {
 
 	
 	
-	private HotelService() {
+	private HotelsHandler() {
 		hotelList = new ArrayList<>();
 	}
 	
 	
 	
 	
-	public static HotelService getInstance() {
+	/*-----------------------------------------get Singleton Instance------------------------------------------*/
+	
+	/** Gets the single instance of the database handler. */
+	
+	public static HotelsHandler getInstance() {
 		return hotelService;
 	}
 	
 	
 	
 	
+	
+	/*-----------------------------------------methods to query table "hotels"---------------------------------*/
+	
 	/** check if a given hotel has reviews */
 	public boolean hasReviewHotelId(String hotelId){
 		boolean hasReview = false;
 		
-		ResultSet rs = DAO.executeQuery(HAS_REVIEW_HOTELID, hotelId);
+		ResultSet rs = SqlHelper.executeQuery(HAS_REVIEW_HOTELID, hotelId);
 		
 		try {
 			while(rs.next()){
@@ -55,11 +62,15 @@ public class HotelService {
 		} catch (SQLException e) {
 			System.out.println(Status.SQL_EXCEPTION + e.getMessage());
 		}finally {
-			DAO.close(DAO.getRs(), DAO.getPs(), DAO.getCt());
+			SqlHelper.close(SqlHelper.getRs(), SqlHelper.getPs(), SqlHelper.getCt());
 		}
 		
 		return hasReview;
 	}
+	
+	
+	
+	
 	
 	
 	
@@ -67,7 +78,7 @@ public class HotelService {
 	public boolean hasReviewUsername(String username){
 		boolean hasReview = false;
 		
-		ResultSet rs = DAO.executeQuery(HAS_REVIEW_USERNAME, username);
+		ResultSet rs = SqlHelper.executeQuery(HAS_REVIEW_USERNAME, username);
 		
 		try {
 			while(rs.next()){
@@ -76,11 +87,13 @@ public class HotelService {
 		} catch (SQLException e) {
 			System.out.println(Status.SQL_EXCEPTION + e.getMessage());
 		}finally {
-			DAO.close(DAO.getRs(), DAO.getPs(), DAO.getCt());
+			SqlHelper.close(SqlHelper.getRs(), SqlHelper.getPs(), SqlHelper.getCt());
 		}
 		
 		return hasReview;
 	}
+	
+	
 	
 	
 	
@@ -90,7 +103,7 @@ public class HotelService {
 	/** get a list of all hotelIds */
 	public List<String> getHotelList(){
 		
-		ResultSet rs = DAO.executeQuery(SEARCH_HOTELID_COLUMN);
+		ResultSet rs = SqlHelper.executeQuery(SEARCH_HOTELID_COLUMN);
 		
 		try {
 			while(rs.next()){
@@ -100,11 +113,17 @@ public class HotelService {
 		}catch (SQLException e) {
 			System.out.println(Status.SQL_EXCEPTION + e.getMessage());
 		}finally {
-			DAO.close(DAO.getRs(), DAO.getSt(), DAO.getCt());
+			SqlHelper.close(SqlHelper.getRs(), SqlHelper.getSt(), SqlHelper.getCt());
 		}
 		
 		return hotelList;
 	}
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -113,7 +132,7 @@ public class HotelService {
 		
 		HotelPO hotelPO = null;
 		
-		ResultSet rs = DAO.executeQuery(SEARCH_HOTEL, hotelId);
+		ResultSet rs = SqlHelper.executeQuery(SEARCH_HOTEL, hotelId);
 		try {
 			while(rs.next()){
 				String hId = rs.getString(1);
@@ -129,7 +148,7 @@ public class HotelService {
 		}catch (SQLException e) {
 			System.out.println(Status.SQL_EXCEPTION + e.getMessage());
 		}finally {
-			DAO.close(DAO.getRs(), DAO.getPs(), DAO.getCt());
+			SqlHelper.close(SqlHelper.getRs(), SqlHelper.getPs(), SqlHelper.getCt());
 		}
 		
 		return hotelPO;
@@ -141,10 +160,13 @@ public class HotelService {
 	
 	
 	
+	
+	
+	
 	/** given hotelId, return the average rating based on all reviews of it in db */
 	public double getAvgRating(String hotelId){
 		
-		ResultSet rs = DAO.executeQuery(AVG_RATING, hotelId);
+		ResultSet rs = SqlHelper.executeQuery(AVG_RATING, hotelId);
 		
 		try {
 			while(rs.next()){
@@ -156,10 +178,15 @@ public class HotelService {
 			System.out.println(Status.SQL_EXCEPTION + e.getMessage());
 			return 0;
 		}finally {
-			DAO.close(DAO.getRs(), DAO.getPs(), DAO.getCt());
+			SqlHelper.close(SqlHelper.getRs(), SqlHelper.getPs(), SqlHelper.getCt());
 		}
 		
 	}
+	
+	
+	
+	
+	
 	
 	
 	

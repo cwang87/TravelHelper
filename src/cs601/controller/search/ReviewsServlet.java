@@ -6,13 +6,12 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import cs601.controller.main.BaseServlet;
 import cs601.model.HotelPO;
 import cs601.model.ReviewPO;
-import cs601.service.HotelService;
-import cs601.service.ReviewService;
+import cs601.tablesHandler.HotelsHandler;
+import cs601.tablesHandler.ReviewsHandler;
 import cs601.util.Tools;
 
 
@@ -21,8 +20,8 @@ import cs601.util.Tools;
 @SuppressWarnings("serial")
 public class ReviewsServlet extends BaseServlet {
 	
-	private static final ReviewService reviewService = ReviewService.getInstance();
-	private static final HotelService hotelService = HotelService.getInstance();
+	private static final ReviewsHandler reviewService = ReviewsHandler.getInstance();
+	private static final HotelsHandler hotelService = HotelsHandler.getInstance();
 	
 	
 	
@@ -30,33 +29,27 @@ public class ReviewsServlet extends BaseServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		String hotelId = request.getParameter("hotelId");
+		prepareResponse("Review List", response);
+		
 		PrintWriter out = response.getWriter();
 
 		checkRequestError(request, out);
 		
-		prepareRespTbl("Review List", response);
+		String hotelId = request.getParameter("hotelId");
 		
 		
-		HttpSession session = request.getSession();
-		String pass = (String)session.getAttribute("pass");
-		if(pass == null){
-			session.setAttribute("pass", "no");
-			pass = (String)session.getAttribute("pass");
-		}
-		
-		if(!pass.equals("ok")){
-			out.println("Welcome!  ");
+		if(!checkSession(request)){
+			out.println("Welcome to Hotel Discover Channel!  ");
 			out.println("<button type=\"button\" onclick=\"{location.href='/user/register'}\">Register</button>");
 			out.println("<button type=\"button\" onclick=\"{location.href='/user/login'}\">Login</button>");
 			out.println("<button type=\"button\" onclick=\"{location.href='/hotels'}\">Back to Search</button>");
 			
 		}else{
-			String username = (String) session.getAttribute("username");
-			out.println("Welcome!  " + username);
+			String username = getSessionUsername(request);
+			out.println("Hello!  " + username);
 			out.println("<button type=\"button\" onclick=\"{location.href='/user/account'}\">My Account</button>");
 			out.println("<button type=\"button\" onclick=\"{location.href='/user/logout'}\">Logout</button>");
-			out.println("<button type=\"button\" onclick=\"{location.href='/hotels'}\">Back to Search</button>");
+			out.println("<button type=\"button\" onclick=\"{location.href='/hotels'}\">Back to Hotels</button>");
 		}
 		
 		createTbl(out, hotelId);		
@@ -65,9 +58,8 @@ public class ReviewsServlet extends BaseServlet {
 	}
 	
 	
+	
 	private void createTbl(PrintWriter out, String hotelId){
-		
-		
 		
 		ArrayList<ReviewPO> reviews = reviewService.searchReviews(hotelId);
 		HotelPO hotel = hotelService.getHotelPO(hotelId);
@@ -80,8 +72,6 @@ public class ReviewsServlet extends BaseServlet {
 		out.println("<p>" + "Average Rating: " + aveRating + "</p>");
 		out.println("<p>" + "Hotel Address: " + hotelAddr + "</p>");
 		out.println("<style>table, th, td {border: 1px solid black;}</style>");
-		out.println("</head>");
-		out.println("<body>");
 		out.println("<table>");
 		
 		//table head
@@ -99,7 +89,7 @@ public class ReviewsServlet extends BaseServlet {
 		for(ReviewPO review: reviews){
 			
 			String oneReview = addReviewTbl(review.getUsername(), review.getReviewTitle(), review.getReviewText(), 
-					Tools.toStringDate1(review.getReviewDate()), Tools.boolToString(review.getIsRecom()), 
+					Tools.toStringDate(review.getReviewDate()), Tools.bool2yn(review.getIsRecom()), 
 					Integer.toString(review.getOverallRating()));	
 			sb.append(oneReview);
 		}
@@ -109,6 +99,24 @@ public class ReviewsServlet extends BaseServlet {
 	}
 	
 	
+	
+	private String addReviewTbl(String username, String reviewTitle, 
+			String reviewText, String reviewDate, String isRecom, String overallRating){
+		
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append("<tr>");
+		sb.append("<td>" + username + "</td>");
+		sb.append("<td>" + reviewTitle + "</td>");
+		sb.append("<td width=\"45%\">" + reviewText + "</td>");
+		sb.append("<td>" + reviewDate + "</td>");
+		sb.append("<td>" + isRecom + "</td>");
+		sb.append("<td>" + overallRating + "</td>");
+		sb.append("</tr>");
+		
+		return sb.toString();
+		
+	}
 	
 	
 

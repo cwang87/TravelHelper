@@ -3,78 +3,117 @@ package cs601.controller.user;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import cs601.controller.main.BaseServlet;
+import cs601.controller.main.JettyWebServer;
 import cs601.model.HotelPO;
-import cs601.service.HotelService;
-import cs601.service.ReviewService;
-import cs601.service.UserService;
+import cs601.tablesHandler.HotelsHandler;
+import cs601.tablesHandler.ReviewsHandler;
+import cs601.tablesHandler.UsersHandler;
 import cs601.util.Tools;
 
+
+/**
+ * A servlet - handle "add review" request
+ */
 @SuppressWarnings("serial")
 public class AddReviewServlet extends BaseServlet {
 	
-	private static final ReviewService reviewService = ReviewService.getInstance();
-	private static final HotelService hotelService = HotelService.getInstance();
-	private static final UserService userService = UserService.getInstance();
+	private static final ReviewsHandler reviewService = ReviewsHandler.getInstance();
+	private static final HotelsHandler hotelService = HotelsHandler.getInstance();
+	private static final UsersHandler userService = UsersHandler.getInstance();
 	
 	String hotelId = null;
 	
 	
+	/** display a full list of hotels for user to choose and add a review*/
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
+		prepareResponse("Add reviews", response);
+		
 		PrintWriter out = response.getWriter();
+		
 		checkRequestError(request, out);
 		
-		hotelId = request.getParameter("hotelId");
-
 		//check session
-		HttpSession session = request.getSession();
-		String pass = (String)session.getAttribute("pass");
-		if(pass == null){
-			session.setAttribute("pass", "no");
-			pass = (String)session.getAttribute("pass");
+		if(!checkSession(request)){
+			redirect(response, "/user/login");
 		}
 		
+		String username = getSessionUsername(request);
+		hotelId = request.getParameter("hotelId");
 		
-		if(!pass.equals("ok")){
-			redirect(response, "/user/login");
+		if(hotelId == null){
 			
-		}else if(hotelId == null){
-			String username = (String) session.getAttribute("username");
-			prepareRespTbl("Write Review", response);
-			out.println("Welcome!  " + username);
+			out.println("Hello!  " + username);
 			out.println("<button type=\"button\" onclick=\"{location.href='/user/account'}\">My Account</button>");
 			out.println("<button type=\"button\" onclick=\"{location.href='/user/logout'}\">Logout</button>");
-			
-			hotelPickTbl(out);
+			hotelListTbl(out);
 			
 		}else{
-			String username = (String) session.getAttribute("username");
-			prepareRespTbl("Write Review", response);
-			out.println("Welcome!  " + username);
+			out.println("Hello!  " + username);
 			out.println("<button type=\"button\" onclick=\"{location.href='/user/account'}\">My Account</button>");
 			out.println("<button type=\"button\" onclick=\"{location.href='/user/logout'}\">Logout</button>");
-			
-			reviewSubmitForm(out,hotelId);
+			displayForm(out,hotelId);
 		}
+		
 		finishResponse(response);
 		
 	}
 	
 	
 	
-	private void hotelPickTbl(PrintWriter out){
-		out.println("<h3>Choose one hotel to write a review</h3>");
+
+	
+	/** get review info from request and add review info into database.*/
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		
+		prepareResponse("Submit Review", response);
+		
+		PrintWriter out = response.getWriter();
+		
+		checkRequestError(request, out);
+
+		// check session
+		if(!checkSession(request)){
+			redirect(response, "/user/login");
+		}
+		
+		String username = getSessionUsername(request);
+		out.println("Hello!  " + username);
+		out.println("<button type=\"button\" onclick=\"{location.href='/user/account'}\">My Account</button>");
+		out.println("<button type=\"button\" onclick=\"{location.href='/user/logout'}\">Logout</button>");
+
+		// get parameters
+		String reviewTitle = request.getParameter("title");
+		String reviewText = request.getParameter("text");
+		int isRecom = Tools.yn2int(request.getParameter("recom"));
+		int rating = Integer.parseInt(request.getParameter("rating"));
+		int userId = userService.getUserId(username);
+
+		// generate reviewId
+		String date = Tools.getDate2().substring(0, 7);
+		String reviewId = Tools.getUniqueId(date);
+		
+
+		reviewService.addReview(hotelId, reviewId, username.toLowerCase(), reviewTitle, reviewText, isRecom, rating,
+				userId);
+
+		out.println("<p><br>Successfully added one review!</p>");			
+
+		finishResponse(response);
+	}
+		
+	/*-----------------------------Display hotel list for user to choose-------------------------------*/
+	
+	private void hotelListTbl(PrintWriter out){
+		out.println("<h3>Please choose the hotel to be add a review</h3>");
 		out.println("<style>table, th, td {border: 1px solid black;}</style>");
-		out.println("</head>");
-		out.println("<body>");
 		out.println("<table>");
 		
 		//table head
@@ -88,15 +127,34 @@ public class AddReviewServlet extends BaseServlet {
 		
 		for(String hotelId:hotelList){
 			HotelPO hotelPO =  hotelService.getHotelPO(hotelId);
-			addHotelTbl3(out, hotelId, hotelPO.getHotelName(), hotelPO.getHotelAddress().toString());
+			addRow(out, hotelId, hotelPO.getHotelName(), hotelPO.getHotelAddress().toString());
 		}
 		out.println("</table>");
 		
 	}
-	
-	
-	private void reviewSubmitForm(PrintWriter out, String hotelId){
 		
+	
+	private void addRow(PrintWriter out, String hotelId, String hotelName, String hotelAddr){
+		
+		out.println();
+		
+		out.println("<tr>");
+		out.println("<td>" + hotelId + "</td>");
+		
+		out.println("<td>");
+		out.println("<a href=\"http://localhost:" + JettyWebServer.PORT2 + "/user/add_review?hotelId=" + hotelId + "\">");
+		out.println(hotelName + "</a></td>");
+		
+		out.println("<td>" + hotelAddr + "</td>");
+		out.println("</tr>");
+	}
+	
+	
+	
+	
+	/*-----------------------------Display form for user to add review----------------------------------*/
+	
+	private void displayForm(PrintWriter out, String hotelId){
 		
 		HotelPO hotel =  hotelService.getHotelPO(hotelId);
 		
@@ -104,12 +162,7 @@ public class AddReviewServlet extends BaseServlet {
 		
 		out.println("<form action=\"/user/add_review\" method=\"post\">"); 
 		out.println("<table border=\"0\">");
-		
-//		out.println("<tr>");
-//		out.println("<td>Hotel Id: </td>");
-//		out.println("<td><input type=\"radio\" name=\"hotelId\" value=\""+ hotelId +"\">"+ hotelId + "</td>");
-//		out.println("</tr>");
-//		
+				
 		out.println("<tr>");
 		out.println("<td>Recommend: </td>");
 		out.println("<td><input type=\"radio\" name=\"recom\" value=\"YES\">Yes");
@@ -139,73 +192,11 @@ public class AddReviewServlet extends BaseServlet {
 		out.println("<p><input type=\"submit\" value=\"Submit\"></p>");
 		out.println("</form>");
 		
-		
-//		
 	}
 	
 	
 	
 	
-	
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
-		PrintWriter out = response.getWriter();
-		checkRequestError(request, out);
-
-		// check session
-		HttpSession session = request.getSession();
-		String pass = (String) session.getAttribute("pass");
-		if (pass == null) {
-			session.setAttribute("pass", "no");
-			pass = (String) session.getAttribute("pass");
-		}
-
-		if (!pass.equals("ok")) {
-			redirect(response, "/user/login");
-
-		} else {
-			String username = (String) session.getAttribute("username");
-
-			prepareRespTbl("Submit Review", response);
-			out.println("Welcome!  " + username);
-			out.println("<button type=\"button\" onclick=\"{location.href='/user/account'}\">My Account</button>");
-			out.println("<button type=\"button\" onclick=\"{location.href='/user/logout'}\">Logout</button>");
-
-			// add new review to database
-
-			String reviewTitle = request.getParameter("title");
-			String reviewText = request.getParameter("text");
-
-			int isRecom = Tools.YNToInt(request.getParameter("recom"));
-
-			int rating = Integer.parseInt(request.getParameter("rating"));
-
-			// get reviewId
-			Random random = new Random(System.currentTimeMillis());
-			String dateId = getDate2().substring(0, 13);
-			int salt = random.nextInt(888);
-			String reviewId = dateId + Integer.toString(salt);
-
-			
-			
-			int userId = userService.getUserId(username);
-
-			reviewService.addReview(hotelId, reviewId, username.toLowerCase(), reviewTitle, reviewText, isRecom, rating,
-					userId);
-			
-			out.println("<p><br>Add review successfully!</p>");
-			
-			finishResponse(response);
-
-		}
-		
-		
-	}
-		
-		
-		
-		
 		
 
 }

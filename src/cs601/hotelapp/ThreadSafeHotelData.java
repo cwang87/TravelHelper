@@ -33,7 +33,7 @@ public class ThreadSafeHotelData {
 
 	
 	
-	
+	/*--------------------------------------------add hotel and review---------------------------------------------------*/
 	
 	/**
 	 * Create a Hotel given the parameters, and add it to the hotelMap. Only one thread is allowed to write at a time.
@@ -105,6 +105,9 @@ public class ThreadSafeHotelData {
 		return true;
 	}
 	
+	
+	
+	
 	private boolean checkInvalidRating(int rating) {
 		if (rating > 5 || rating < 1){
 			return false;
@@ -118,7 +121,7 @@ public class ThreadSafeHotelData {
 	
 	
 	
-	
+	/*--------------------------------------------get full list from maps---------------------------------------------------*/
 	
 
 	/** A method to get an alphabetized list of the ids of all hotels.  */
@@ -135,11 +138,16 @@ public class ThreadSafeHotelData {
 	}
 	
 	
+	/** A method to get all usernames in reviews map.  */
+	
+	public Set<String> getUsernames(){
+		return username;
+	}
 	
 	
 	
 	
-	
+	/*--------------------------------------------return parameters for SQL---------------------------------------------------*/
 	
 	
 	/** a method to return parameters for loading a hotel information to database. */
@@ -199,7 +207,7 @@ public class ThreadSafeHotelData {
 						pStatement.setString(4, r.getReviewTitle().trim());
 						pStatement.setString(5, r.getReviewText().trim());
 						pStatement.setTimestamp(6, Tools.getTimestamp(r.getReviewDate()));
-						pStatement.setInt(7, Tools.toSQLBoolean(r.getIsRecommended()));
+						pStatement.setInt(7, Tools.bool2int(r.getIsRecommended()));
 						pStatement.setInt(8, r.getOverallRating());
 						pStatement.executeUpdate();
 						
@@ -220,17 +228,10 @@ public class ThreadSafeHotelData {
 	}
 
 	
-	public Set<String> getUsernames(){
-		return username;
-	}
 	
 	
 	
-
-	
-	
-	
-	
+	/*--------------------------------------------to String and other methods---------------------------------------------------*/
 	
 	
 	/** Returns a string representing information about the hotel and all related reviews with the given id. */
