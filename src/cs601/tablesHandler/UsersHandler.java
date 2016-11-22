@@ -33,7 +33,7 @@ public class UsersHandler {
 	
 	private static final String USERID_SQL = "SELECT userId FROM users WHERE username = ? ;";
 	
-	private static final String USER_SQL = "SELECT username FROM users WHERE username = ?";
+	private static final String USER_SQL = "SELECT username FROM users WHERE username = ? ;";
 	
 	private static final String SALT_SQL = "SELECT usersalt FROM users WHERE username = ? ;";
 
@@ -94,14 +94,14 @@ public class UsersHandler {
 		}
 		
 		/* generate hashed password+salt, and store user's info in database */
-		// generate salt
+		// generate salt - a random byte array with length of 16
 		byte[] saltBytes = new byte[16];
 		random.nextBytes(saltBytes);
 
-		// get hashed salt
+		// encode the salt into 32-length-hex String
 		String usersalt = Tools.encodeHex(saltBytes, 32);
 
-		// get hashed password
+		// get hashed password (encoded salt + user-input pw)
 		String passhash = Tools.getHash(newpass, usersalt);
 
 		String[] parameters = { newuser.toLowerCase(), usersalt, passhash };

@@ -2,13 +2,11 @@ package cs601.controller.user;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cs601.controller.main.BaseServlet;
-import cs601.controller.main.JettyWebServer;
 import cs601.model.HotelPO;
 import cs601.tablesHandler.HotelsHandler;
 import cs601.tablesHandler.ReviewsHandler;
@@ -22,9 +20,9 @@ import cs601.util.Tools;
 @SuppressWarnings("serial")
 public class AddReviewServlet extends BaseServlet {
 	
-	private static final ReviewsHandler reviewService = ReviewsHandler.getInstance();
-	private static final HotelsHandler hotelService = HotelsHandler.getInstance();
-	private static final UsersHandler userService = UsersHandler.getInstance();
+	private static final ReviewsHandler reviewsHandler = ReviewsHandler.getInstance();
+	private static final HotelsHandler hotelsHandler = HotelsHandler.getInstance();
+	private static final UsersHandler usersHandler = UsersHandler.getInstance();
 	
 	String hotelId = null;
 	
@@ -94,14 +92,12 @@ public class AddReviewServlet extends BaseServlet {
 		String reviewText = request.getParameter("text");
 		int isRecom = Tools.yn2int(request.getParameter("recom"));
 		int rating = Integer.parseInt(request.getParameter("rating"));
-		int userId = userService.getUserId(username);
+		int userId = usersHandler.getUserId(username);
 
 		// generate reviewId
-		String date = Tools.getDate2().substring(0, 7);
-		String reviewId = Tools.getUniqueId(date);
-		
+		String reviewId = Tools.getUniqueId(username);
 
-		reviewService.addReview(hotelId, reviewId, username.toLowerCase(), reviewTitle, reviewText, isRecom, rating,
+		reviewsHandler.addReview(hotelId, reviewId, username.toLowerCase(), reviewTitle, reviewText, isRecom, rating,
 				userId);
 
 		out.println("<p><br>Successfully added one review!</p>");			
@@ -123,31 +119,16 @@ public class AddReviewServlet extends BaseServlet {
 		out.println("<th>Hotel Address</th>");
 		out.println("</tr>");
 		
-		List<String> hotelList = hotelService.getHotelList();
+		//get table js string
+		String table = hotelsHandler.getHotels_Select();
 		
-		for(String hotelId:hotelList){
-			HotelPO hotelPO =  hotelService.getHotelPO(hotelId);
-			addRow(out, hotelId, hotelPO.getHotelName(), hotelPO.getHotelAddress().toString());
-		}
+		out.println(table);
 		out.println("</table>");
 		
 	}
 		
 	
-	private void addRow(PrintWriter out, String hotelId, String hotelName, String hotelAddr){
-		
-		out.println();
-		
-		out.println("<tr>");
-		out.println("<td>" + hotelId + "</td>");
-		
-		out.println("<td>");
-		out.println("<a href=\"http://localhost:" + JettyWebServer.PORT2 + "/user/add_review?hotelId=" + hotelId + "\">");
-		out.println(hotelName + "</a></td>");
-		
-		out.println("<td>" + hotelAddr + "</td>");
-		out.println("</tr>");
-	}
+	
 	
 	
 	
@@ -156,7 +137,7 @@ public class AddReviewServlet extends BaseServlet {
 	
 	private void displayForm(PrintWriter out, String hotelId){
 		
-		HotelPO hotel =  hotelService.getHotelPO(hotelId);
+		HotelPO hotel =  hotelsHandler.getHotelPO(hotelId);
 		
 		out.println("<p style=\"font-size: 16pt; font-style: italic; font-color:green；\">" + hotel.getHotelName() +"</p>");
 		

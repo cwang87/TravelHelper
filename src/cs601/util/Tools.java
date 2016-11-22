@@ -68,19 +68,10 @@ public class Tools {
 	
 	
 	
-	/** get current date */
-	public static String getDate2() {
-		String format = "yyyyMMddHHmmssZ";
-		DateFormat dateFormat = new SimpleDateFormat(format);
-		return dateFormat.format(Calendar.getInstance().getTime());
-	}
-
-	
-	
 	/*-------------------------------------------------encode password---------------------------------------------*/
 	
 	
-	/**  Returns the hex encoding of a byte array  */
+	/**  Returns the hex encoding of the randomly generated salt  */
 	
 	public static String encodeHex(byte[] bytes, int length) {
 		
@@ -113,12 +104,13 @@ public class Tools {
 	
 	
 	/** generate a unique reviewId for every review. */
-	public static String getUniqueId(String date){
-		byte[] saltBytes = new byte[16];
+	public static String getUniqueId(String username){
 		Random random = new Random(System.currentTimeMillis());
+		byte[] saltBytes = new byte[16];
 		random.nextBytes(saltBytes);
-		String salt = encodeHex(saltBytes, 32);
-		String hashed = getHash(date, salt);
+		
+		String reviewSalt = encodeHex(saltBytes, 32);
+		String hashed = getHash(username, reviewSalt);
 		
 		return hashed;
 	}
