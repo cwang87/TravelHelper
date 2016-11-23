@@ -16,7 +16,7 @@ import cs601.util.Tools;
 
 
 /**
- * a servlet - handle request of viewing and modifying already written reviews
+ * MyReview servlet: handle request of viewing reviews written by the user.
  */
 @SuppressWarnings("serial")
 public class MyReview extends BaseServlet {
@@ -26,7 +26,7 @@ public class MyReview extends BaseServlet {
 	
 	
 	/**
-	 * display all the reviews from a particular user
+	 * Process GET request: display a list of reviews written by the user
 	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -115,7 +115,7 @@ public class MyReview extends BaseServlet {
 	
 	
 	
-	
+	/** process POST Request: request will be resent to doGet(); */
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		this.doGet(request, response);

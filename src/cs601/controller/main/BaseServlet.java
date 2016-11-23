@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import cs601.util.Status;
 import cs601.util.Tools;
 
-/** A Servlet that provides base functionality to all servlets */
+/** A Servlet that contains methods frequently used in servlets */
 
 @SuppressWarnings("serial")
 public class BaseServlet extends HttpServlet {
@@ -23,7 +23,11 @@ public class BaseServlet extends HttpServlet {
 	
 	/*------------------------------------------Prepare Response <body></body>---------------------------------------*/
 
-	/** prepare a title-type response, not finish response yet */
+	/** prepare a title-type response, not finish response yet 
+	 * 
+	 * @param title of the html
+	 * @param response
+	 */
 	protected void prepareResponse(String title, HttpServletResponse response) {
 		try {
 			PrintWriter writer = response.getWriter();
@@ -69,9 +73,9 @@ public class BaseServlet extends HttpServlet {
 	
 
 	
-	/*------------------------------actions during request, response------------------------------*/
+	/*---------------------------------------actions during request, response----------------------------------------*/
 	
-	/** check if the request contains error, if there's an error, print it out */
+	/** check if the request contains error, if there's an error, write it to response */
 	protected void checkRequestError(HttpServletRequest request, PrintWriter out) {
 		String error = request.getParameter("error");
 		if (error != null) {
@@ -82,16 +86,24 @@ public class BaseServlet extends HttpServlet {
 	
 
 	
-	/** redirect to a new url */
+	/** redirect user to the given url
+	 * 
+	 * @param response
+	 * @param url user will be directed to
+	 * @throws IOException
+	 */
 	protected void redirect(HttpServletResponse response, String url) throws IOException {
 		String encodeURL = response.encodeRedirectURL(url);
 		response.sendRedirect(encodeURL); 
 	}
 	
 	
-	/*---------------------------------------------session----------------------------------------------*/
+	/*---------------------------------------------session--------------------------------------------------------*/
 	
-	/** check the value of attribute "pass" to know whether the user already login before */
+	/** check the value of attribute named "pass" in session
+	 * 
+	 * @return true if the value is "ok", else return false.
+	 */
 	protected boolean checkSession(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		String pass = (String)session.getAttribute("pass");
@@ -102,7 +114,10 @@ public class BaseServlet extends HttpServlet {
 	}
 	
 	
-	/** get the value of attribute "username" in session*/
+	/** get the value of attribute named "username" in session
+	 * 
+	 * @return value of "username" in session
+	 */
 	protected String getSessionUsername(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		String username = (String) session.getAttribute("username");
@@ -110,7 +125,15 @@ public class BaseServlet extends HttpServlet {
 	}
 	
 	
-	/** set session and maximum idle interval is 1 hour */
+	
+	/** set session attributes:
+	 * 	username - the given username
+	 * 	pass - "ok", to record the user already login
+	 * 	set session idle iterval - 1 hour
+	 * 
+	 * @param request
+	 * @param the username of user logged in
+	 */
 	protected void setSession(HttpServletRequest request, String username) {
 		HttpSession session = request.getSession();
 		session.setMaxInactiveInterval(60*60);
@@ -125,7 +148,10 @@ public class BaseServlet extends HttpServlet {
 	
 	
 	
-	/** Return a cookie map from the cookies in the request */
+	/** Return a cookie map from the cookies in the request
+	 * 
+	 * @return a cookie map
+	 */
 	protected Map<String, String> getCookieMap(HttpServletRequest request) {
 		HashMap<String, String> map = new HashMap<String, String>();
 
@@ -177,7 +203,11 @@ public class BaseServlet extends HttpServlet {
 	
 	/*---------------------------------------------get status message-----------------------------------------------*/
 	
-	/** get status message with errorName */
+	/** get status message with errorName
+	 * 
+	 * @param errorName
+	 * @return error message
+	 */
 	protected String getStatusMessage(String errorName) {
 		Status status = null;
 
@@ -193,7 +223,11 @@ public class BaseServlet extends HttpServlet {
 	
 	
 	
-	/** get status message with error code */
+	/** get status message with error code
+	 * 
+	 * @param error code
+	 * @return error message
+	 */
 	protected String getStatusMessage(int code) {
 		Status status = null;
 

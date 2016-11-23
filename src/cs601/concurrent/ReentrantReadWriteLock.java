@@ -10,11 +10,6 @@ import java.util.HashMap;
  */
 public class ReentrantReadWriteLock {
 
-	// TODO: Add instance variables : you need to keep track of the read lock
-	// holders and the write lock holders.
-	// We should be able to find the number of read locks and the number of
-	// write locks
-	// a thread with the given threadId is holding
 	private volatile int readLockCount;
 	private volatile int writeLockCount;
 	private final HashMap<Long, Integer> readersMap;

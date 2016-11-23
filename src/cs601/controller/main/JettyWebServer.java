@@ -14,7 +14,7 @@ public class JettyWebServer {
 
 	public static final int PORT2 = 2050;
 	
-	/** start the server*/
+	/** main method to start the server*/
 	public static void main(String[] args) {
 		
 		Server server = new Server(PORT2);

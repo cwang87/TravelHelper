@@ -13,7 +13,7 @@ import cs601.controller.main.BaseServlet;
 import cs601.tablesHandler.UsersHandler;
 import cs601.util.Status;
 
-/** A servlet that handles user login. */
+/** A Login Servelet: handle request of logging account with input username and password */
 
 @SuppressWarnings("serial")
 public class LoginServlet extends BaseServlet {
@@ -22,7 +22,9 @@ public class LoginServlet extends BaseServlet {
 	
 	
 	/**
-	 * check session to keep users in login status if he/she already login before.
+	 * Process GET Request: 
+	 * If user already logged in, user will be directed to account page without inputing username and pw again.
+	 * If user didn't login before, user will be displayed a form to input username and password to be verified.
 	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -48,8 +50,10 @@ public class LoginServlet extends BaseServlet {
 	
 	
 	/**
-	 * get login info from the form submitted by user, and check whether username and password are the
-	 * same with our record in database.
+	 * Process POST Request:
+	 * Parse the request and get username and password submitted by user.
+	 * Compare username and hashed password with users table to verify consistance. 
+	 * If not consistant, user will be required to input username and password again.
 	 */
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

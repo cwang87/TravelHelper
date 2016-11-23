@@ -14,7 +14,7 @@ import cs601.tablesHandler.UsersHandler;
 import cs601.util.Status;
 
 
-/** A servlet that handles user registration. */
+/** Register servlet: handles user registration request. */
 
 @SuppressWarnings("serial")
 public class RegisterServlet extends BaseServlet {
@@ -24,7 +24,7 @@ public class RegisterServlet extends BaseServlet {
 
 	
 	/**
-	 * display form for users to register
+	 * Process GET Request: Display form for users to input username and password to create account
 	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -80,7 +80,7 @@ public class RegisterServlet extends BaseServlet {
 	
 	
 	
-	/** Writes and HTML form that shows two textfields and a button to the PrintWriter */
+	/* Writes and HTML form that shows two textfields and a button to the PrintWriter */
 	private void displayForm(PrintWriter out) {
 		assert out != null;
 

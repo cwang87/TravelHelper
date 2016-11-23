@@ -11,7 +11,7 @@ import cs601.controller.main.BaseServlet;
 
 
 /**
- * Servlet to handle login out
+ * Logout servlet: handle request from user to logout from account
  */
 
 @SuppressWarnings("serial")
@@ -19,7 +19,7 @@ public class LogoutServlet extends BaseServlet {
 	
 	
 	/**
-	 * invalid session and let users logout safely
+	 * Process GET Request: invalid session and realize logout
 	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -48,9 +48,7 @@ public class LogoutServlet extends BaseServlet {
 	
 
 	
-	/**
-	 * invalid session and let users logout safely
-	 */
+	/** process POST Request: request will be resent to doGet(); */
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		this.doGet(request, response);

@@ -2,6 +2,10 @@ package cs601.concurrent;
 
 import java.util.LinkedList;
 
+/**
+ * A helper class to manage work pool used in multithreading.
+ */
+
 public class WorkQueue {
 	
 	private final static int nThreadDefault = 10;

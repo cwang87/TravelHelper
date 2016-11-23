@@ -57,8 +57,9 @@ public class Hotel implements Comparable<Hotel> {
 	
 	
 	
-	
-	
+	/**
+	 * hotels will be ordered in alphabet order
+	 */
 	public int compareTo(Hotel h) {
 		return hotelName.compareTo(h.hotelName); 
 	}

@@ -15,7 +15,7 @@ import cs601.util.Tools;
 
 
 /**
- * A servlet - handle "add review" request
+ * Add review servlet: handle request from user to add a review about a paticular hotel
  */
 @SuppressWarnings("serial")
 public class AddReviewServlet extends BaseServlet {
@@ -24,10 +24,15 @@ public class AddReviewServlet extends BaseServlet {
 	private static final HotelsHandler hotelsHandler = HotelsHandler.getInstance();
 	private static final UsersHandler usersHandler = UsersHandler.getInstance();
 	
-	String hotelId = null;
+	private String hotelId = null;
 	
 	
-	/** display a full list of hotels for user to choose and add a review*/
+	/** Process GET Resquest: to add a review about a particular hotel
+	 * If user already logged in, a full list of hotels will be displayed to user to choose.
+	 * If user already logged in and chosen hotel to write review about, a review form will be displayed
+	 * 		 to user to input review info. After user submitting the form, doPost will process this new request.
+	 * If user hasn't logged in yet, the user will be redirected to login page
+	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
@@ -67,7 +72,9 @@ public class AddReviewServlet extends BaseServlet {
 	
 
 	
-	/** get review info from request and add review info into database.*/
+	/** Process  POST Request: receive form information submitted by user. 
+	 * Parse requeset to get parameters and insert these info into database.
+	 */
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		

@@ -15,7 +15,9 @@ import cs601.tablesHandler.ReviewsHandler;
 import cs601.util.Tools;
 
 
-/** A servlet class - handle clients' request about reviews */
+/**
+ * Reviews Servlet: a servlet handle requests of viewing all reviews about a particular hotel.
+ */
 
 @SuppressWarnings("serial")
 public class ReviewsServlet extends BaseServlet {
@@ -25,7 +27,7 @@ public class ReviewsServlet extends BaseServlet {
 	
 	
 	
-	
+	/** Process GET request: display a full list of all reviews about the requested hotel*/
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
@@ -52,13 +54,15 @@ public class ReviewsServlet extends BaseServlet {
 			out.println("<button type=\"button\" onclick=\"{location.href='/hotels'}\">Back to Hotels</button>");
 		}
 		
-		createTbl(out, hotelId);		
+		createTbl(out, hotelId);	
+		
 		finishResponse(response);
 		
 	}
 	
 	
 	
+	/* write the review info about the hotel into html table */
 	private void createTbl(PrintWriter out, String hotelId){
 		
 		ArrayList<ReviewPO> reviews = reviewService.searchReviews(hotelId);
@@ -119,7 +123,11 @@ public class ReviewsServlet extends BaseServlet {
 	}
 	
 	
-
+	
+	
+	
+	
+	/** process POST Request: request will be resent to doGet(); */
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		this.doGet(request, response);

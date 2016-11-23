@@ -10,8 +10,8 @@ import cs601.controller.main.BaseServlet;
 
 
 /**
- * A handler to guide user to manage account, including add review, display all
- * reviews the user has written and can also modify this written reviews.
+ * Account servlet: handle request of accessing user's account.
+ * In the account page, users can logout, view hotels, add review, view and modify reviews written by user.
  */
 
 @SuppressWarnings("serial")
@@ -19,7 +19,9 @@ public class AccountServlet extends BaseServlet {
 	
 	
 	/**
-	 * when user request to access to their account, check if they have login already.
+	 * Process GET request: 
+	 * If user didn't login but still use the url to access account, user will be redirected to login page.
+	 * If already logged in, user will access this account page.
 	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
@@ -73,9 +75,7 @@ public class AccountServlet extends BaseServlet {
 	
 	
 	
-	/**
-	 * when user request to access to their account, check if they have login already.
-	 */
+	/** process POST Request: request will be resent to doGet(); */
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		this.doGet(request, response);

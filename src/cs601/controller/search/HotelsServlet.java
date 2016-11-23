@@ -9,7 +9,8 @@ import cs601.controller.main.BaseServlet;
 import cs601.tablesHandler.HotelsHandler;
 
 /**
- * handler to show a full hotel list to user, including hotel addr and average rating
+ * Hotels Servlet: handle requests of viewing full hotel list, and hotel info,
+ * including hotelId, hotelName, hotel address and average rating of the hotel based on all reviews received so far
  */
 
 @SuppressWarnings("serial")
@@ -20,7 +21,8 @@ public class HotelsServlet extends BaseServlet {
 	
 	
 	/**
-	 * display a full list of hotels with average rating when receive request
+	 * Process GET request: display a full list of hotels with information including:
+	 * hotelId, hotelName, hotel address and average rating of the hotel based on all reviews received so far.
 	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -73,7 +75,7 @@ public class HotelsServlet extends BaseServlet {
 
 	
 	
-	
+	/** process POST Request: request will be resent to doGet(); */
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		this.doGet(request, response);

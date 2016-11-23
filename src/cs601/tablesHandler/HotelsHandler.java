@@ -2,8 +2,6 @@ package cs601.tablesHandler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import cs601.controller.main.JettyWebServer;
 import cs601.model.HotelPO;
@@ -13,12 +11,10 @@ import cs601.util.Status;
 public class HotelsHandler {
 
 	private static HotelsHandler hotelsHandler = new HotelsHandler();
-	private static List<String> hotelList;
 	
 	
 	private static final String SEARCH_HOTEL = "SELECT * FROM hotels WHERE hotelId = ?;";
 	
-	private static final String SEARCH_HOTELID_COLUMN = "SELECT hotelId FROM hotels;";
 	
 	private static final String SEARCH_ALLHOTELS_WITH_AVG = "SELECT hotels.hotelId, hotelName,"
 			+ " city, state, strAddr, country, AVG(overallRating) AS aveRating "
@@ -38,7 +34,6 @@ public class HotelsHandler {
 	
 	
 	private HotelsHandler() {
-		hotelList = new ArrayList<>();
 	}
 	
 	
@@ -56,14 +51,14 @@ public class HotelsHandler {
 	
 	
 	
-	/*---------------------------------------------Full hotels lists--------------------------------------------*/
+	/*---------------------------------------------Display HotelsList Tables------------------------------------------*/
 	
 	/**
 	 * A method - join hotels and reviews to get a full list of hotels and average rating respectively.
 	 * If there's no review, "no reveiews" will be shown.
 	 * Write the info in resultset into javascript table.
 	 */
-	public  String getHotels_Avg(){
+	public String getHotels_Avg(){
 		
 		StringBuffer sb = new StringBuffer();
 		
@@ -249,34 +244,6 @@ public class HotelsHandler {
 	
 	
 	
-	
-	/** get a list of all hotelIds */
-	public List<String> getHotelList(){
-		
-		ResultSet rs = SqlHelper.executeQuery(SEARCH_HOTELID_COLUMN);
-		
-		try {
-			while(rs.next()){
-				String hotelId = rs.getString(1);
-				hotelList.add(hotelId);
-			}
-		}catch (SQLException e) {
-			System.out.println(Status.SQL_EXCEPTION + e.getMessage());
-		}finally {
-			SqlHelper.close(SqlHelper.getRs(), SqlHelper.getSt(), SqlHelper.getCt());
-		}
-		
-		return hotelList;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	/** given hotelId, return an instance of HotelPO which stores all info about this hotel in table hotels */
 	public HotelPO getHotelPO(String hotelId){
 		
@@ -303,9 +270,6 @@ public class HotelsHandler {
 		
 		return hotelPO;
 	}
-	
-	
-	
 	
 	
 	

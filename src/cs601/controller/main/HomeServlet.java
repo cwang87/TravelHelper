@@ -8,14 +8,18 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Servlet to handle home page
+ * Home page Servlet to handle requests from home page
  */
 
 @SuppressWarnings("serial")
 public class HomeServlet extends BaseServlet {
 	
 	
-	
+	/**
+	 * process GET Request: 
+	 * If already logged in, user will be redirected to his/her account page;
+	 * If not login yet, user will has three choices: register, login and directly view hotels info without logging on.
+	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -38,7 +42,7 @@ public class HomeServlet extends BaseServlet {
 	
 	
 	
-	/** Writes and HTML form that shows two textfields and a button to the PrintWriter */
+	/* Writes HTML form that shows two textfields and a button to the PrintWriter */
 	private void getBody(PrintWriter out) {
 		assert out != null;
 		
@@ -59,9 +63,7 @@ public class HomeServlet extends BaseServlet {
 	
 	
 	
-	
-	
-	
+	/** process POST Request: request will be resent to doGet(); */
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		this.doGet(request, response);
