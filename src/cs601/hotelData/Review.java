@@ -1,4 +1,4 @@
-package cs601.hotelapp;
+package cs601.hotelData;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

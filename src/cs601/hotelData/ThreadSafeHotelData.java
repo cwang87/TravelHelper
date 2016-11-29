@@ -1,4 +1,4 @@
-package cs601.hotelapp;
+package cs601.hotelData;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
