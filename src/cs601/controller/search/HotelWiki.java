@@ -12,6 +12,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import cs601.controller.main.BaseServlet;
+import cs601.tableData.HotelAveRate;
 
 @SuppressWarnings("serial")
 public class HotelWiki extends BaseServlet {
@@ -39,6 +40,9 @@ public class HotelWiki extends BaseServlet {
 		
 		//setup body
 		String hotelId = request.getParameter("hotelId");
+		HotelAveRate hotel = 
+		
+		
 		
 		StringWriter writer = new StringWriter();
 		header.merge(context, writer);
