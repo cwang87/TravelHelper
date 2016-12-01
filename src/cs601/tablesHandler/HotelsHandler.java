@@ -2,10 +2,13 @@ package cs601.tablesHandler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-import cs601.controller.main.JettyWebServer;
-import cs601.model.HotelPO;
+import cs601.controller.main.JettyServer;
 import cs601.sqlHelper.SqlHelper;
+import cs601.tableData.HotelAveRate;
+import cs601.tableData.HotelPO;
 import cs601.util.Status;
 
 public class HotelsHandler {
@@ -13,7 +16,12 @@ public class HotelsHandler {
 	private static HotelsHandler hotelsHandler = new HotelsHandler();
 	
 	
-	private static final String SEARCH_HOTEL = "SELECT * FROM hotels WHERE hotelId = ?;";
+	private static final String SEARCH_ONEHOTELS_WITH_AVG = "SELECT hotels.hotelId, hotelName,"
+			+ " city, state, strAddr, country, AVG(overallRating) AS aveRating "
+			+ "FROM hotels LEFT OUTER JOIN reviews "
+			+ "ON hotels.hotelId = reviews.hotelId "
+			+ "WHERE hotelId=? "
+			+ "GROUP BY hotels.hotelId;"; 
 	
 	
 	private static final String SEARCH_ALLHOTELS_WITH_AVG = "SELECT hotels.hotelId, hotelName,"
@@ -21,6 +29,20 @@ public class HotelsHandler {
 			+ "FROM hotels LEFT OUTER JOIN reviews "
 			+ "ON hotels.hotelId = reviews.hotelId "
 			+ "GROUP BY hotels.hotelId;"; 
+	
+	private static final String SEARCH_HOTELS_BYCITY_WITH_AVG = "SELECT hotels.hotelId, hotelName, "
+			+ "city, state, strAddr, country, AVG(overallRating) AS aveRating "
+			+ "FROM hotels LEFT OUTER JOIN reviews "
+			+ "ON hotels.hotelId = reviews.hotelId "
+			+ "WHERE city=? AND state=? "
+			+ "GROUP BY hotels.hotelId;";
+	
+	private static final String SEARCH_HOTELS_BYNAME_WITH_AVG = "SELECT hotels.hotelId, hotelName, "
+			+ "city, state, strAddr, country, AVG(overallRating) AS aveRating "
+			+ "FROM hotels LEFT OUTER JOIN reviews "
+			+ "ON hotels.hotelId = reviews.hotelId "
+			+ "WHERE hotelName Like ? "
+			+ "GROUP BY hotels.hotelId;";
 	
 	private static final String SEARCH_ALLHOTELS = "SELECT * FROM hotels;";
 	
@@ -49,21 +71,68 @@ public class HotelsHandler {
 	
 	
 	
-	
-	
-	/*---------------------------------------------Display HotelsList Tables------------------------------------------*/
+	/*----------------------------------Get HotelsList by different search criterias-----------------------------*/
 	
 	/**
-	 * A method - join hotels and reviews to get a full list of hotels and average rating respectively.
+	 * A method to get a full list of hotels
 	 * If there's no review, "no reveiews" will be shown.
 	 * Write the info in resultset into javascript table.
 	 */
-	public String getHotels_Avg(){
-		
-		StringBuffer sb = new StringBuffer();
+	public List<HotelAveRate> getHotelsFull(){
 		
 		ResultSet rs = SqlHelper.executeQuery(SEARCH_ALLHOTELS_WITH_AVG);
 		
+		List<HotelAveRate> hotelList = parseHotelListResultSet(rs);
+		
+		SqlHelper.close(SqlHelper.getRs(), SqlHelper.getSt(), SqlHelper.getCt());
+		
+		return hotelList;
+	}
+	
+	
+	/**
+	 * A method to get a full list of hotels given a particular city/state
+	 * If there's no review, "no reveiews" will be shown.
+	 * Write the info in resultset into javascript table.
+	 */
+	public List<HotelAveRate> getHotelsCity(String citySearch, String stateSearch){
+		
+		String[] parameters = {citySearch, stateSearch};
+		ResultSet rs = SqlHelper.executeQuery(SEARCH_HOTELS_BYCITY_WITH_AVG, parameters);
+		
+		List<HotelAveRate> hotelList = parseHotelListResultSet(rs);
+		
+		SqlHelper.close(SqlHelper.getRs(), SqlHelper.getPs(), SqlHelper.getCt());
+		
+		return hotelList;
+	}
+	
+	
+	/**
+	 * A method to get a full list of hotels given a hotelName
+	 * If there's no review, "no reveiews" will be shown.
+	 * Write the info in resultset into javascript table.
+	 */
+	
+	public List<HotelAveRate> getHotelsName(String name){
+		
+		String nameLike = "%" + name + "%";
+		ResultSet rs = SqlHelper.executeQuery(SEARCH_HOTELS_BYNAME_WITH_AVG, nameLike);
+		
+		List<HotelAveRate> hotelList = parseHotelListResultSet(rs);
+		
+		SqlHelper.close(SqlHelper.getRs(), SqlHelper.getPs(), SqlHelper.getCt());
+		
+		return hotelList;
+	}
+	
+	
+	
+	
+	
+	/* method used to parse the ResultSet*/
+	private List<HotelAveRate> parseHotelListResultSet(ResultSet rs){
+		List<HotelAveRate> hotelList = new ArrayList<>();
 		try {
 			while(rs.next()){
 				String hotelId = rs.getString(1);
@@ -78,52 +147,15 @@ public class HotelsHandler {
 				}
 				String hotelAddr = strAddr + ", " + city + ", " + state + ", " + country;
 				
-				String oneHotel = getOneHotel_Avg(hotelId, hotelName, hotelAddr, aveRating);
-				sb.append(oneHotel);
+				HotelAveRate hotel = new HotelAveRate(hotelId, hotelName, hotelAddr, aveRating);
+				hotelList.add(hotel);
 			}
-			
 		} catch (SQLException e) {
 			System.out.println(Status.SQL_EXCEPTION + e.getMessage());
-		}finally {
-			SqlHelper.close(SqlHelper.getRs(), SqlHelper.getSt(), SqlHelper.getCt());
 		}
 		
-		return sb.toString();
+		return hotelList;
 	}
-	
-	
-	
-	
-	
-	/* add info into javascript table, hotelname with hyperlinks if it has reviews */
-	
-	private String getOneHotel_Avg(String hotelId, String hotelName, String hotelAddr, String aveRating){
-		
-		StringBuffer sb = new StringBuffer();
-		
-		sb.append("<tr>");
-		sb.append("<td>" + hotelId + "</td>");
-		
-		if(aveRating.equals("no reviews")){
-			sb.append("<td>" + hotelName + "</td>");
-		}else{
-			sb.append("<td>");
-			sb.append("<a href=\"http://localhost:" + JettyWebServer.PORT2 + "/reviews?hotelId=" + hotelId + "\">");
-			sb.append(hotelName + "</a></td>");
-		}
-		
-		sb.append("<td>" + hotelAddr + "</td>");
-		sb.append("<td>" + aveRating + "</td>");
-		sb.append("</tr>");
-		
-		return sb.toString();
-		
-	}
-	
-	
-	
-	
-	
 	
 	
 	
@@ -166,7 +198,6 @@ public class HotelsHandler {
 	
 	
 	
-	
 	/* add info into javascript table, hotelname with hyperlinks directing user to add review page */
 	
 	private String getOneHotel_Select(String hotelId, String hotelName, String hotelAddr){
@@ -177,7 +208,7 @@ public class HotelsHandler {
 		sb.append("<td>" + hotelId + "</td>");
 		
 		sb.append("<td>");
-		sb.append("<a href=\"http://localhost:" + JettyWebServer.PORT2 + "/user/add_review?hotelId=" + hotelId + "\">");
+		sb.append("<a href=\"http://localhost:" + JettyServer.PORT + "/user/add_review?hotelId=" + hotelId + "\">");
 		sb.append(hotelName + "</a></td>");
 		
 		sb.append("<td>" + hotelAddr + "</td>");
@@ -191,7 +222,7 @@ public class HotelsHandler {
 	
 	
 	
-	/*----------------------------------------query about reviews-------------------------------------------*/
+	/*--------------------------------------------query about reviews-------------------------------------------*/
 	
 	
 	/** check if a given hotel has reviews */
@@ -244,7 +275,7 @@ public class HotelsHandler {
 	
 	
 	
-	/** given hotelId, return an instance of HotelPO which stores all info about this hotel in table hotels */
+	/** given hotelId, return an instance of HotelAveRate which stores all info about this hotel in table hotels */
 	public HotelPO getHotelPO(String hotelId){
 		
 		HotelPO hotelPO = null;

@@ -2,10 +2,18 @@ package cs601.controller.search;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+
 import cs601.controller.main.BaseServlet;
+import cs601.tableData.HotelAveRate;
 import cs601.tablesHandler.HotelsHandler;
 
 /**
@@ -27,52 +35,60 @@ public class HotelsServlet extends BaseServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		prepareResponse("Hotel List", response);
-		
+		response.setContentType("text/html");
+		response.setStatus(HttpServletResponse.SC_OK);
 		PrintWriter out = response.getWriter();
 		
-		checkRequestError(request, out);
+		VelocityEngine velocity = getVelocityEngine(request);
+		VelocityContext context = new VelocityContext();
+		Template header = null;
+		Template body = velocity.getTemplate("view/hotelList.html");
+		StringWriter writer = new StringWriter();
 		
-		if(!checkSession(request)){
-			out.println("Welcome to Hotel Discover Channel!  ");
-			out.println("<button type=\"button\" onclick=\"{location.href='/user/register'}\">Register</button>");
-			out.println("<button type=\"button\" onclick=\"{location.href='/user/login'}\">Login</button>");
-			
+		
+		/* setup header */
+		if(checkSession(request)!= null){
+			header = velocity.getTemplate("view/header_user.html");
+			context.put("username", checkSession(request));
 		}else{
-			String username = getSessionUsername(request);
-			out.println("Hello!  " + username);
-			out.println("<button type=\"button\" onclick=\"{location.href='/user/account'}\">My Account</button>");
-			out.println("<button type=\"button\" onclick=\"{location.href='/user/logout'}\">Logout</button>");
+			header = velocity.getTemplate("view/header_all.html");
 		}
 		
-		createTbl(out);
+		/* setup body */
+		String hotelName = request.getParameter("hotelName");
+		String city = request.getParameter("city");
+		String state = request.getParameter("state");
 		
-		finishResponse(response);
+		if(hotelName.isEmpty() && city.isEmpty() && state.isEmpty()){
+			//Full hotelList
+			List<HotelAveRate> hotelList = hotelsHandler.getHotelsFull();
+			context.put("hotelList", hotelList);
+		}else if(hotelName.isEmpty() && !city.isEmpty() && !state.isEmpty()){
+			//hotelList given a specific city/state
+			List<HotelAveRate> hotelList = hotelsHandler.getHotelsCity(city, state);
+			context.put("hotelList", hotelList);	
+		}else if(!hotelName.isEmpty() && city.isEmpty() && state.isEmpty()){
+			//display hotels whose name contains given string
+			List<HotelAveRate> hotelList = hotelsHandler.getHotelsName(hotelName);
+			if(hotelList.size() == 1){
+				redirect(response, "/hotelWiki?hotelId="+hotelList.get(0).getHotelId());
+			}else{
+				context.put("hotelList", hotelList);
+			}	
+		}else{
+			redirect(response, "/home?error=INVALID_SEARCH");
+		}
+		
+		header.merge(context, writer);
+		body.merge(context, writer);
+		out.println(writer.toString());
+		
 	}	
 	
 	
 	
-	private void createTbl(PrintWriter out){
-		out.println("<h3>Hotel List</h3>");
-		out.println("<style>table, th, td {border: 1px solid black;}</style>");
-		out.println("<table>");
-		
-		//table head
-		out.println("<tr>");
-		out.println("<th>Hotel ID</th>");
-		out.println("<th>Hotel Name</th>");
-		out.println("<th>Hotel Address</th>");
-		out.println("<th>Hotel Ave Rating</th>");
-		out.println("</tr>");
-		
-		//get table js string
-		String table = hotelsHandler.getHotels_Avg();
-		
-		out.println(table);
-		out.println("</table>");
-		
-	}
-
+	
+	
 	
 	
 	/** process POST Request: request will be resent to doGet(); */

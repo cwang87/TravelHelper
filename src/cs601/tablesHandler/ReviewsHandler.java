@@ -8,8 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import cs601.model.ReviewPO;
 import cs601.sqlHelper.SqlHelper;
+import cs601.tableData.ReviewPO;
 import cs601.util.Status;
 import cs601.util.Tools;
 

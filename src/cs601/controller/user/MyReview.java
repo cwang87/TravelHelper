@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cs601.controller.main.BaseServlet;
-import cs601.model.HotelPO;
-import cs601.model.ReviewPO;
+import cs601.tableData.HotelPO;
+import cs601.tableData.ReviewPO;
 import cs601.tablesHandler.HotelsHandler;
 import cs601.tablesHandler.ReviewsHandler;
 import cs601.util.Tools;

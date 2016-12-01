@@ -2,9 +2,15 @@ package cs601.controller.user;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 
 import cs601.controller.main.BaseServlet;
 
@@ -26,52 +32,45 @@ public class AccountServlet extends BaseServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		prepareResponse("Account Management", response);
-		
+		response.setContentType("text/html");
+		response.setStatus(HttpServletResponse.SC_OK);
 		PrintWriter out = response.getWriter();
+				
+		VelocityEngine velocity = getVelocityEngine(request);
+		VelocityContext context = new VelocityContext();
 		
-		checkRequestError(request, out);
+		StringWriter writer = new StringWriter();
 		
-		//check session
-		if(checkSession(request)){
-			getBody(out, getSessionUsername(request));
+		
+		if(checkRequestError(request)!=null){
+		    Template template = velocity.getTemplate("view/error.html");
+			context.put("errorMessage", checkRequestError(request));
+			template.merge(context, writer);
+		}else if(checkSession(request)!= null){
+		    Template template = velocity.getTemplate("view/account.html");
+		    String username = checkSession(request);
+		    context.put("username", username);
+		    context.put("lastVisitMessage", getLastVisitMessage(request, username.toLowerCase()));
+		    template.merge(context, writer);
 		}else{
-			redirect(response, "/user/login");
+			redirect(response, "/login");
 		}
-		
-		finishResponse(response);
-		
+		out.println(writer.toString());
 	}
 	
 	
-
-	
-	
-	private void getBody(PrintWriter out, String username){
-		
-		out.println("<p style=\"font-size: 18pt;\">");
-		out.println("<h2>Hello, " + username  + "!<br><br></h2>");
-		out.println("</p>");
-		
-		out.println("Safely logout<br>");
-		out.println("<button type=\"button\" onclick=\"{location.href='/user/logout'}\">Logout</button>");
-		out.println("<p><br></p>");
-		
-		out.println("View hotels, reviews and attractions<br>");
-		out.println("<button type=\"button\" onclick=\"{location.href='/hotels'}\">View Hotels</button>");
-		out.println("<p><br></p>");
-		
-		out.println("Add new reviews<br>");
-		out.println("<button type=\"button\" onclick=\"{location.href='/user/add_review'}\">Add reviews</button>");
-		out.println("<p><br></p>");
-		
-		out.println("View and modify my reviews<br>");
-		out.println("<button type=\"button\" onclick=\"{location.href='/user/my_review?username=" + username +"'}\">My Reviews</button>");
-		out.println("<p><br></p>");
-		
+	/** get last visit message to be displayed to users */
+	private String getLastVisitMessage(HttpServletRequest request, String username) {
+		String lastVisitMessage = "";
+		Map<String, String> cookies = getCookieMap(request);
+		String visitDateLast = cookies.get(username + "_visitDateLast");
+		if(visitDateLast == null){
+			lastVisitMessage = "You have never been to this webpage before!\n" + "Thank you for visiting.";
+		}else{
+			lastVisitMessage = "Your last visit was on " + visitDateLast;
+		}
+		return lastVisitMessage;
 	}
-	
-	
 	
 	
 	

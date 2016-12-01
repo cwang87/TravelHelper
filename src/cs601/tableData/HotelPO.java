@@ -1,4 +1,4 @@
-package cs601.model;
+package cs601.tableData;
 
 /**
  * A class - represent the "hotels" table in database

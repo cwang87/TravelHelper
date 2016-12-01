@@ -3,11 +3,17 @@ package cs601.controller.user;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 
 import cs601.controller.main.BaseServlet;
 import cs601.tablesHandler.UsersHandler;
@@ -29,20 +35,30 @@ public class LoginServlet extends BaseServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		prepareResponse("Login", response);
-		
+		response.setContentType("text/html");
+		response.setStatus(HttpServletResponse.SC_OK);
 		PrintWriter out = response.getWriter();
 		
-		checkRequestError(request, out);
-
-		//check session
-		if(checkSession(request)){
-			redirect(response, "/user/account");
+		VelocityEngine velocity = getVelocityEngine(request);
+		VelocityContext context = new VelocityContext();
+		Template template = null;
+		
+		if(checkRequestError(request)!=null){
+			template = velocity.getTemplate("view/login.html");
+			context.put("errorMessage", checkRequestError(request));
+		}else if(checkSession(request)!= null){
+			template = velocity.getTemplate("view/account.html");
+			context.put("username", checkSession(request));
 		}else{
-			displayForm(out); 
+			template = velocity.getTemplate("view/login.html");
 		}
 		
-		finishResponse(response);
+		
+		StringWriter writer = new StringWriter();
+		template.merge(context, writer);
+
+		out.println(writer.toString());
+		
 	}
 
 	
@@ -57,10 +73,9 @@ public class LoginServlet extends BaseServlet {
 	 */
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		prepareResponse("Please Login", response);
 
-		String user = request.getParameter("user");
-		String userpw = request.getParameter("pw");
+		String user = request.getParameter("username");
+		String userpw = request.getParameter("password");
 		
 		String dbuser = StringEscapeUtils.escapeHtml4(user);
 		String dbuserpw = StringEscapeUtils.escapeHtml4(userpw);
@@ -71,46 +86,42 @@ public class LoginServlet extends BaseServlet {
 			
 			setSession(request, user);
 			
-			redirect(response, "/user/account");
+			updateVisitDate(request, response, user.toLowerCase());
+			
+			redirect(response, "/account");
 		}
 		else {
-			redirect(response, "/user/login?error=" + status.name());
+			redirect(response, "/login?error=" + status.name());
 		}
 	}
 
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	/** Writes and HTML form that shows two textfields and a button to the PrintWriter */
-	private void displayForm(PrintWriter out) {
-		assert out != null;
+	/**
+	 * update current visit datetime and last visit datetime
+	 * @param request
+	 * @param response
+	 */
+	private void updateVisitDate(HttpServletRequest request, HttpServletResponse response, String username) {
+		Map<String, String> cookies = getCookieMap(request);
+		String visitDateLast = cookies.get(username + "_visitDateLast");
+		String visitDateCurrent = cookies.get(username + "_visitDateCurrent");
 		
-		out.println("<p style=\"font-size: 18pt;\">");
-		out.println("Please use your username and password to login<br><br>");
-		out.println("</p>");
-
-		out.println("<form action=\"/user/login\" method=\"post\">"); 
-		out.println("<table border=\"0\">");
-		out.println("\t<tr>");
-		out.println("\t\t<td>Usename:</td>");
-		out.println("\t\t<td><input type=\"text\" name=\"user\" size=\"30\"></td>");
-		out.println("\t</tr>");
-		out.println("\t<tr>");
-		out.println("\t\t<td>Password:</td>");
-		out.println("\t\t<td><input type=\"password\" name=\"pw\" size=\"30\"></td>");
-		out.println("</tr>");
-		
-		out.println("\t<tr>");
-		out.println("\t\t<td><input type=\"submit\" value=\"Login\"></td>");
-		out.println("\t\t<td><button type=\"button\" onclick=\"{location.href='/home'}\">Back to Home Page</button></td>");
-		out.println("</table>");
-		out.println("</form>");
-	
+		if ((visitDateLast == null) && (visitDateCurrent == null)) {
+			Cookie cookie = new Cookie(username + "_visitDateCurrent", getDate());
+			cookie.setMaxAge(60*60*24*365);
+			response.addCookie(cookie);
+			
+		}else {
+			Cookie last = new Cookie(username + "_visitDateLast", visitDateCurrent);
+			Cookie current = new Cookie(username + "_visitDateCurrent", getDate());
+			last.setMaxAge(60*60*24*365);
+			current.setMaxAge(60*60*24*365);
+			
+			response.addCookie(last);
+			response.addCookie(current);
+		}
 	}
+	
+	
+	
 }

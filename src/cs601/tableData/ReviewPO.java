@@ -1,4 +1,4 @@
-package cs601.model;
+package cs601.tableData;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package cs601.controller.user;
+package cs601.controller.search;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -6,7 +6,6 @@ import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -14,58 +13,49 @@ import org.apache.velocity.app.VelocityEngine;
 
 import cs601.controller.main.BaseServlet;
 
-
-/**
- * Logout servlet: handle request from user to logout from account
- */
-
 @SuppressWarnings("serial")
-public class LogoutServlet extends BaseServlet {
+public class HotelWiki extends BaseServlet {
 	
 	
-	/**
-	 * Process GET Request: invalid session and realize logout
-	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
+
 		response.setContentType("text/html");
 		response.setStatus(HttpServletResponse.SC_OK);
 		PrintWriter out = response.getWriter();
 		
-		HttpSession session = request.getSession();
-		session.invalidate();
-		
 		VelocityEngine velocity = getVelocityEngine(request);
 		VelocityContext context = new VelocityContext();
-		Template template = velocity.getTemplate("view/logout.html");
+		Template header = null;
 		
-		if(checkRequestError(request)!=null){
-			context.put("errorMessage", checkRequestError(request));
+		//setup header navbar
+		if(checkSession(request)!= null){
+			header = velocity.getTemplate("view/header_user.html");
+			context.put("username", checkSession(request));
 		}else{
-			context.put("logoutMessage", "Sucessfully logged out!");
+			header = velocity.getTemplate("view/header_all.html");
 		}
 		
+		
+		//setup body
+		String hotelId = request.getParameter("hotelId");
+		
 		StringWriter writer = new StringWriter();
-		template.merge(context, writer);
+		header.merge(context, writer);
 
 		out.println(writer.toString());
 		
 		
-		
 	}
 
-	
-
-	
 	/** process POST Request: request will be resent to doGet(); */
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		this.doGet(request, response);
 	}
 	
 	
 	
 	
-	
+
 }

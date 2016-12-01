@@ -2,12 +2,17 @@ package cs601.controller.user;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+
 import cs601.controller.main.BaseServlet;
-import cs601.model.HotelPO;
+import cs601.tableData.HotelPO;
 import cs601.tablesHandler.HotelsHandler;
 import cs601.tablesHandler.ReviewsHandler;
 import cs601.tablesHandler.UsersHandler;
@@ -36,18 +41,32 @@ public class AddReviewServlet extends BaseServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		prepareResponse("Add reviews", response);
-		
+		response.setContentType("text/html");
+		response.setStatus(HttpServletResponse.SC_OK);
 		PrintWriter out = response.getWriter();
 		
-		checkRequestError(request, out);
+		VelocityEngine velocity = getVelocityEngine(request);
+		VelocityContext context = new VelocityContext();
 		
-		//check session
-		if(!checkSession(request)){
-			redirect(response, "/user/login");
+		StringWriter writer = new StringWriter();
+		
+		if(checkRequestError(request)!=null){
+		    Template template = velocity.getTemplate("view/error.html");
+			context.put("errorMessage", checkRequestError(request));
+			template.merge(context, writer);
+		}else if(checkSession(request)!= null){
+		    Template template = velocity.getTemplate("view/account.html");
+		    String username = checkSession(request);
+		    context.put("username", username);
+		    context.put("lastVisitMessage", getLastVisitMessage(request, username.toLowerCase()));
+		    template.merge(context, writer);
+		}else{
+			redirect(response, "/login");
 		}
+		out.println(writer.toString());
 		
-		String username = getSessionUsername(request);
+		
+		
 		hotelId = request.getParameter("hotelId");
 		
 		if(hotelId == null){
@@ -109,7 +128,6 @@ public class AddReviewServlet extends BaseServlet {
 
 		out.println("<p><br>Successfully added one review!</p>");			
 
-		finishResponse(response);
 	}
 		
 	/*-----------------------------Display hotel list for user to choose-------------------------------*/

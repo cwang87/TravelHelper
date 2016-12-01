@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!--Title-->
+<title>Sign In</title>
+
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+	<!--header part-->
+	<div id="header" class="navbar navbar-inverse navbar-static-top"
+		role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-inner">
+				<p class="navbar-text text-left"
+					Style="color: white; font-family: Comic Sans MS; font-size: 160%;">TravelHelper
+				</p>
+
+				<div class="pull-right" style="margin-top: 12px">
+					<button class="btn btn-warning" type="submit" onclick="{location.href='/home'}">Search</button>
+					
+					<button class="btn btn-info" type="submit" onclick="{location.href='/register'}">Sign Up Free</button>
+
+					<button class="btn btn-info" type="submit" onclick="{location.href='/login'}">
+						<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; Sign In</button>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!--Register Part-->
+	<div class="jumbotron">
+		<div class="container">
+			<h1 style="color: #424242; font-family: Fantasy; font-size: 300%">Your trip starts here</h1>
+			<br>
+			<br>
+			
+			<p style="color: red; font-size: 10pt; font-style: italic;">$!errorMessage<br></p>
+
+			<form action="/login" method="POST">
+
+				<div class="form-group">
+					<label for="username" style="color: #424242; font-family: Fantasy;">Username</label> 
+					<input type="text" class="form-control" name="username" placeholder="USERNAME">
+				</div>
+				
+				<div class="form-group">
+					<label for="password" style="color: #424242; font-family: Fantasy;">Password</label>
+					<input type="password" class="form-control" name="password" placeholder="PASSWORD">
+				</div>
+				
+				<button type="submit" class="btn btn-info">Sign In</button>
+				
+			</form>
+				
+		</div>
+	</div>
+
+</body>
+</html>			
+				
+				
+				
+				
+				
+				
+				
+				
+				
+	

@@ -1,0 +1,30 @@
+
+<div>
+	<div class="container-fluid">
+		<table class="table table-striped">
+			<tr>
+				<th>Hotel ID</th>
+				<th>Hotel Name</th>
+				<th>Hotel Address</th>
+				<th>Ave Rating</th>
+			</tr>
+
+			#foreach($hotel in $hotelList)
+			<tr>
+				<td>$hotel.hotelId</td>
+				<td>
+				<a href="http://localhost:2050/hotelWiki?hotelId=${hotel.hotelId}">
+				$hotel.hotelName
+				</a></td>
+				<td>$hotel.hotelAddr</td>
+				<td>$hotel.aveRating</td>
+			</tr>
+			#end
+
+		</table>
+
+	</div>
+</div>
+
+</body>
+</html>
