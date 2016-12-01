@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import cs601.hotelapp.HotelDataBuilder;
+import cs601.hotelapp.ThreadSafeHotelData;
 import cs601.sqlHelper.SqlHelper;
 import cs601.tablesHandler.UsersHandler;
-import cs601.hotelData.HotelDataBuilder;
-import cs601.hotelData.ThreadSafeHotelData;
 import cs601.sqlHelper.DBConnector;
 import cs601.util.Status;
 
