@@ -3,6 +3,7 @@ package cs601.controller.user;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,10 +13,11 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import cs601.controller.main.BaseServlet;
-import cs601.tableData.HotelPO;
+import cs601.tableData.HotelAveRate;
 import cs601.tablesHandler.HotelsHandler;
 import cs601.tablesHandler.ReviewsHandler;
 import cs601.tablesHandler.UsersHandler;
+import cs601.util.Status;
 import cs601.util.Tools;
 
 
@@ -24,12 +26,6 @@ import cs601.util.Tools;
  */
 @SuppressWarnings("serial")
 public class AddReviewServlet extends BaseServlet {
-	
-	private static final ReviewsHandler reviewsHandler = ReviewsHandler.getInstance();
-	private static final HotelsHandler hotelsHandler = HotelsHandler.getInstance();
-	private static final UsersHandler usersHandler = UsersHandler.getInstance();
-	
-	private String hotelId = null;
 	
 	
 	/** Process GET Resquest: to add a review about a particular hotel
@@ -47,48 +43,45 @@ public class AddReviewServlet extends BaseServlet {
 		
 		VelocityEngine velocity = getVelocityEngine(request);
 		VelocityContext context = new VelocityContext();
+		Template template = velocity.getTemplate("view/addReview.html");
+		
+		String hotelId = request.getParameter("hotelId");
+		String searchName = request.getParameter("searchName");
+		
+		if (checkRequestError(request) != null) {
+			context.put("errorMessage", checkRequestError(request));
+		} else if (checkSession(request) == null) {
+			redirect(response, "/login");
+		} else if (hotelId != null) {
+			String hotelName = HotelsHandler.getInstance().getHotelName(hotelId);
+			context.put("hintMessage", "Selected Hotel:");
+			context.put("placeholder", "placeholder=\"" + hotelName +"\"");
+			context.put("disabled", "disabled");
+			context.put("displaySearch", "none");
+			context.put("postHotelId", hotelId);
+		} else if(searchName != null){
+			List<HotelAveRate> hotelList = HotelsHandler.getInstance().getHotelsByPartialName(searchName);
+			context.put("hintMessage", "Please select hotel:");
+			context.put("hotelList", hotelList);
+			context.put("displayForm", "none");
+			context.put("placeholder", "placeholder=\"Hotel Name\"");
+		} else {
+			context.put("hintMessage", "Please find your hotel first:");
+			context.put("displaySearch", "none");
+			context.put("displayForm", "none");
+			context.put("placeholder", "placeholder=\"Hotel Name\"");
+		}
+
+		
 		
 		StringWriter writer = new StringWriter();
 		
-		if(checkRequestError(request)!=null){
-		    Template template = velocity.getTemplate("view/error.html");
-			context.put("errorMessage", checkRequestError(request));
-			template.merge(context, writer);
-		}else if(checkSession(request)!= null){
-		    Template template = velocity.getTemplate("view/account.html");
-		    String username = checkSession(request);
-		    context.put("username", username);
-		    context.put("lastVisitMessage", getLastVisitMessage(request, username.toLowerCase()));
-		    template.merge(context, writer);
-		}else{
-			redirect(response, "/login");
-		}
+		template.merge(context, writer);
 		out.println(writer.toString());
-		
-		
-		
-		hotelId = request.getParameter("hotelId");
-		
-		if(hotelId == null){
-			
-			out.println("Hello!  " + username);
-			out.println("<button type=\"button\" onclick=\"{location.href='/user/account'}\">My Account</button>");
-			out.println("<button type=\"button\" onclick=\"{location.href='/user/logout'}\">Logout</button>");
-			hotelListTbl(out);
-			
-		}else{
-			out.println("Hello!  " + username);
-			out.println("<button type=\"button\" onclick=\"{location.href='/user/account'}\">My Account</button>");
-			out.println("<button type=\"button\" onclick=\"{location.href='/user/logout'}\">Logout</button>");
-			displayForm(out,hotelId);
-		}
-		
-		finishResponse(response);
 		
 	}
 	
-	
-	
+		
 
 	
 	/** Process  POST Request: receive form information submitted by user. 
@@ -97,111 +90,36 @@ public class AddReviewServlet extends BaseServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		prepareResponse("Submit Review", response);
-		
+		response.setContentType("text/html");
+		response.setStatus(HttpServletResponse.SC_OK);
 		PrintWriter out = response.getWriter();
 		
-		checkRequestError(request, out);
-
-		// check session
-		if(!checkSession(request)){
-			redirect(response, "/user/login");
+		String username = checkSession(request);
+		String hotelId = request.getParameter("postHotelId");
+		String reviewTitle = request.getParameter("reviewTitle");
+		String reviewText = request.getParameter("reviewText");
+		String isRecomS = request.getParameter("recom");
+		String ratingS = request.getParameter("overallRating");
+		
+		if(!hotelId.isEmpty() && !username.isEmpty() && !reviewTitle.isEmpty() && !reviewText.isEmpty() && !isRecomS.isEmpty()
+				&& !ratingS.isEmpty() ){
+			int isRecom = Tools.yn2int(isRecomS);
+			int rating = Integer.parseInt(ratingS);
+			int userId = UsersHandler.getInstance().getUserId(username);
+			String reviewId = Tools.getUniqueId(username);
+			ReviewsHandler.getInstance().addReview(hotelId, reviewId, username.toLowerCase(), reviewTitle, reviewText, 
+					isRecom, rating, userId);
+			out.println("<p style=\"font-size:150%; font-family: fantasy; color: green;\">Successfully added one review!</p>");	
+		}else{
+			redirect(response, "/add_review?error=" + Status.INVALID_NEWREVIEW);
 		}
-		
-		String username = getSessionUsername(request);
-		out.println("Hello!  " + username);
-		out.println("<button type=\"button\" onclick=\"{location.href='/user/account'}\">My Account</button>");
-		out.println("<button type=\"button\" onclick=\"{location.href='/user/logout'}\">Logout</button>");
 
-		// get parameters
-		String reviewTitle = request.getParameter("title");
-		String reviewText = request.getParameter("text");
-		int isRecom = Tools.yn2int(request.getParameter("recom"));
-		int rating = Integer.parseInt(request.getParameter("rating"));
-		int userId = usersHandler.getUserId(username);
+		
 
-		// generate reviewId
-		String reviewId = Tools.getUniqueId(username);
-
-		reviewsHandler.addReview(hotelId, reviewId, username.toLowerCase(), reviewTitle, reviewText, isRecom, rating,
-				userId);
-
-		out.println("<p><br>Successfully added one review!</p>");			
-
-	}
-		
-	/*-----------------------------Display hotel list for user to choose-------------------------------*/
-	
-	private void hotelListTbl(PrintWriter out){
-		out.println("<h3>Please choose the hotel to be add a review</h3>");
-		out.println("<style>table, th, td {border: 1px solid black;}</style>");
-		out.println("<table>");
-		
-		//table head
-		out.println("<tr>");
-		out.println("<th>Hotel ID</th>");
-		out.println("<th>Hotel Name</th>");
-		out.println("<th>Hotel Address</th>");
-		out.println("</tr>");
-		
-		//get table js string
-		String table = hotelsHandler.getHotels_Select();
-		
-		out.println(table);
-		out.println("</table>");
-		
-	}
-		
-	
-	
-	
-	
-	
-	
-	/*-----------------------------Display form for user to add review----------------------------------*/
-	
-	private void displayForm(PrintWriter out, String hotelId){
-		
-		HotelPO hotel =  hotelsHandler.getHotelPO(hotelId);
-		
-		out.println("<p style=\"font-size: 16pt; font-style: italic; font-color:green；\">" + hotel.getHotelName() +"</p>");
-		
-		out.println("<form action=\"/user/add_review\" method=\"post\">"); 
-		out.println("<table border=\"0\">");
 				
-		out.println("<tr>");
-		out.println("<td>Recommend: </td>");
-		out.println("<td><input type=\"radio\" name=\"recom\" value=\"YES\">Yes");
-		out.println("<input type=\"radio\" name=\"recom\" value=\"NO\">No</td>");
-		out.println("</tr>");
-		
-		out.println("<tr>");
-		out.println("<td>Overall Rating: </td>");
-		out.println("<td><input type=\"radio\" name=\"rating\" value=\"5\">5");
-		out.println("<input type=\"radio\" name=\"rating\" value=\"4\">4");
-		out.println("<input type=\"radio\" name=\"rating\" value=\"3\">3");
-		out.println("<input type=\"radio\" name=\"rating\" value=\"2\">2");
-		out.println("<input type=\"radio\" name=\"rating\" value=\"1\">1</td>");
-		out.println("</tr>");
-		
-		out.println("<tr>");
-		out.println("<td>Title:</td>");
-		out.println("<td><input type=\"text\" name=\"title\" size=\"100\"></td>");
-		out.println("</tr>");
-		
-		out.println("<tr>");
-		out.println("<td valign=\"top\">Review: </td>");
-		out.println("<td><textarea name=\"text\" cols=\"99\" rows=\"10\">your valuable reviews here!</textarea></td>");
-		out.println("</tr>");
-		
-		out.println("</table>");
-		out.println("<p><input type=\"submit\" value=\"Submit\"></p>");
-		out.println("</form>");
-		
+
 	}
-	
-	
-	
+		
 	
 		
 

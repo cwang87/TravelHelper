@@ -32,8 +32,7 @@ public class JettyServer {
 		context.addServlet(HomeServlet.class, "/home");
 		
 		context.addServlet(HotelsServlet.class, "/hotels");
-		context.addServlet(HotelWiki.class, "/hotelWiki");
-		
+		context.addServlet(HotelWikiServlet.class, "/hotelWiki");
 		
 		context.addServlet(ReviewsServlet.class, "/reviews");
 //		context.addServlet(AttractionsServlet.class, "/attractions");
@@ -43,9 +42,12 @@ public class JettyServer {
 		context.addServlet(LoginServlet.class, "/login");
 		context.addServlet(LogoutServlet.class, "/logout");
 		
+		
 		context.addServlet(AccountServlet.class, "/account");
+		context.addServlet(MyReviewServlet.class, "/my_review");
+		context.addServlet(DeleteReviewServlet.class, "/delete_review");
+		context.addServlet(ModifyReviewServlet.class, "/modify_review");
 		context.addServlet(AddReviewServlet.class, "/add_review");
-		context.addServlet(MyReview.class, "/my_review");
 //		context.addServlet(AccountServlet.class, "user/modify_review");
 
 		

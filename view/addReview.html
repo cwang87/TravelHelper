@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   
+    <title>Add a review</title>
+
+   
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    
+  </head>
+  <body>
+    <div class="container-fluid"> <h4 style="color: red">$!errorMessage</h4> </div>
+    
+      
+    <!-- Search Area-->  
+    <div class="container-fluid">
+            
+        <div class="container-fluid">
+            <form id="search" action="/add_review" method="get">
+                
+                <div id="hint" class="container-fluid"> 
+                    <p style="font-size:120%; font-weight: bold;">$hintMessage</p>  
+                </div>
+          
+               
+                <div id="searchBar" class="container-fluid">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">Search</button>
+                      </span>
+                      <input type="text" class="form-control" name="searchName" ${placeholder} $!{disabled}>
+                      
+                    </div>
+              </div>
+             </form>      
+        </div>
+        
+        <div>      
+        
+        <form action="/add_review" method="get">
+        <div class="container-fluid" style="display: ${displaySearch};">
+            <div id="hotelList" class="container-fluid">
+                <select multiple class="form-control" name="hotelId">
+                    #foreach($hotel in $hotelList)
+                    <option value=${hotel.hotelId}>${hotel.hotelName}&nbsp;&nbsp;(${hotel.hotelId})</option>  
+                    #end
+                </select>
+            </div>        
+        </div>   
+                    
+       <div class="container-fluid" style="display: ${displaySearch};">
+       		<div class="container-fluid">
+       			<br>
+       			 <button class="btn btn-primary" type="submit">Select</button>
+       		</div>
+       
+       </div>
+       </form>
+       </div>  
+       
+      </div>       
+                   
+                
+                
+    <!-- form Area-->       
+    <div class="container-fluid" style="display: ${displayForm};">  
+            
+        <div class="container-fluid">
+            <br>
+            <p style="font-size:120%; font-weight: bold;"><br>&nbsp;&nbsp;&nbsp;Fill in your review here:</p>  
+        </div>
+        
+      <div>  
+        <form action="/add_review" method="post">
+        	 <div class="container-fluid" >
+         		<input type="hidden" name="postHotelId" value=${postHotelId} >
+     		</div> 
+           
+            <div class="container-fluid" style="margin-bottom:10px">
+                <div class="rows">
+                    <div class="col-sm-1">Recom:</div>
+                    <div class="col-sm-11">
+                        <label class="radio-inline">
+                              <input type="radio" name="recom" id="recomY" value="YES"> Yes
+                            </label>
+                            <label class="radio-inline">
+                              <input type="radio" name="recom" id="recomN" value="NO"> No
+                            </label>
+                    </div>
+                </div>    
+            </div>
+
+
+            <div class="container-fluid" style="margin-bottom:10px">
+                <div class="rows">
+                    <div class="col-sm-1">Rating:</div>
+                    <div class="col-sm-11">    
+                        <label class="radio-inline">
+                              <input type="radio" name="overallRating" id="rate5" value="5"> 5
+                            </label>
+                            <label class="radio-inline">
+                              <input type="radio" name="overallRating" id="rate4" value="4"> 4
+                            </label>
+                            <label class="radio-inline">
+                              <input type="radio" name="overallRating" id="rate3" value="3"> 3
+                            </label>     
+                            <label class="radio-inline">
+                              <input type="radio" name="overallRating" id="rate2" value="2"> 2
+                            </label>     
+                            <label class="radio-inline">
+                              <input type="radio" name="overallRating" id="rate1" value="1"> 1
+                            </label>     
+                    </div>
+                </div>    
+            </div>
+
+
+            <div class="container-fluid" style="margin-bottom:10px">
+                <div class="rows">
+                    <div class="col-sm-1">Title:</div>
+                    <div class="col-sm-11">    
+                            <input type="text" class="form-control" name="reviewTitle">
+                    </div>
+                </div>    
+            </div>
+
+             <div class="container-fluid" style="margin-bottom:10px">
+                <div class="rows">
+                    <div class="col-sm-1">Text:</div>
+                    <div class="col-sm-11">    
+                            <textarea class="form-control" rows="5" name="reviewText">We expect your valuable reviews!</textarea>
+                    </div>
+                </div>    
+            </div>
+
+
+            <div class="container-fluid" style="margin-bottom:10px">
+                <div class="rows">
+                    <div class="col-sm-1">
+                        <button class="btn btn-success"  type="submit">Save
+                        <span class="glyphicon glyphicon-check" aria-hidden="true"></span></button>
+                    </div>    
+                </div>
+            </div>    
+
+            </form>
+
+
+
+    </div>
+
+            
+            
+      </div>       
+   
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

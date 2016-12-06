@@ -1,7 +1,10 @@
 package cs601.tablesHandler;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,26 +20,27 @@ import cs601.util.Tools;
 
 public class UsersHandler {
 
-	private static UsersHandler userService = new UsersHandler();
+	private static UsersHandler usersHandler = new UsersHandler();
 
 	private Random random;
 
-	/*---------------------------------------------User Register SQL------------------------------------------*/
+	/*------------------------------------------------Update SQL---------------------------------------------*/
 	
 	private static final String REGISTER_SQL = "INSERT INTO users (username, usersalt, password) VALUES (?, ?, ?);";
 	
-	/*---------------------------------------------User Login SQL----------------------------------------------*/
-	
-	private static final String AUTH_SQL = "SELECT username FROM users WHERE username = ? AND password = ? ;";
+	private static final String UPDATE_LASTVISIT_SQL = "UPDATE users SET lastVisit = ? WHERE username = ?;";
 	
 	/*---------------------------------------------Query SQL---------------------------------------------------*/
+	
+	private static final String AUTH_SQL = "SELECT username FROM users WHERE username = ? AND password = ? ;";
 	
 	private static final String USERID_SQL = "SELECT userId FROM users WHERE username = ? ;";
 	
 	private static final String USER_SQL = "SELECT username FROM users WHERE username = ? ;";
 	
 	private static final String SALT_SQL = "SELECT usersalt FROM users WHERE username = ? ;";
-
+	
+	private static final String LASTVISIT_SQL = "SELECT lastVisit FROM users WHERE username = ?";
 	
 
 	
@@ -56,7 +60,7 @@ public class UsersHandler {
 	
 	/** Gets the single instance of the database handler. */
 	public static UsersHandler getInstance() {
-		return userService;
+		return usersHandler;
 	}
 
 	
@@ -249,6 +253,60 @@ public class UsersHandler {
 		return salt;
 	}
 
+	
+	/** Gets lastVist for a specific user */
+	public Date getLastVisit(String username){
+		ResultSet rs = SqlHelper.executeQuery(LASTVISIT_SQL, username);
+		Date lastVisit = null;
+		try {
+			if(rs.next()){
+				lastVisit = rs.getTimestamp(1);
+			}
+		} catch (SQLException e) {
+			System.out.println(Status.SQL_EXCEPTION + e.getMessage());
+		}finally {
+			SqlHelper.close(SqlHelper.getRs(), SqlHelper.getPs(), SqlHelper.getCt());
+		}
+		
+		return lastVisit;
+	}
+	
+	
+	/*---------------------------------------update visit info-------------------------------*/	
+	
+	/** update lastVisit info */
+	public Status updateVisitDate(Date visitDateTime, String username){
+		Status status = Status.ERROR;
+		Connection ct = SqlHelper.getConnection();
+		
+		PreparedStatement ps = null;
+		try {
+			ps = ct.prepareStatement(UPDATE_LASTVISIT_SQL);
+			ps.setTimestamp(1, Tools.toTimestamp(visitDateTime));
+			ps.setString(2, username);
+			ps.executeUpdate();
+			status = Status.OK;
+		} catch (SQLException e) {
+			System.out.println(Status.SQL_EXCEPTION + e.getMessage());
+			status = Status.SQL_EXCEPTION;
+		} finally {
+			try {
+				ps.close();
+				ct.close();
+			} catch (SQLException e) {
+				System.out.println(Status.SQL_EXCEPTION + e.getMessage());
+			}
+			
+		}
+		
+		return status;
+	}
+	
+	
+
+	
+	
+	
 	
 	
 	

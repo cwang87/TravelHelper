@@ -3,7 +3,7 @@ package cs601.tableData;
 /**
  * A class - represent the address part of "hotels" table in database
  */
-public class AddressPO {
+public class AddressDB {
 
 	private String city;
 	private String state;
@@ -25,7 +25,7 @@ public class AddressPO {
 	 * @param lat
 	 * @param lon
 	 */
-	public AddressPO(String city, String state, String strAddr, String country, double lat, double lon) {
+	public AddressDB(String city, String state, String strAddr, String country, double lat, double lon) {
 		super();
 		this.city = city;
 		this.state = state;

@@ -23,6 +23,14 @@ public class DatabaseWriter {
 			Status createReviews = handler.createReviews();
 			System.out.println("Create table reviews: " + createReviews);
 			
+			Status createLikedReviews = handler.createLikedReviews();
+			System.out.println("Create table likedReviews: " + createLikedReviews);
+			
+			Status createExpediaHistory = handler.createExpediaHistory();
+			System.out.println("Create table expediaHistory: " + createExpediaHistory);
+			
+			Status createSavedHotels = handler.createSavedHotels();
+			System.out.println("Create table savedHotels: " + createSavedHotels);
 			
 			
 			/* load info into table "hotels" */
@@ -40,10 +48,13 @@ public class DatabaseWriter {
 			
 			
 			
-			/* add userId column to reviews table */
+			/* add columns to reviews table */
 			handler.addUserIdCol();
 			System.out.println("add userId column to reviews");
+			handler.addLikeCountCol();
+			System.out.println("add likeCount column to reviews");
 			
+			/* update userId column in reviews*/
 			handler.updateUserId();
 			System.out.println("Successfully update userId in reviews");
 			

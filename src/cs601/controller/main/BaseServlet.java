@@ -1,13 +1,7 @@
 package cs601.controller.main;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -152,74 +146,6 @@ public class BaseServlet extends HttpServlet {
 	
 	
 	
-	
-	
-	
-	/*---------------------------------------------Cookies for last visit-----------------------------------------------*/
-	
-
-	/**
-	 * Returns the current date and time in a short format.
-	 *
-	 * @return current date and time
-	 */
-	public static String getDate() {
-		String format = "yyyy-MM-dd hh:mm a";
-		DateFormat formatter = new SimpleDateFormat(format);
-		return formatter.format(Calendar.getInstance().getTime());
-	}
-	
-	
-	
-	
-	/** Return a cookie map from the cookies in the request
-	 * 
-	 * @return a cookie map
-	 */
-	protected Map<String, String> getCookieMap(HttpServletRequest request) {
-		HashMap<String, String> map = new HashMap<String, String>();
-
-		//getCookies() - Returns an array containing all of the Cookie objects the client sent with this request.
-		Cookie[] cookies = request.getCookies();
-
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				map.put(cookie.getName(), cookie.getValue());
-			}
-		}
-		return map;
-	}
-	
-	
-	
-	
-	
-	/** Clear cookies */
-	protected void clearCookies(HttpServletRequest request, HttpServletResponse response) {
-		Cookie[] cookies = request.getCookies();
-
-		if (cookies == null) {
-			return;
-		}
-
-		for (Cookie cookie : cookies) {
-			cookie.setValue("");
-			cookie.setMaxAge(0);
-			response.addCookie(cookie);
-		}
-	}
-
-	
-	
-	
-	
-	/** Clear a particular cookie */
-	protected void clearCookie(String cookieName, HttpServletResponse response) {
-		Cookie cookie = new Cookie(cookieName, null);
-		cookie.setMaxAge(0);
-		response.addCookie(cookie);
-	}
-
 	
 	
 	

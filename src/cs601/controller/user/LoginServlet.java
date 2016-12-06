@@ -4,9 +4,7 @@ package cs601.controller.user;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Map;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,8 +21,6 @@ import cs601.util.Status;
 
 @SuppressWarnings("serial")
 public class LoginServlet extends BaseServlet {
-	
-	private static final UsersHandler userService = UsersHandler.getInstance();
 	
 	
 	/**
@@ -43,12 +39,14 @@ public class LoginServlet extends BaseServlet {
 		VelocityContext context = new VelocityContext();
 		Template template = null;
 		
+		String username = checkSession(request);
+		
 		if(checkRequestError(request)!=null){
 			template = velocity.getTemplate("view/login.html");
 			context.put("errorMessage", checkRequestError(request));
-		}else if(checkSession(request)!= null){
+		}else if(username != null){
 			template = velocity.getTemplate("view/account.html");
-			context.put("username", checkSession(request));
+			context.put("username", username);
 		}else{
 			template = velocity.getTemplate("view/login.html");
 		}
@@ -80,13 +78,11 @@ public class LoginServlet extends BaseServlet {
 		String dbuser = StringEscapeUtils.escapeHtml4(user);
 		String dbuserpw = StringEscapeUtils.escapeHtml4(userpw);
 		
-		Status status = userService.loginUser(dbuser, dbuserpw);
+		Status status = UsersHandler.getInstance().loginUser(dbuser, dbuserpw);
 		
 		if(status == Status.OK) {
 			
 			setSession(request, user);
-			
-			updateVisitDate(request, response, user.toLowerCase());
 			
 			redirect(response, "/account");
 		}
@@ -96,31 +92,7 @@ public class LoginServlet extends BaseServlet {
 	}
 
 	
-	/**
-	 * update current visit datetime and last visit datetime
-	 * @param request
-	 * @param response
-	 */
-	private void updateVisitDate(HttpServletRequest request, HttpServletResponse response, String username) {
-		Map<String, String> cookies = getCookieMap(request);
-		String visitDateLast = cookies.get(username + "_visitDateLast");
-		String visitDateCurrent = cookies.get(username + "_visitDateCurrent");
-		
-		if ((visitDateLast == null) && (visitDateCurrent == null)) {
-			Cookie cookie = new Cookie(username + "_visitDateCurrent", getDate());
-			cookie.setMaxAge(60*60*24*365);
-			response.addCookie(cookie);
-			
-		}else {
-			Cookie last = new Cookie(username + "_visitDateLast", visitDateCurrent);
-			Cookie current = new Cookie(username + "_visitDateCurrent", getDate());
-			last.setMaxAge(60*60*24*365);
-			current.setMaxAge(60*60*24*365);
-			
-			response.addCookie(last);
-			response.addCookie(current);
-		}
-	}
+	
 	
 	
 	

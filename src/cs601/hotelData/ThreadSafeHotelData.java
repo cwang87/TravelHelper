@@ -206,7 +206,7 @@ public class ThreadSafeHotelData {
 						pStatement.setString(3, r.getUsername().toLowerCase().trim());
 						pStatement.setString(4, r.getReviewTitle().trim());
 						pStatement.setString(5, r.getReviewText().trim());
-						pStatement.setTimestamp(6, Tools.getTimestamp(r.getReviewDate()));
+						pStatement.setTimestamp(6, Tools.toTimestamp(r.getReviewDate()));
 						pStatement.setInt(7, Tools.bool2int(r.getIsRecommended()));
 						pStatement.setInt(8, r.getOverallRating());
 						pStatement.executeUpdate();

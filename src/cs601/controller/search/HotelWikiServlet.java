@@ -13,10 +13,12 @@ import org.apache.velocity.app.VelocityEngine;
 
 import cs601.controller.main.BaseServlet;
 import cs601.tableData.HotelAveRate;
+import cs601.tablesHandler.HotelsHandler;
 
 @SuppressWarnings("serial")
-public class HotelWiki extends BaseServlet {
+public class HotelWikiServlet extends BaseServlet {
 	
+	private static final HotelsHandler hotelsHandler = HotelsHandler.getInstance();
 	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -38,14 +40,17 @@ public class HotelWiki extends BaseServlet {
 		}
 		
 		
-		//setup body
+		//get hotelInfo
 		String hotelId = request.getParameter("hotelId");
-		HotelAveRate hotel = 
-		
+		HotelAveRate hotel = hotelsHandler.getHotelAveRate(hotelId);
+		Template body = velocity.getTemplate("view/hotelWiki.html");
+		context.put("hotel", hotel);
+		context.put("hotelId", hotelId);
 		
 		
 		StringWriter writer = new StringWriter();
 		header.merge(context, writer);
+		body.merge(context, writer);
 
 		out.println(writer.toString());
 		

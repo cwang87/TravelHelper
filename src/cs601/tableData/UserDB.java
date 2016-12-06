@@ -4,7 +4,7 @@ package cs601.tableData;
  * A class - represent the "users" table in database
  */
 
-public class UserPO {
+public class UserDB {
 	
 	private int userId;
 	private String username;
@@ -22,7 +22,7 @@ public class UserPO {
 	 * @param hashedpw
 	 */
 	
-	public UserPO( int userId,String username, String usersalt, String hashedpw) {
+	public UserDB( int userId,String username, String usersalt, String hashedpw) {
 		this.userId = userId;
 		this.username = username;
 		this.usersalt = usersalt;

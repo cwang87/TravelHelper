@@ -35,7 +35,8 @@ public class DatabaseHandler {
 	
 	/*-------------------------------------------Create Tables-------------------------------------------------*/
 	private static final String CREATE_USERS_SQL = "CREATE TABLE users (userId INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			+ "username VARCHAR(32) NOT NULL UNIQUE, usersalt CHAR(32) NOT NULL, password CHAR(64) NOT NULL);";
+			+ "username VARCHAR(32) NOT NULL UNIQUE, usersalt CHAR(32) NOT NULL, password CHAR(64) NOT NULL, "
+			+ "lastVisit TIMESTAMP NULL);";
 	
 	private static final String CREATE_HOTELS_SQL = "CREATE TABLE hotels (hotelId VARCHAR(32) PRIMARY KEY, "
 			+ "hotelName VARCHAR(64) NOT NULL, city VARCHAR(32) NOT NULL, state VARCHAR(32), "
@@ -46,6 +47,16 @@ public class DatabaseHandler {
 			+ "reviewId VARCHAR(64) PRIMARY KEY, username VARCHAR(32) NOT NULL, reviewTitle VARCHAR(64) NOT NULL, "
 			+ "reviewText TEXT NOT NULL, reviewDate TIMESTAMP DEFAULT NOW(), isRecom TINYINT(1) NOT NULL, "
 			+ "overallRating TINYINT(5) NOT NULL);";
+	
+	private static final String CREATE_LIKEDREVIEWS_SQL = "CREATE TABLE likedReviews (username VARCHAR(32) NOT NULL, "
+			+ "reviewId VARCHAR(64) NOT NULL);";
+	
+	private static final String CREATE_EXPEDIAHISTORY_SQL = "CREATE TABLE expediaHistory (username VARCHAR(32) NOT NULL, "
+			+ "hotelName VARCHAR(64) NOT NULL, hotelId VARCHAR(32) NOT NULL);";
+	
+	private static final String CREATE_SAVEDHOTELS_SQL = "CREATE TABLE savedHotels (username VARCHAR(32) NOT NULL, "
+			+ "hotelName VARCHAR(64) NOT NULL, hotelId VARCHAR(32) NOT NULL);";
+	
 	
 	
 	/*-------------------------------------------Load Hotel Data into tables-------------------------------------*/
@@ -118,6 +129,34 @@ public class DatabaseHandler {
 		return status;
 	}
 	
+	/** create table - likedReviews */
+	public Status createLikedReviews(){
+		Status status = Status.CREATE_FAILED;
+		if(SqlHelper.executeUpdate(CREATE_LIKEDREVIEWS_SQL) ){
+			status = Status.OK;
+		}
+		return status;
+	}
+	
+	
+	/** create table - expediaHistory */
+	public Status createExpediaHistory(){
+		Status status = Status.CREATE_FAILED;
+		if(SqlHelper.executeUpdate(CREATE_EXPEDIAHISTORY_SQL) ){
+			status = Status.OK;
+		}
+		return status;
+	}
+	
+	
+	/** create table - savedHotels */
+	public Status createSavedHotels(){
+		Status status = Status.CREATE_FAILED;
+		if(SqlHelper.executeUpdate(CREATE_SAVEDHOTELS_SQL) ){
+			status = Status.OK;
+		}
+		return status;
+	}
 	
 	/*-------------------------------------------Load Hotel Data into tables-------------------------------------*/
 	
@@ -196,6 +235,11 @@ public class DatabaseHandler {
 		SqlHelper.executeUpdate(sql);
 	}
 	
+	/** add likeCount column to reviews table */
+	public void addLikeCountCol(){
+		String sql = "ALTER TABLE reviews ADD likeCount INTEGER DEFAULT 0;";
+		SqlHelper.executeUpdate(sql);
+	}
 	
 	
 	/** update userId info in reviews table */

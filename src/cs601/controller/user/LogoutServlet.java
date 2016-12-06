@@ -3,16 +3,19 @@ package cs601.controller.user;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import cs601.controller.main.BaseServlet;
+import cs601.tablesHandler.UsersHandler;
+import cs601.util.Status;
+import cs601.util.Tools;
 
 
 /**
@@ -33,26 +36,26 @@ public class LogoutServlet extends BaseServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 		PrintWriter out = response.getWriter();
 		
-		HttpSession session = request.getSession();
-		session.invalidate();
-		
 		VelocityEngine velocity = getVelocityEngine(request);
 		VelocityContext context = new VelocityContext();
 		Template template = velocity.getTemplate("view/logout.html");
 		
+		String username = checkSession(request);
+		
+		
 		if(checkRequestError(request)!=null){
 			context.put("errorMessage", checkRequestError(request));
-		}else{
+		}else if (username != null && updateVisitDate(username)){
+			request.getSession().invalidate();
 			context.put("logoutMessage", "Sucessfully logged out!");
+		}else{
+			redirect(response, "/account");
 		}
 		
 		StringWriter writer = new StringWriter();
 		template.merge(context, writer);
 
 		out.println(writer.toString());
-		
-		
-		
 	}
 
 	
@@ -64,6 +67,24 @@ public class LogoutServlet extends BaseServlet {
 		this.doGet(request, response);
 	}
 	
+	
+	
+	
+	/**
+	 * update users visit datetime in users table
+	 * @param request
+	 * @param response
+	 */
+	private Boolean updateVisitDate(String username){
+		boolean update = false;
+		Date visitDateTime = Tools.getDateTime();
+		Status status = UsersHandler.getInstance().updateVisitDate(Tools.toTimestamp(visitDateTime), username);
+		if(status == Status.OK){
+			update = true;
+		}
+		
+		return update;
+	}
 	
 	
 	

@@ -4,11 +4,11 @@ package cs601.tableData;
  * A class - represent the "hotels" table in database
  */
 
-public class HotelPO implements Comparable<HotelPO> {
+public class HotelDB implements Comparable<HotelDB> {
 
 	private String hotelId;
 	private String hotelName;
-	private AddressPO hotelAddress;
+	private AddressDB hotelAddress;
 	
 
 	/**
@@ -24,10 +24,10 @@ public class HotelPO implements Comparable<HotelPO> {
 	 * @param lon
 	 */
 	
-	public HotelPO(String hotelId, String hotelName, String city, String state, String strAddr, String country, double lat, double lon) {
+	public HotelDB(String hotelId, String hotelName, String city, String state, String strAddr, String country, double lat, double lon) {
 		this.hotelId = hotelId;
 		this.hotelName = hotelName;
-		hotelAddress = new AddressPO(city, state, strAddr, country, lat, lon);
+		hotelAddress = new AddressDB(city, state, strAddr, country, lat, lon);
 	}
 	
 	
@@ -40,7 +40,7 @@ public class HotelPO implements Comparable<HotelPO> {
 	
 	/** A method to decide the order of hotels stored in the data structure. */
 	
-	public int compareTo(HotelPO h) {
+	public int compareTo(HotelDB h) {
 		return hotelName.compareTo(h.hotelName); 
 	}
 	
@@ -87,7 +87,7 @@ public class HotelPO implements Comparable<HotelPO> {
 		return hotelName;
 	}
 
-	public AddressPO getHotelAddress() {
+	public AddressDB getHotelAddress() {
 		return hotelAddress;
 	}
 

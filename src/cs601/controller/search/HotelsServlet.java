@@ -65,11 +65,11 @@ public class HotelsServlet extends BaseServlet {
 			context.put("hotelList", hotelList);
 		}else if(hotelName.isEmpty() && !city.isEmpty() && !state.isEmpty()){
 			//hotelList given a specific city/state
-			List<HotelAveRate> hotelList = hotelsHandler.getHotelsCity(city, state);
+			List<HotelAveRate> hotelList = hotelsHandler.getHotelsByCity(city, state);
 			context.put("hotelList", hotelList);	
 		}else if(!hotelName.isEmpty() && city.isEmpty() && state.isEmpty()){
 			//display hotels whose name contains given string
-			List<HotelAveRate> hotelList = hotelsHandler.getHotelsName(hotelName);
+			List<HotelAveRate> hotelList = hotelsHandler.getHotelsByPartialName(hotelName);
 			if(hotelList.size() == 1){
 				redirect(response, "/hotelWiki?hotelId="+hotelList.get(0).getHotelId());
 			}else{

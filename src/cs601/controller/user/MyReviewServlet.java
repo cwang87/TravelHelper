@@ -1,4 +1,4 @@
-package cs601.controller.search;
+package cs601.controller.user;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,74 +13,69 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import cs601.controller.main.BaseServlet;
-import cs601.tableData.ReviewDB;
+import cs601.tableData.ReviewHotelName;
 import cs601.tablesHandler.ReviewsHandler;
 
 
 /**
- * Reviews Servlet: a servlet handle requests of viewing all reviews about a particular hotel.
+ * MyReview servlet: handle request of viewing reviews written by the user.
  */
-
 @SuppressWarnings("serial")
-public class ReviewsServlet extends BaseServlet {
+public class MyReviewServlet extends BaseServlet {
 	
 	private static final ReviewsHandler reviewsHandler = ReviewsHandler.getInstance();
 	
 	
-	/** Process GET request: display a full list of all reviews about the requested hotel*/
+	/**
+	 * Process GET request: display a list of reviews written by the user
+	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		response.setContentType("text/html");
 		response.setStatus(HttpServletResponse.SC_OK);
 		PrintWriter out = response.getWriter();
-		
+				
 		VelocityEngine velocity = getVelocityEngine(request);
 		VelocityContext context = new VelocityContext();
-		Template template = velocity.getTemplate("view/reviews.html");
+		Template template = velocity.getTemplate("view/myReview.html");
 		
-		
-		// get hotelId and check if this hotel has reviews
-		String hotelId = request.getParameter("hotelId");
-		System.out.println(hotelId);
-		
-		if(!reviewsHandler.hasReviewHotelId(hotelId)){
-			context.put("noReviewMessage", "This hotel has no reviews!");
-		
+		if(checkSession(request)!= null){
+		    String username = checkSession(request);
+		    ArrayList<ReviewHotelName> reviewList = reviewsHandler.getReviewsUserName(username);
+		    if(reviewsHandler.hasReviewUsername(username)){
+		    	context.put("reviewList", reviewList);
+		    }else{
+		    	context.put("noReviewMessage", "You haven't written any reviews yet!");
+		    }
 		}else{
-			ArrayList<ReviewDB> reviewList = reviewsHandler.getHotelReviews(hotelId);
-			System.out.println(reviewList.get(0).getHotelId() + "from reviews list");
-			context.put("reviewList", reviewList);
+			context.put("reloadParent", "parent.location.reload();");
 		}
-		
 		
 		
 		StringWriter writer = new StringWriter();
 		template.merge(context, writer);
 		out.println(writer.toString());
 		
-		
 	}
+		
+	
+		
 	
 	
+
 	
-	
-	
-//	/* write the review info about the hotel into html table */
-//	private void createTbl(PrintWriter out, String hotelId){
+//	private void createTbl(PrintWriter out, String username){
 //		
+//		ArrayList<ReviewDB> reviews = reviewsHandler.searchPersonalReviews(username);
 //	
-//		
-//		//table title
-//		out.println("<h3>" + hotelName + "</h3>");
-//		out.println("<p>" + "Average Rating: " + aveRating + "</p>");
-//		out.println("<p>" + "Hotel Address: " + hotelAddr + "</p>");
+//		out.println("<h3> My Reviews</h3>");
 //		out.println("<style>table, th, td {border: 1px solid black;}</style>");
 //		out.println("<table>");
 //		
 //		//table head
 //		out.println("<tr>");
-//		out.println("<th>Username/th>");
+//		out.println("<th>Hotel Name</th>");
 //		out.println("<th>Review Title</th>");
 //		out.println("<th>Review Text</th>");
 //		out.println("<th>Review Date</th>");
@@ -92,7 +87,11 @@ public class ReviewsServlet extends BaseServlet {
 //		
 //		for(ReviewDB review: reviews){
 //			
-//			String oneReview = addReviewTbl(review.getUsername(), review.getReviewTitle(), review.getReviewText(), 
+//			String hotelId = review.getHotelId();
+//			HotelPO hotel = hotelsHandler.getHotelPO(hotelId);
+//			String hotelName = hotel.getHotelName();
+//			
+//			String oneReview = addReviewTbl(hotelName, review.getReviewTitle(), review.getReviewText(), 
 //					Tools.toStringDate(review.getReviewDate()), Tools.bool2yn(review.getIsRecom()), 
 //					Integer.toString(review.getOverallRating()));	
 //			sb.append(oneReview);
@@ -100,10 +99,10 @@ public class ReviewsServlet extends BaseServlet {
 //		out.println(sb.toString());
 //		out.println("</table>");
 //		
-//	}
+//	}	
+//
 //	
-	
-	
+//	
 //	private String addReviewTbl(String username, String reviewTitle, 
 //			String reviewText, String reviewDate, String isRecom, String overallRating){
 //		
@@ -122,9 +121,7 @@ public class ReviewsServlet extends BaseServlet {
 //		
 //	}
 //	
-	
-	
-	
+//	
 	
 	
 	/** process POST Request: request will be resent to doGet(); */
@@ -132,5 +129,7 @@ public class ReviewsServlet extends BaseServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		this.doGet(request, response);
 	}
-
+		
+	
+	
 }

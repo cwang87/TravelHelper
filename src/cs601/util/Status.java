@@ -19,6 +19,7 @@ public enum Status {
 	INVALID_PASSWORD("Password should be at least 6 characters long, a combination of letter, digit and special character."),
 	DUPLICATE_USER("User with that username already exists."),
 	SQL_EXCEPTION("Unable to execute SQL statement."),
+	INVALID_NEWREVIEW("Please do not leave any field blank."),
 	INVALID_SEARCH("Please search by hotel name or city&state or just leave all blank to search all hotels");
 
 	private final String message;

@@ -1,21 +1,21 @@
 package cs601.tableData;
 
-import java.util.Date;
 
 /**
  * A class - represent the one row record of table "reviews" in database
  */
-public class ReviewPO implements Comparable<ReviewPO> {
+public class ReviewDB implements Comparable<ReviewDB> {
 
 	private String hotelId;
 	private String reviewId;
 	private String username;
 	private String reviewTitle;
 	private String reviewText;
-	private Date reviewDate;
-	private boolean isRecom;
-	private int overallRating;
-	private int userId;
+	private String reviewDate;
+	private String isRecom;
+	private String overallRating;
+	private String userId;
+	private String likeCount;
 	
 	
 	/** Constructor (convert the Data type of date from String to Date)
@@ -29,9 +29,10 @@ public class ReviewPO implements Comparable<ReviewPO> {
 	 * @param isRecom
 	 * @param overallRating
 	 * @param userId
+	 * @param likeCount
 	 */
-	public ReviewPO(String hotelId, String reviewId, String username, String reviewTitle, String reviewText, Date reviewDate, 
-			boolean isRecom, int overallRating, int userId ) {
+	public ReviewDB(String hotelId, String reviewId, String username, String reviewTitle, String reviewText, String reviewDate, 
+			String isRecom, String overallRating, String userId, String likeCount) {
 		
 		this.hotelId = hotelId;
 		this.reviewId = reviewId;
@@ -42,10 +43,10 @@ public class ReviewPO implements Comparable<ReviewPO> {
 		this.isRecom = isRecom;
 		this.overallRating = overallRating;
 		this.userId = userId;
+		this.likeCount = likeCount;
 	}
 
-	
-	
+
 	
 	
 	
@@ -55,7 +56,7 @@ public class ReviewPO implements Comparable<ReviewPO> {
 	
 	/** A method to decide the order of reviews stored in the data structure. */
 	@Override
-	public int compareTo(ReviewPO review) {
+	public int compareTo(ReviewDB review) {
 		if (reviewDate.compareTo(review.reviewDate) == 0)
 			if (username.compareTo(review.username) == 0)
 				return reviewId.compareTo(review.reviewId);
@@ -70,31 +71,7 @@ public class ReviewPO implements Comparable<ReviewPO> {
 	
 	
 	
-	/**
-	 * A method - to return a string representing information about a review.
-	 * Format is as follows:
-	 * -------------------- 
-	 * Review by username: rating
-	 * ReviewTitle
-	 * ReviewText 
-	 * -------------------- 
-	 * Review by username: rating
-	 * ReviewTitle
-	 * ReviewText
-	 * ...
-	 */
-	public String toString() {
-		return "--------------------\nReview by " + username + ": " + Integer.toString(overallRating) + "\n"
-				+ reviewTitle + "\n" + reviewText + "\n";
-	}
-
-	
-	
-	
-	
-	
 	/* ----------------------------------------*/
-
 	public String getHotelId() {
 		return hotelId;
 	}
@@ -120,25 +97,34 @@ public class ReviewPO implements Comparable<ReviewPO> {
 	}
 
 
-	public Date getReviewDate() {
+	public String getReviewDate() {
 		return reviewDate;
 	}
 
 
-	public boolean getIsRecom() {
+	public String getIsRecom() {
 		return isRecom;
 	}
 
 
-	public int getOverallRating() {
+	public String getOverallRating() {
 		return overallRating;
 	}
 
 
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
+
+
+	public String getLikeCount() {
+		return likeCount;
+	}
 	
+
+
+
+
 
 
 

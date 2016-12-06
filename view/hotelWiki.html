@@ -1,68 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>My Account</title>
-
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<style>
-.extraClass {
-    height: 122px; 
-    position: relative;
-}
-
-.extraClass ul {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-}    
-</style>
-</head>
-<body>
-
-	header part
-	<div id="header" class="navbar navbar-inverse navbar-static-top"
-		role="navigation">
-		<div class="container-fluid">
-			<div class="navbar-inner">
-				<p class="navbar-text text-left"
-					Style="color:white; font-family:Comic Sans MS; font-size:160%;">TravelHelper
-				</p>
-
-				<div class="pull-right" style="margin-top: 12px">
-					<button class="btn btn-warning" type="submit" onclick="{location.href='/home'}">Search</button>
-					
-					<button class="btn btn-info" type="submit" onclick="{location.href='/account'}">Account</button>
-
-					<button class="btn btn-info" type="submit" onclick="{location.href='/logout'}">Sign Out
-						<span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></button>
-
-				</div>
-			</div>
-		</div>
-	</div>
-    
+  
     <!--Hotel Info box -->
     <div class="contrainer">
         <div class="row">
             
             <div class="col-sm-2"> &nbsp;&nbsp;&nbsp;&nbsp;
-            <img src="/pic/hotel_cartoon.jpg" width="77%" height="77%" class="img-rounded">
+            <img src="/image/hotel_cartoon.jpg" width="70%" height="70%" class="img-rounded">
             </div>
             
             
             <div class="col-sm-6">
                 <p style="color:black; font-family:Comic Sans MS; font-size:150%">
-                    ${hotel.hotelName}(${hotel.hotelId})&nbsp;
-                <span class="text-success" style="font-family:Comic Sans MS; font-size:70%">
-                ${hotel.aveRating}/5
-                </span>
+                    $hotel.hotelName&nbsp;
+                <span class="text-muted" style="font-family:Comic Sans MS; font-size:70%">
+                (${hotel.hotelId})</span>
                 </p>
                 <p style="color:black; font-family:Fantasy; font-size:100%">$hotel.hotelAddr</p>
-                <br>
+                
+                <p style="color:green; font-family:Fantasy; font-size:100%">Average Rating: ${hotel.aveRating}/5</p>
                 
                 <a type="button" href="" class="btn btn-xs btn-danger">Save Now
                 <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
@@ -77,23 +31,26 @@
         
             
             <div class="col-sm-4 extraClass">
+            
             <ul class="nav nav-tabs">
                 <li role="presentation">
-                <a href="http://localhost:2050/reviews?hotelId=${hotel.hotelId}" target="frame">Reviews</a></li>
+                <a href= "http://localhost:2050/reviews?hotelId=${hotelId}" target="frame">Reviews</a></li>
                 
                 <li role="presentation">
-                <a href="http://localhost:2050/attractions?hotelId=${hotel.hotelId}" target="frame">Attractions</a></li>
+                <a href="http://localhost:2050/attractions?hotelId=${hotelId}" target="frame">Attractions</a></li>
                 
                 <li role="presentation" class="active" >
-                <a href="http://localhost:2050/maps?hotelId=${hotel.hotelId}" target="frame">Google Map &nbsp;&nbsp;</a></li>        
+                <a href="http://localhost:2050/maps?hotelId=${hotelId}" target="frame">Google Map &nbsp;&nbsp;</a></li>        
             </ul>
             </div>
         
         </div>        
             
-        <div class="container-fluid">
+        <div class="container-fluid" heigt="1000">
             <br>
-            <iframe src="http://localhost:2050/maps?hotelId=${hotel.hotelId}"" name="frame" frameborder="0" style="width: 100%; height: 100%;"></iframe>
+            <iframe src="http://localhost:2050/maps?hotelId=${hotelId}" name="frame" frameborder="0" 
+            onload="this.height=frame.document.body.scrollHeight" width="100%">
+            </iframe>
                  
         </div>    
 

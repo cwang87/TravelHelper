@@ -3,7 +3,6 @@ package cs601.util;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,25 +44,33 @@ public class Tools {
 		return date;
 	}
 	
+	/** convert Date to String with format "yyyy-MM-dd hh:mm a" */
+	public static String toStringDateTime(Date date){
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
+		String formattedDate = formatter.format(date);
+		return formattedDate;
+	}
 	
+	
+	/** returns the current date and time in Date type*/
+	public static Date getDateTime(){
+		return Calendar.getInstance().getTime();
+	}
+	
+	/** returns the current date and time, in string type*/
+	public static String getDateTimeString(){
+		return toStringDateTime(getDateTime());
+	}
 	
 	
 	/** convert Java Date to SQL Timestamp */
-	public static Timestamp getTimestamp(Date date) {
+	public static Timestamp toTimestamp(Date date) {
 		if (date == null) {
 			return null;
 		} else {
 			Timestamp timestamp = new Timestamp(date.getTime());
 			return timestamp;
 		}
-	}
-	
-	
-	/** get current date */
-	public static String getDate() {
-		String format = "hh:mm a 'on' EEE, MMM dd, yyyy";
-		DateFormat dateFormat = new SimpleDateFormat(format);
-		return dateFormat.format(Calendar.getInstance().getTime());
 	}
 	
 	

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!--Title-->
+<title>My Reviews</title>
+
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+<div>
+	<div class="container-fluid">
+		<table id="reviews" class="table table-striped" style="width:100%">
+			<tr>
+				<th width="20%">Hotel Name</th>
+				<th width="40%">Review Title</th>
+				<th width="10%">Recom</th>
+				<th width="10%">Rating</th>
+				<th width="10%">Liked</th>
+				<th width="10%">Date</th>
+			</tr>
+	
+			#foreach($review in $reviewList)
+			<tr>
+				<td width="20%">
+				<a href="http://localhost:2050/modify_reviewi?hotelId=${review.reviewId}">
+				$review.hotelName
+				</a></td>
+				
+				<td width="40%">$review.reviewTitle</td>
+				<td width="10%">$review.isRecom</td>
+				<td width="10%">$review.overallRating</td>
+				<td width="10%">$review.likeCount</td>
+				<td width="10%">$review.reviewDate</td>
+			</tr>
+			
+			<tr>
+			<td valign="bottom">
+				<a href="http://localhost:2050/modify_review?reviewId=${review.reviewId}&hotelName=${review.hotelName}" 
+                   class="btn btn-xs btn-success">Modify
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                </a> 
+                
+                <a href="http://localhost:2050/delete_review?reviewId=${review.reviewId}" 
+                	class="btn btn-xs btn-primary">Delete
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </a>    
+			</td>
+			<td colspan="5">$review.reviewText</td>
+			
+			</tr>
+			#end
+
+		</table>
+	</div>
+	
+	<div>
+		<br>
+		<h1 style="color: #424242; font-family: Fantasy; font-size: 120%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$!noReviewMessage</h1>
+	</div>
+	
+</div>
+     
+    <script>$!reloadParent</script> 
+    
+    
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+
+</body>
+</html>
