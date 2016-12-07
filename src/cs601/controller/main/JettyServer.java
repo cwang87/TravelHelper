@@ -7,8 +7,14 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
+import cs601.controller.acctMgmt.*;
+import cs601.controller.acctTabs.AddReviewServlet;
+import cs601.controller.acctTabs.DeleteReviewServlet;
+import cs601.controller.acctTabs.ExpediaLinkServlet;
+import cs601.controller.acctTabs.ModifyReviewServlet;
+import cs601.controller.acctTabs.MyReviewServlet;
+import cs601.controller.acctTabs.SaveHotelsServlet;
 import cs601.controller.search.*;
-import cs601.controller.user.*;
 
 
 /** A class use Jetty and Servlets to handle the HTTP GET request from client */
@@ -48,7 +54,10 @@ public class JettyServer {
 		context.addServlet(DeleteReviewServlet.class, "/delete_review");
 		context.addServlet(ModifyReviewServlet.class, "/modify_review");
 		context.addServlet(AddReviewServlet.class, "/add_review");
-//		context.addServlet(AccountServlet.class, "user/modify_review");
+		
+		
+		context.addServlet(ExpediaLinkServlet.class, "/expediaLink");
+		context.addServlet(SaveHotelsServlet.class, "/save_hotels");
 
 		
 //		context.setResourceBase("view");

@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!--Title-->
-<title>Search</title>
+<title>TravelHelper</title>
 
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <style>
@@ -42,11 +42,19 @@
 
 				<div class="pull-right" style="margin-top: 12px">
 				
-					<p class="navbar-text" style="color:white; font-style: italic;font-family: Comic Sans MS;">Hello, $usernmae</p>
+					<p class="navbar-text" style="color:white; font-size: 120%;font-family: fantasy;">Hello, $username</p>
 					
-					<button class="btn btn-warning" type="submit" onclick="{location.href='/home'}">Search</button>
+					<button class="btn btn-warning" type="submit" onclick="{location.href='/home'}">Search
+						<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+					</button>
 					
-					<button class="btn btn-info" type="submit" onclick="{location.href='/account'}">Account</button>
+					<button class="btn btn-success" type="submit" onclick="{location.href='/expediaLink'}">Expedia
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+					</button>
+					
+					<button class="btn btn-info" type="submit" onclick="{location.href='/account'}">Account
+						<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+					</button>
 
 					<button class="btn btn-info" type="submit" onclick="{location.href='/logout'}">Sign Out
 						<span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></button>

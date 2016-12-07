@@ -18,12 +18,12 @@
                 
                 <p style="color:green; font-family:Fantasy; font-size:100%">Average Rating: ${hotel.aveRating}/5</p>
                 
-                <a type="button" href="" class="btn btn-xs btn-danger">Save Now
-                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                <a type="button" href="" class="btn btn-xs btn-danger" onclick="saveHotel(${hotel.hotelId});">
+                Save Now<span class="glyphicon glyphicon-star" aria-hidden="true"></span>
                 </a>
                 
                 <a href="https://www.expedia.com/h${hotel.hotelId}.Hotel-Information" 
-                   class="btn btn-xs btn-primary" target="_blank">Expedia
+                   class="btn btn-xs btn-primary" target="_blank" onclick="saveExpedia(${hotel.hotelId});">Expedia
                 <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
                 </a>    
                 
@@ -46,7 +46,7 @@
         
         </div>        
             
-        <div class="container-fluid" heigt="1000">
+        <div class="container-fluid" height="1000">
             <br>
             <iframe src="http://localhost:2050/maps?hotelId=${hotelId}" name="frame" frameborder="0" 
             onload="this.height=frame.document.body.scrollHeight" width="100%">
@@ -57,8 +57,34 @@
     
     </div>
     
+    <script>
+    function saveExpedia(hotelId){
+    	var xhttp = new XMLHttpRequest();
+    	xhttp.open("GET", "expediaLink?hotelId=" + hotelId, true);
+        xhttp.send();
+    }
+    </script>
     
     
+    <script>
+    function saveHotel(hotelId){
+    	 var xhttp = new XMLHttpRequest();
+    	  	xhttp.onreadystatechange = function() {
+    		if(xhttp.readyState == 4 && xhttp.status == 200){
+    			alert(xhttp.responseText);
+    		}
+    	}
+    	  	
+    	xhttp.open("POST", "/save_hotels", true);
+    	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    	xhttp.send("hotelId=" + hotelId); 	
+    	  	
+    }
+    
+    
+    
+    
+    </script> 
    
     
     

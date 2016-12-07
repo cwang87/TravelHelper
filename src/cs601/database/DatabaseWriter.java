@@ -26,9 +26,6 @@ public class DatabaseWriter {
 			Status createLikedReviews = handler.createLikedReviews();
 			System.out.println("Create table likedReviews: " + createLikedReviews);
 			
-			Status createExpediaHistory = handler.createExpediaHistory();
-			System.out.println("Create table expediaHistory: " + createExpediaHistory);
-			
 			Status createSavedHotels = handler.createSavedHotels();
 			System.out.println("Create table savedHotels: " + createSavedHotels);
 			

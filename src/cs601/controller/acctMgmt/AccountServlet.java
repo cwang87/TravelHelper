@@ -1,4 +1,4 @@
-package cs601.controller.user;
+package cs601.controller.acctMgmt;
 
 import java.io.IOException;
 import java.io.PrintWriter;

@@ -1,0 +1,72 @@
+      <div class="container">
+        <br>
+        <div class="container">
+         <p style="font-size:150%; font-family:fantasy; color:green;">$!message</p>
+        </div>
+      </div>
+      
+      
+      
+      
+      <div class="container" style="display: ${displayTable};">
+          
+        <div class="container-fluid">
+            
+		<table class="table table-striped">
+			<tr>
+				<th width="20%">Hotel ID</th>
+				<th width="60%">Hotel Name</th>
+				<th width="20%">Expedia Link</th>
+			</tr>
+
+			
+			#foreach($hotel in $visitList)
+			<tr>
+				<td>$hotel.hotelId</td>
+				<td>
+				<a href="http://localhost:2050/hotelWiki?hotelId=${hotel.hotelId}">
+				$hotel.hotelName</a></td>
+				<td>
+                    <a href="https://www.expedia.com/h${hotel.hotelId}.Hotel-Information" 
+                       class="btn btn-xs btn-primary" target="_blank">Expedia
+                    <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
+                    </a>  
+
+                </td>
+			</tr>
+			#end
+		</table>    
+       
+         </div>    
+            
+      <div><br><br></div>
+      
+            
+            
+          
+          
+          
+        
+              <div class="container-fluid">
+                <form action="/expediaLink" method="post">
+                  <input type="hidden" name="clearHistory" value="YES">
+                  <button class="btn btn-danger btn-sm"  type="submit">
+                      Clear History &nbsp;<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                  </button>    
+                </form>
+              </div>
+    
+          
+          
+          
+          
+          
+          
+    </div>
+  
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

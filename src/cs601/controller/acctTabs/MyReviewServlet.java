@@ -1,4 +1,4 @@
-package cs601.controller.user;
+package cs601.controller.acctTabs;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -62,66 +62,6 @@ public class MyReviewServlet extends BaseServlet {
 	
 		
 	
-	
-
-	
-//	private void createTbl(PrintWriter out, String username){
-//		
-//		ArrayList<ReviewDB> reviews = reviewsHandler.searchPersonalReviews(username);
-//	
-//		out.println("<h3> My Reviews</h3>");
-//		out.println("<style>table, th, td {border: 1px solid black;}</style>");
-//		out.println("<table>");
-//		
-//		//table head
-//		out.println("<tr>");
-//		out.println("<th>Hotel Name</th>");
-//		out.println("<th>Review Title</th>");
-//		out.println("<th>Review Text</th>");
-//		out.println("<th>Review Date</th>");
-//		out.println("<th>Recom</th>");
-//		out.println("<th>Rating</th>");
-//		out.println("</tr>");
-//		
-//		StringBuffer sb = new StringBuffer();
-//		
-//		for(ReviewDB review: reviews){
-//			
-//			String hotelId = review.getHotelId();
-//			HotelPO hotel = hotelsHandler.getHotelPO(hotelId);
-//			String hotelName = hotel.getHotelName();
-//			
-//			String oneReview = addReviewTbl(hotelName, review.getReviewTitle(), review.getReviewText(), 
-//					Tools.toStringDate(review.getReviewDate()), Tools.bool2yn(review.getIsRecom()), 
-//					Integer.toString(review.getOverallRating()));	
-//			sb.append(oneReview);
-//		}
-//		out.println(sb.toString());
-//		out.println("</table>");
-//		
-//	}	
-//
-//	
-//	
-//	private String addReviewTbl(String username, String reviewTitle, 
-//			String reviewText, String reviewDate, String isRecom, String overallRating){
-//		
-//		StringBuffer sb = new StringBuffer();
-//		
-//		sb.append("<tr>");
-//		sb.append("<td>" + username + "</td>");
-//		sb.append("<td>" + reviewTitle + "</td>");
-//		sb.append("<td width=\"45%\">" + reviewText + "</td>");
-//		sb.append("<td>" + reviewDate + "</td>");
-//		sb.append("<td>" + isRecom + "</td>");
-//		sb.append("<td>" + overallRating + "</td>");
-//		sb.append("</tr>");
-//		
-//		return sb.toString();
-//		
-//	}
-//	
-//	
 	
 	
 	/** process POST Request: request will be resent to doGet(); */

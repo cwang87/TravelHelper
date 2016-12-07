@@ -51,11 +51,8 @@ public class DatabaseHandler {
 	private static final String CREATE_LIKEDREVIEWS_SQL = "CREATE TABLE likedReviews (username VARCHAR(32) NOT NULL, "
 			+ "reviewId VARCHAR(64) NOT NULL);";
 	
-	private static final String CREATE_EXPEDIAHISTORY_SQL = "CREATE TABLE expediaHistory (username VARCHAR(32) NOT NULL, "
-			+ "hotelName VARCHAR(64) NOT NULL, hotelId VARCHAR(32) NOT NULL);";
-	
 	private static final String CREATE_SAVEDHOTELS_SQL = "CREATE TABLE savedHotels (username VARCHAR(32) NOT NULL, "
-			+ "hotelName VARCHAR(64) NOT NULL, hotelId VARCHAR(32) NOT NULL);";
+			+ "hotelId VARCHAR(32) NOT NULL);";
 	
 	
 	
@@ -133,16 +130,6 @@ public class DatabaseHandler {
 	public Status createLikedReviews(){
 		Status status = Status.CREATE_FAILED;
 		if(SqlHelper.executeUpdate(CREATE_LIKEDREVIEWS_SQL) ){
-			status = Status.OK;
-		}
-		return status;
-	}
-	
-	
-	/** create table - expediaHistory */
-	public Status createExpediaHistory(){
-		Status status = Status.CREATE_FAILED;
-		if(SqlHelper.executeUpdate(CREATE_EXPEDIAHISTORY_SQL) ){
 			status = Status.OK;
 		}
 		return status;
