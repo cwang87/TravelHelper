@@ -32,7 +32,7 @@
 	
 	<div class="container-fluid" style="display: ${display};">
 		<br>
-		<table id="reviews" class="table table-condensed">
+		<table id="reviews" class="table table-striped">
 			<tr>
 				<th width="6%">User</th>
 				<th width="15%">Review Title</th>
@@ -51,12 +51,66 @@
 				<td>$review.isRecom</td>
 				<td>$review.overallRating</td>
 			</tr>
+			
+			<tr>
+			<td colspan="2"></td>
+				
+			<td colspan="4" align="right">
+			
+				<a onclick="like(this)" class="btn btn-xs btn-danger" id=${review.reviewId}>Like
+                <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
+                </a> 
+                &nbsp;&nbsp;
+                <span style="font-size:100%; font-family:fantasy; color:HotPink; font-style: italic" id=${review.reviewId}likeCount>
+                ${review.likeCount} users found this Review helpful!</span>
+			</td>
+			
+			</tr>
+			
+		
+			
 			#end
 			
 		</table>
 
 	</div>
 </div>
+
+
+<script>
+function like(elem){
+	var reviewId = elem.id;
+	var xhttp = new XMLHttpRequest();
+	  	xhttp.onreadystatechange = function() {
+		if(xhttp.readyState == 4 && xhttp.status == 200){
+			var text = xhttp.responseText;
+			if( parseInt(text) == -1){
+				document.getElementById(reviewId + "likeCount").innerHTML = likeCount + " users found this Review helpful!";
+				document.getElementById(reviewId).onclick = function (alert("You already liked this review!"));
+				document.getElementById(reviewId).class = "btn btn-xs btn-info";
+				document.getElementById(reviewId).innerHTML = "Liked";
+			}else if(parseInt(sValue) > 0){}
+				document.getElementById(reviewId).onclick = function (alert("You already liked this review!"));
+				document.getElementById(reviewId).class = "btn btn-xs btn-info";
+				document.getElementById(reviewId).innerHTML = "Liked";
+				alert("You Liked this review before!");
+			}else{
+				alert(text);
+			}
+			
+		}
+	}
+	  	
+	xhttp.open("GET", "/like_reviews?reviewId=" + reviewId, true);
+	xhttp.send();
+	
+}
+
+
+
+
+
+</script>
      
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
