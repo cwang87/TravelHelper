@@ -40,15 +40,29 @@ public class ReviewsServlet extends BaseServlet {
 		Template template = velocity.getTemplate("view/reviews.html");
 		
 		
-		// get hotelId and check if this hotel has reviews
+		// get hotelId sortType and check if this hotel has reviews
 		String hotelId = request.getParameter("hotelId");
+		String sortType = request.getParameter("sortType");
 		
 		if(!reviewsHandler.hasReviewHotelId(hotelId)){
 			context.put("noReviewMessage", "This hotel has no reviews!");
+			context.put("display", "none");
 		
-		}else{
+		}else if(sortType == null || sortType.isEmpty()){
 			ArrayList<ReviewDB> reviewList = reviewsHandler.getHotelReviews(hotelId);
 			context.put("reviewList", reviewList);
+			context.put("hotelId", hotelId);
+		}else if(sortType.equals("reviewDate")){
+			ArrayList<ReviewDB> reviewList = reviewsHandler.getHotelReviewsSortByDate(hotelId);
+			context.put("reviewList", reviewList);
+			context.put("hotelId", hotelId);
+		}else if(sortType.equals("overallRating")){
+			ArrayList<ReviewDB> reviewList = reviewsHandler.getHotelReviewsSortByRating(hotelId);
+			context.put("reviewList", reviewList);
+			context.put("hotelId", hotelId);
+		}else{
+			context.put("noReviewMessage", "Not valid sorting!");
+			context.put("display", "none");
 		}
 		
 		
@@ -61,65 +75,6 @@ public class ReviewsServlet extends BaseServlet {
 	}
 	
 	
-	
-	
-	
-//	/* write the review info about the hotel into html table */
-//	private void createTbl(PrintWriter out, String hotelId){
-//		
-//	
-//		
-//		//table title
-//		out.println("<h3>" + hotelName + "</h3>");
-//		out.println("<p>" + "Average Rating: " + aveRating + "</p>");
-//		out.println("<p>" + "Hotel Address: " + hotelAddr + "</p>");
-//		out.println("<style>table, th, td {border: 1px solid black;}</style>");
-//		out.println("<table>");
-//		
-//		//table head
-//		out.println("<tr>");
-//		out.println("<th>Username/th>");
-//		out.println("<th>Review Title</th>");
-//		out.println("<th>Review Text</th>");
-//		out.println("<th>Review Date</th>");
-//		out.println("<th>Recom</th>");
-//		out.println("<th>Rating</th>");
-//		out.println("</tr>");
-//		
-//		StringBuffer sb = new StringBuffer();
-//		
-//		for(ReviewDB review: reviews){
-//			
-//			String oneReview = addReviewTbl(review.getUsername(), review.getReviewTitle(), review.getReviewText(), 
-//					Tools.toStringDate(review.getReviewDate()), Tools.bool2yn(review.getIsRecom()), 
-//					Integer.toString(review.getOverallRating()));	
-//			sb.append(oneReview);
-//		}
-//		out.println(sb.toString());
-//		out.println("</table>");
-//		
-//	}
-//	
-	
-	
-//	private String addReviewTbl(String username, String reviewTitle, 
-//			String reviewText, String reviewDate, String isRecom, String overallRating){
-//		
-//		StringBuffer sb = new StringBuffer();
-//		
-//		sb.append("<tr>");
-//		sb.append("<td>" + username + "</td>");
-//		sb.append("<td>" + reviewTitle + "</td>");
-//		sb.append("<td width=\"45%\">" + reviewText + "</td>");
-//		sb.append("<td>" + reviewDate + "</td>");
-//		sb.append("<td>" + isRecom + "</td>");
-//		sb.append("<td>" + overallRating + "</td>");
-//		sb.append("</tr>");
-//		
-//		return sb.toString();
-//		
-//	}
-//	
 	
 	
 	

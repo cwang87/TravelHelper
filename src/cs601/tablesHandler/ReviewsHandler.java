@@ -38,7 +38,13 @@ public class ReviewsHandler {
 	
 	private static final String SEARCH_REVIEW_REVIEWID = "SELECT * FROM reviews WHERE reviewId = ?;";
 	
-	private static final String SEARCH_REVIEW_HOTELID = "SELECT * FROM reviews WHERE hotelId=?;";
+	private static final String SEARCH_REVIEW_HOTELID = "SELECT * FROM reviews WHERE hotelId = ?;";
+	
+	private static final String SEARCH_REVIEW_HOTELID_SORTBYDATE = "SELECT * FROM reviews WHERE hotelId=? "
+			+ "ORDER BY reviewDate DESC;";
+	
+	private static final String SEARCH_REVIEW_HOTELID_SORTBYRATING = "SELECT * FROM reviews WHERE hotelId=? "
+			+ "ORDER BY overallRating DESC;";
 	
 	private static final String HAS_REVIEW_HOTELID = "SELECT hotelId FROM reviews WHERE hotelId = ?;";
 	
@@ -60,12 +66,12 @@ public class ReviewsHandler {
 	
 	/*---------------------------------------------Get ReviewLists-------------------------------------------*/
 	
-	/** Get 8 results per page given sorted type (by review date or rating). */
+	/** Get all reveiws of a particular hotel ordered by likecount desc as a default order. */
 	public ArrayList<ReviewDB> getHotelReviews(String hotelId){
 		ArrayList<ReviewDB> reviews = new ArrayList<>();
 		
 		if(hasReviewHotelId(hotelId)){
-			//SELECT * FROM reviews WHERE hotelId = '10323' ORDER BY reviewDate DESC LIMIT 0, 2;
+			
 			ResultSet rs = SqlHelper.executeQuery(SEARCH_REVIEW_HOTELID, hotelId);
 			
 			reviews = parseReview(rs);
@@ -75,6 +81,42 @@ public class ReviewsHandler {
 		
 		return reviews;
 	}
+	
+	
+	/** Get all reveiws of a particular hotel ordered by reviewDate. */
+	public ArrayList<ReviewDB> getHotelReviewsSortByDate(String hotelId){
+		ArrayList<ReviewDB> reviews = new ArrayList<>();
+		
+		if(hasReviewHotelId(hotelId)){
+			
+			ResultSet rs = SqlHelper.executeQuery(SEARCH_REVIEW_HOTELID_SORTBYDATE, hotelId);
+			
+			reviews = parseReview(rs);
+			
+			SqlHelper.close(SqlHelper.getRs(), SqlHelper.getPs(), SqlHelper.getCt());
+		}
+		
+		return reviews;
+	}
+	
+	
+	/** Get all reveiws of a particular hotel ordered by overallRating. */
+	public ArrayList<ReviewDB> getHotelReviewsSortByRating(String hotelId){
+		ArrayList<ReviewDB> reviews = new ArrayList<>();
+		
+		if(hasReviewHotelId(hotelId)){
+			
+			ResultSet rs = SqlHelper.executeQuery(SEARCH_REVIEW_HOTELID_SORTBYRATING, hotelId);
+			
+			reviews = parseReview(rs);
+			
+			SqlHelper.close(SqlHelper.getRs(), SqlHelper.getPs(), SqlHelper.getCt());
+		}
+		
+		return reviews;
+	}
+	
+	
 	
 	
 	private ArrayList<ReviewDB> parseReview(ResultSet rs){
