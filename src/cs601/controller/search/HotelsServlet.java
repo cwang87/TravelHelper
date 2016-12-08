@@ -62,18 +62,24 @@ public class HotelsServlet extends BaseServlet {
 		if(hotelName.isEmpty() && city.isEmpty() && state.isEmpty()){
 			//Full hotelList
 			List<HotelAveRate> hotelList = hotelsHandler.getHotelsFull();
+			String geoLocations = getGeoLocations(hotelList);
 			context.put("hotelList", hotelList);
+			context.put("geoLocations", geoLocations);
 		}else if(hotelName.isEmpty() && !city.isEmpty() && !state.isEmpty()){
 			//hotelList given a specific city/state
 			List<HotelAveRate> hotelList = hotelsHandler.getHotelsByCity(city, state);
+			String geoLocations = getGeoLocations(hotelList);
 			context.put("hotelList", hotelList);	
+			context.put("geoLocations", geoLocations);
 		}else if(!hotelName.isEmpty() && city.isEmpty() && state.isEmpty()){
 			//display hotels whose name contains given string
 			List<HotelAveRate> hotelList = hotelsHandler.getHotelsByPartialName(hotelName);
+			String geoLocations = getGeoLocations(hotelList);
 			if(hotelList.size() == 1){
 				redirect(response, "/hotelWiki?hotelId="+hotelList.get(0).getHotelId());
 			}else{
 				context.put("hotelList", hotelList);
+				context.put("geoLocations", geoLocations);
 			}	
 		}else{
 			redirect(response, "/home?error=INVALID_SEARCH");
@@ -86,7 +92,21 @@ public class HotelsServlet extends BaseServlet {
 	}	
 	
 	
-	
+	private String getGeoLocations(List<HotelAveRate> hotelList){
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("[ ");
+		
+		for(HotelAveRate hotel : hotelList){
+			sb.append("{lat: ").append(hotel.getLat()).append(", lng: ").append(hotel.getLon()).append("},");
+		}
+		
+		sb.deleteCharAt(sb.length()-1);
+		
+		sb.append(" ]");
+		
+		return sb.toString();
+	}
 	
 	
 	

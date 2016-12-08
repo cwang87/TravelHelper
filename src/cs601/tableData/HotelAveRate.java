@@ -10,17 +10,21 @@ public class HotelAveRate implements Comparable<HotelAveRate> {
 	private String hotelName;
 	private String hotelAddr;
 	private String aveRating;
+	private String lat;
+	private String lon;
 	
 
 	/**
 	 * Constructor
 	 */
 	
-	public HotelAveRate(String hotelId, String hotelName, String hotelAddr, String aveRating) {
+	public HotelAveRate(String hotelId, String hotelName, String hotelAddr, String aveRating, String lat, String lon) {
 		this.hotelId = hotelId;
 		this.hotelName = hotelName;
 		this.hotelAddr = hotelAddr;
 		this.aveRating = aveRating;
+		this.lat = lat;
+		this.lon = lon;
 	}
 	
 	
@@ -67,7 +71,13 @@ public class HotelAveRate implements Comparable<HotelAveRate> {
 		return aveRating;
 	}
 
+	public String getLat() {
+		return lat;
+	}
 	
+	public String getLon() {
+		return lon;
+	}
 
 	
 }

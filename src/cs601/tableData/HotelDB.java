@@ -1,32 +1,34 @@
 package cs601.tableData;
 
-/**
- * A class - represent the address part of "hotels" table in database
- */
-public class AddressDB {
-
+public class HotelDB implements Comparable<HotelDB> {
+	
+	private String hotelId;
+	private String hotelName;
 	private String city;
 	private String state;
 	private String strAddr;
 	private String country;
 	private double lat;
 	private double lon;
+	
 
-	
-	
-	
 	/**
 	 * Constructor
 	 * 
+	 * @param id
+	 * @param hName
 	 * @param city
 	 * @param state
-	 * @param strAddr
+	 * @param streetAddress
 	 * @param country
 	 * @param lat
 	 * @param lon
 	 */
-	public AddressDB(String city, String state, String strAddr, String country, double lat, double lon) {
-		super();
+	
+	public HotelDB(String hotelId, String hotelName, String city, String state, String strAddr, String country,
+			double lat, double lon) {
+		this.hotelId = hotelId;
+		this.hotelName = hotelName;
 		this.city = city;
 		this.state = state;
 		this.strAddr = strAddr;
@@ -34,38 +36,43 @@ public class AddressDB {
 		this.lat = lat;
 		this.lon = lon;
 	}
-
 	
 	
 	
 	
-
-	/**
-	 * return an address string in the format: streetAddr, city, state, country
-	 */
-	public String toString(){
-		
-		StringBuffer sBuffer = new StringBuffer();
-		
-		sBuffer.append(strAddr).append(",");
-		sBuffer.append(city).append(",");
-		sBuffer.append(state).append(",");
-		sBuffer.append(country);
-		
-		return sBuffer.toString();
+	
+	/** A method to decide the order of hotels stored in the data structure. */
+	
+	public int compareTo(HotelDB h) {
+		return hotelName.compareTo(h.hotelName); 
 	}
-	
-	
-	
-	
-	
-	
 
-	/*-----------------------------------------getters----------------------------------------*/
-	
+
+
+
+	/* ---------------getters-------------------------*/
+
+	public String getHotelId() {
+		return hotelId;
+	}
+
+
+
+
+
+	public String getHotelName() {
+		return hotelName;
+	}
+
+
+
+
+
 	public String getCity() {
 		return city;
 	}
+
+
 
 
 
@@ -75,9 +82,13 @@ public class AddressDB {
 
 
 
+
+
 	public String getStrAddr() {
 		return strAddr;
 	}
+
+
 
 
 
@@ -87,9 +98,13 @@ public class AddressDB {
 
 
 
+
+
 	public double getLat() {
 		return lat;
 	}
+
+
 
 
 
@@ -99,6 +114,12 @@ public class AddressDB {
 	
 	
 	
+	
+	
 
 	
+
+
+
+
 }

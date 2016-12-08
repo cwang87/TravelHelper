@@ -1,4 +1,4 @@
-package cs601.controller.main;
+package cs601.controller.search;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+
+import cs601.controller.main.BaseServlet;
 
 
 /**

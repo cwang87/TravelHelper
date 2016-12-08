@@ -7,6 +7,7 @@ import java.util.List;
 
 import cs601.sqlHelper.SqlHelper;
 import cs601.tableData.HotelAveRate;
+import cs601.tableData.HotelDB;
 import cs601.util.Status;
 import cs601.util.Tools;
 
@@ -15,8 +16,8 @@ public class HotelsHandler {
 	private static HotelsHandler hotelsHandler = new HotelsHandler();
 	
 	
-	private static final String SEARCH_ONEHOTELS_WITH_AVG = "SELECT hotels.hotelId, hotelName,"
-			+ " city, state, strAddr, country, AVG(overallRating) AS aveRating "
+	private static final String SEARCH_ONEHOTEL_WITH_AVG = "SELECT hotels.hotelId, hotelName,"
+			+ " city, state, strAddr, country, AVG(overallRating) AS aveRating, lat, lon "
 			+ "FROM hotels LEFT OUTER JOIN reviews "
 			+ "ON hotels.hotelId = reviews.hotelId "
 			+ "WHERE hotels.hotelId=? "
@@ -24,25 +25,26 @@ public class HotelsHandler {
 	
 	
 	private static final String SEARCH_ALLHOTELS_WITH_AVG = "SELECT hotels.hotelId, hotelName,"
-			+ " city, state, strAddr, country, AVG(overallRating) AS aveRating "
+			+ " city, state, strAddr, country, AVG(overallRating) AS aveRating, lat, lon "
 			+ "FROM hotels LEFT OUTER JOIN reviews "
 			+ "ON hotels.hotelId = reviews.hotelId "
 			+ "GROUP BY hotels.hotelId;"; 
 	
 	private static final String SEARCH_HOTELS_BYCITY_WITH_AVG = "SELECT hotels.hotelId, hotelName, "
-			+ "city, state, strAddr, country, AVG(overallRating) AS aveRating "
+			+ "city, state, strAddr, country, AVG(overallRating) AS aveRating, lat, lon "
 			+ "FROM hotels LEFT OUTER JOIN reviews "
 			+ "ON hotels.hotelId = reviews.hotelId "
 			+ "WHERE city=? AND state=? "
 			+ "GROUP BY hotels.hotelId;";
 	
 	private static final String SEARCH_HOTELS_BYNAME_WITH_AVG = "SELECT hotels.hotelId, hotelName, "
-			+ "city, state, strAddr, country, AVG(overallRating) AS aveRating "
+			+ "city, state, strAddr, country, AVG(overallRating) AS aveRating, lat, lon "
 			+ "FROM hotels LEFT OUTER JOIN reviews "
 			+ "ON hotels.hotelId = reviews.hotelId "
 			+ "WHERE hotelName LIKE ? "
 			+ "GROUP BY hotels.hotelId;";
 	
+	private static final String SEARCH_ONEHOTEL_DB = "SELECT * FROM hotels WHERE hotelId = ?;";
 	
 	private static final String SEARCH_HOTELNAME = "SELECT hotelName FROM hotels WHERE hotelId = ?;";
 	
@@ -63,14 +65,15 @@ public class HotelsHandler {
 	}
 	
 	
-	/*-----------------------------------------get one hotel info with aveRating---------------------------------*/
+	/*---------------------------------------------get one hotel info ---------------------------------------*/
 
-	/** given hotelId, return an instance of HotelAveRate which stores all info about this hotel in table hotels */
+	/** given hotelId, return an instance of HotelAveRate which stores info about this hotel from table hotels 
+	 * (without lat & lon), and average rating information from table reviews. */
 	public HotelAveRate getHotelAveRate(String hotelIdSearch){
 		
 		HotelAveRate hotel = null;
 		
-		ResultSet rs = SqlHelper.executeQuery(SEARCH_ONEHOTELS_WITH_AVG, hotelIdSearch);
+		ResultSet rs = SqlHelper.executeQuery(SEARCH_ONEHOTEL_WITH_AVG, hotelIdSearch);
 		try {
 			while(rs.next()){
 				String hotelId = rs.getString(1);
@@ -86,7 +89,10 @@ public class HotelsHandler {
 				}
 				String hotelAddr = strAddr + ", " + city + ", " + state + ", " + country;
 				
-				hotel = new HotelAveRate(hotelId, hotelName, hotelAddr, aveRating);
+				String lat = Double.toString(rs.getDouble(8));
+				String lon = Double.toString(rs.getDouble(9));
+				
+				hotel = new HotelAveRate(hotelId, hotelName, hotelAddr, aveRating, lat, lon);
 			}
 		} catch (SQLException e) {
 			System.out.println(Status.SQL_EXCEPTION + e.getMessage());
@@ -96,6 +102,39 @@ public class HotelsHandler {
 		
 		return hotel;
 	}
+	
+	
+	
+	
+	
+	/** given hotelId, return an instance if HotelDB which stores all info about this hotel from hotels table */
+	public HotelDB getHotelDB(String hotelId){
+		
+		HotelDB hotel = null;
+		
+		ResultSet rs = SqlHelper.executeQuery(SEARCH_ONEHOTEL_DB, hotelId);
+		
+		try {
+			if (rs.next()){
+				String hotelName = rs.getString(2);
+				String city = rs.getString(3);
+				String state = rs.getString(4);
+				String strAddr = rs.getString(5);
+				String country = rs.getString(6);
+				double lat = rs.getDouble(7);
+				double lon = rs.getDouble(8);
+			
+			hotel = new HotelDB(hotelId, hotelName, city, state, strAddr, country, lat, lon);	
+			}
+		} catch (SQLException e) {
+			System.out.println(Status.SQL_EXCEPTION + e.getMessage());
+		} finally {
+			SqlHelper.close(SqlHelper.getRs(), SqlHelper.getPs(), SqlHelper.getCt());
+		}
+		
+		return hotel;
+	}
+	
 	
 	
 	
@@ -174,7 +213,11 @@ public class HotelsHandler {
 				}
 				String hotelAddr = strAddr + ", " + city + ", " + state + ", " + country;
 				
-				HotelAveRate hotel = new HotelAveRate(hotelId, hotelName, hotelAddr, aveRating);
+				String lat = Double.toString(rs.getDouble(8));
+				String lon = Double.toString(rs.getDouble(9));
+				
+				HotelAveRate hotel = new HotelAveRate(hotelId, hotelName, hotelAddr, aveRating, lat, lon);
+				
 				hotelList.add(hotel);
 			}
 		} catch (SQLException e) {
