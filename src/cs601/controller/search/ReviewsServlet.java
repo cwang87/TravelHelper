@@ -42,14 +42,12 @@ public class ReviewsServlet extends BaseServlet {
 		
 		// get hotelId and check if this hotel has reviews
 		String hotelId = request.getParameter("hotelId");
-		System.out.println(hotelId);
 		
 		if(!reviewsHandler.hasReviewHotelId(hotelId)){
 			context.put("noReviewMessage", "This hotel has no reviews!");
 		
 		}else{
 			ArrayList<ReviewDB> reviewList = reviewsHandler.getHotelReviews(hotelId);
-			System.out.println(reviewList.get(0).getHotelId() + "from reviews list");
 			context.put("reviewList", reviewList);
 		}
 		

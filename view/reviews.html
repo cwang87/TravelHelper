@@ -21,39 +21,48 @@
 	<div class="dropdown">
 		&nbsp;&nbsp;&nbsp;
   		<button class="btn btn-default dropdown-toggle" type="button" id="sort" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-    	Sort &nbsp;<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span><span class="caret"></span>
+    	Sort by &nbsp;<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span><span class="caret"></span>
   		</button>
   		<ul class="dropdown-menu" aria-labelledby="sort">
-		    <li><a onclick="sortTable('tblSort', 0)">Review Date</a></li>
-		    <li><a href="#">Overall Rating</a></li>
+		    <li><a onclick="sortTable('reviews', 3, 'date')">Review Date</a></li>
+		    <li><a onclick="sortTable('reviews', 5, 'int')">Overall Rating</a></li>
 		   
 		 </ul>
 	</div>
 	
 	<div class="container-fluid">
 		<br>
-		<table id="reviews" class="table table-striped">
+		<table id="reviews" class="table table-condensed">
+			<thead>
 			<tr>
-				<th>Username</th>
-				<th>Review Title</th>
-				<th>Review Date</th>
-				<th>Overall Rating</th>
+				<th width="6%">User</th>
+				<th width="15%">Review Title</th>
+				<th>Review Text</th>
+				<th width="8%">Date</th>
+				<th width="5%">Recomm</th>
+				<th width="2%">Rate</th>
 			</tr>
+			</thead>
 
+			<tbody>
 			#foreach($review in $reviewList)
 			<tr>
 				<td>$review.username</td>
 				<td>$review.reviewTitle</td>
+				<td>$review.reviewText</td>
 				<td>$review.reviewDate</td>
+				<td>$review.isRecom</td>
 				<td>$review.overallRating</td>
 			</tr>
 			#end
-
+			</tbody>
+			
 		</table>
 
 	</div>
 </div>
      
+ <!--  <script scr="/js/sorter.js"></script> -->    
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
