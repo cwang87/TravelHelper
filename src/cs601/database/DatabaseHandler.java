@@ -48,9 +48,6 @@ public class DatabaseHandler {
 			+ "reviewText TEXT NOT NULL, reviewDate TIMESTAMP DEFAULT NOW(), isRecom TINYINT(1) NOT NULL, "
 			+ "overallRating TINYINT(5) NOT NULL);";
 	
-	private static final String CREATE_LIKEDREVIEWS_SQL = "CREATE TABLE likedReviews (username VARCHAR(32) NOT NULL, "
-			+ "reviewId VARCHAR(64) NOT NULL);";
-	
 	private static final String CREATE_SAVEDHOTELS_SQL = "CREATE TABLE savedHotels (username VARCHAR(32) NOT NULL, "
 			+ "hotelId VARCHAR(32) NOT NULL);";
 	
@@ -126,15 +123,7 @@ public class DatabaseHandler {
 		return status;
 	}
 	
-	/** create table - likedReviews */
-	public Status createLikedReviews(){
-		Status status = Status.CREATE_FAILED;
-		if(SqlHelper.executeUpdate(CREATE_LIKEDREVIEWS_SQL) ){
-			status = Status.OK;
-		}
-		return status;
-	}
-	
+
 	
 	/** create table - savedHotels */
 	public Status createSavedHotels(){
