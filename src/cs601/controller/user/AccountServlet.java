@@ -19,6 +19,7 @@ import cs601.util.Tools;
 
 /**
  * Account servlet: handle request of accessing user's account.
+ * After logging in, the account page will display user's last visit date&time.
  * In the account page, users can logout, view hotels, add review, view and modify reviews written by user.
  */
 
@@ -27,9 +28,9 @@ public class AccountServlet extends BaseServlet {
 	
 	
 	/**
-	 * Process GET request: 
+	 * Process GET request: display user's account page.
+	 * In order to prevent invalid access with using url, we will check whether the user already logged in first.
 	 * If user didn't login but still use the url to access account, user will be redirected to login page.
-	 * If already logged in, user will access this account page.
 	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
@@ -45,7 +46,7 @@ public class AccountServlet extends BaseServlet {
 		
 		
 		if(checkRequestError(request)!=null){
-		    Template template = velocity.getTemplate("view/error.html");
+		    Template template = velocity.getTemplate("view/login.html");
 			context.put("errorMessage", checkRequestError(request));
 			template.merge(context, writer);
 		}else if(checkSession(request)!= null){

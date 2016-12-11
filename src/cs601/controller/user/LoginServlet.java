@@ -75,6 +75,7 @@ public class LoginServlet extends BaseServlet {
 		String user = request.getParameter("username");
 		String userpw = request.getParameter("password");
 		
+		// sanitize user input to avoid XSS attacks:
 		String dbuser = StringEscapeUtils.escapeHtml4(user);
 		String dbuserpw = StringEscapeUtils.escapeHtml4(userpw);
 		

@@ -19,7 +19,8 @@ import cs601.util.Tools;
 
 
 /**
- * Logout servlet: handle request from user to logout from account
+ * Logout servlet: handle request from user to logout from account by invalidating user's session.
+ * Meanwhile, update user's lastVisit date&time with current date&time
  */
 
 @SuppressWarnings("serial")
