@@ -1,5 +1,8 @@
-package cs601.controller.map;
+package cs601.modelData;
 
+/**
+ * A class of a tourist attraction, including: attractionId, name, address and rating.
+ */
 public class TouristAttraction {
 	private String attractionId;
 	private String attractionName;

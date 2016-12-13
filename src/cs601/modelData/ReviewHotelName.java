@@ -1,8 +1,8 @@
-package cs601.tableData;
+package cs601.modelData;
 
 
 /**
- * A class - represent the one row record of table "reviews" in database
+ * A class - represent the one row record of table "reviews" in database plus hotelName
  */
 public class ReviewHotelName implements Comparable<ReviewHotelName> {
 

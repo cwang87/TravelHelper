@@ -1,4 +1,4 @@
-package cs601.hotelData;
+package cs601.databaseData;
 
 /**
  * A class for Address of hotels.

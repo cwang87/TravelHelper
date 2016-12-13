@@ -15,6 +15,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import cs601.controller.main.BaseServlet;
+import cs601.modelData.TouristAttraction;
 
 
 /** A class to do request from users to search attractions near a particular hotel within given radius */

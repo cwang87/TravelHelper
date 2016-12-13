@@ -13,7 +13,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import cs601.controller.main.BaseServlet;
-import cs601.tableData.HotelAveRate;
+import cs601.modelData.HotelAveRate;
 import cs601.tablesHandler.HotelsHandler;
 
 /**
@@ -24,10 +24,6 @@ import cs601.tablesHandler.HotelsHandler;
 @SuppressWarnings("serial")
 public class HotelsServlet extends BaseServlet {
 
-	
-	private static final HotelsHandler hotelsHandler = HotelsHandler.getInstance();
-	
-	
 	/**
 	 * Process GET request: display a full list of hotels with information including:
 	 * hotelId, hotelName, hotel address and average rating of the hotel based on all reviews received so far.
@@ -61,19 +57,19 @@ public class HotelsServlet extends BaseServlet {
 		
 		if(hotelName.isEmpty() && city.isEmpty() && state.isEmpty()){
 			//Full hotelList
-			List<HotelAveRate> hotelList = hotelsHandler.getHotelsFull();
+			List<HotelAveRate> hotelList = HotelsHandler.getInstance().getHotelsFull();
 			String geoLocations = getGeoLocations(hotelList);
 			context.put("hotelList", hotelList);
 			context.put("geoLocations", geoLocations);
 		}else if(hotelName.isEmpty() && !city.isEmpty() && !state.isEmpty()){
 			//hotelList given a specific city/state
-			List<HotelAveRate> hotelList = hotelsHandler.getHotelsByCity(city, state);
+			List<HotelAveRate> hotelList = HotelsHandler.getInstance().getHotelsByCity(city, state);
 			String geoLocations = getGeoLocations(hotelList);
 			context.put("hotelList", hotelList);	
 			context.put("geoLocations", geoLocations);
 		}else if(!hotelName.isEmpty() && city.isEmpty() && state.isEmpty()){
 			//display hotels whose name contains given string
-			List<HotelAveRate> hotelList = hotelsHandler.getHotelsByPartialName(hotelName);
+			List<HotelAveRate> hotelList = HotelsHandler.getInstance().getHotelsByPartialName(hotelName);
 			String geoLocations = getGeoLocations(hotelList);
 			if(hotelList.size() == 1){
 				redirect(response, "/hotelWiki?hotelId="+hotelList.get(0).getHotelId());
@@ -92,6 +88,12 @@ public class HotelsServlet extends BaseServlet {
 	}	
 	
 	
+	/**
+	 * A method to generate geolocation part of the request url to display multiple markers in map.
+	 * The format is required by google map API.
+	 * @param hotelList
+	 * @return
+	 */
 	private String getGeoLocations(List<HotelAveRate> hotelList){
 		StringBuilder sb = new StringBuilder();
 		

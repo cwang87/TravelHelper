@@ -1,4 +1,8 @@
-package cs601.tableData;
+package cs601.modelData;
+
+/**
+ * A class represent info from hotels table in mySql database 
+ */
 
 public class HotelDB implements Comparable<HotelDB> {
 	

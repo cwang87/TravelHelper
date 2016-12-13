@@ -18,7 +18,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import cs601.controller.main.BaseServlet;
-import cs601.tableData.HotelSimple;
+import cs601.modelData.HotelSimple;
 import cs601.tablesHandler.HotelsHandler;
 
 @SuppressWarnings("serial")

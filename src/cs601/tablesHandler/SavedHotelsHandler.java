@@ -5,9 +5,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cs601.modelData.HotelSimple;
 import cs601.sqlHelper.SqlHelper;
-import cs601.tableData.HotelSimple;
 import cs601.util.Status;
+
+/**
+ * A class - contains methods to manipulate data from savedHotels table in mySql. 
+ */
 
 public class SavedHotelsHandler {
 	

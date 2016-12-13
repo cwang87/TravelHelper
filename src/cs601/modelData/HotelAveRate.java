@@ -1,4 +1,4 @@
-package cs601.tableData;
+package cs601.modelData;
 
 /**
  * A class - hotel class with infomation will be shown in the hotel list

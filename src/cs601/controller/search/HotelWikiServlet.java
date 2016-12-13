@@ -12,14 +12,25 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import cs601.controller.main.BaseServlet;
-import cs601.tableData.HotelAveRate;
+import cs601.modelData.HotelAveRate;
 import cs601.tablesHandler.HotelsHandler;
+
+
+/** A class - given a hotelId (which is selected by user), 
+ * display hotel info of this hotel, including:
+ * hotelname, address, average rating, link to expedia, reviews tab, map tab and attraction search tab
+ */
 
 @SuppressWarnings("serial")
 public class HotelWikiServlet extends BaseServlet {
 	
-	private static final HotelsHandler hotelsHandler = HotelsHandler.getInstance();
-	
+	/**
+	 * Process Get request: given a hotelId, display hotel info of this hotel, including:
+	 * hotelname, address, average rating, link to expedia, reviews tab, map tab and attraction search tab
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -42,7 +53,7 @@ public class HotelWikiServlet extends BaseServlet {
 		
 		//get hotelInfo
 		String hotelId = request.getParameter("hotelId");
-		HotelAveRate hotel = hotelsHandler.getHotelAveRate(hotelId);
+		HotelAveRate hotel = HotelsHandler.getInstance().getHotelAveRate(hotelId);
 		Template body = velocity.getTemplate("view/hotelWiki.html");
 		context.put("hotel", hotel);
 		context.put("hotelId", hotelId);

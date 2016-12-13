@@ -3,8 +3,15 @@ package cs601.database;
 import cs601.util.Status;
 import cs601.sqlHelper.SqlHelper;;
 
+/**
+ * A driver class to write mySql database  
+ */
+
 public class DatabaseWriter {
 	
+	/**
+	 * main method to write mySql database
+	 */
 	public static void main(String[] args) {
 		
 		DatabaseHandler handler = DatabaseHandler.getInstance();

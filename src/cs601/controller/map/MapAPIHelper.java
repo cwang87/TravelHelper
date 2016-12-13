@@ -5,7 +5,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import cs601.tableData.HotelDB;
+import cs601.modelData.HotelDB;
+import cs601.modelData.TouristAttraction;
 import cs601.tablesHandler.HotelsHandler;
 
 import java.io.BufferedReader;
@@ -136,6 +137,12 @@ public class MapAPIHelper {
 	
 	/*-----------------------------------------embed Google Map---------------------------------------------------*/
 	
+	
+	/**
+	 * A method to generate request url string required by google map API
+	 * @param hotelId
+	 * @return
+	 */
 	public String getHotelMapRequest(String hotelId){
 		
 		String url = "https://www.google.com/maps/embed/v1/place?key=AIzaSyB3cbJnQmxutzUgcvhWXAhAPiwYFL9AgzE&q=";

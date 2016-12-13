@@ -8,11 +8,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import cs601.modelData.ReviewDB;
+import cs601.modelData.ReviewHotelName;
 import cs601.sqlHelper.SqlHelper;
-import cs601.tableData.ReviewDB;
-import cs601.tableData.ReviewHotelName;
 import cs601.util.Status;
 import cs601.util.Tools;
+
+
+/**
+ * A class - contains methods to manipulate data from reviews table in mySql. 
+ */
 
 public class ReviewsHandler {
 

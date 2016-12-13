@@ -1,4 +1,4 @@
-package cs601.tableData;
+package cs601.modelData;
 
 /**
  * A class - represent the "users" table in database

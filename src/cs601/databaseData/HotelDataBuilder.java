@@ -1,4 +1,4 @@
-package cs601.hotelData;
+package cs601.databaseData;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

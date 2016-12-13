@@ -14,8 +14,7 @@ import cs601.util.Status;
 import cs601.util.Tools;
 
 /**
- * Handles all database-related actions about Table "users", including register and query.
- * Uses singleton design pattern.
+ * A class - contains methods to manipulate data from users table in mySql. 
  */
 
 public class UsersHandler {

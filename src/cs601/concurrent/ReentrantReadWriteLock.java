@@ -167,7 +167,6 @@ public class ReentrantReadWriteLock {
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

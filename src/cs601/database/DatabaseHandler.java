@@ -11,8 +11,8 @@ import java.util.Set;
 
 import cs601.sqlHelper.SqlHelper;
 import cs601.tablesHandler.UsersHandler;
-import cs601.hotelData.HotelDataBuilder;
-import cs601.hotelData.ThreadSafeHotelData;
+import cs601.databaseData.HotelDataBuilder;
+import cs601.databaseData.ThreadSafeHotelData;
 import cs601.sqlHelper.DBConnector;
 import cs601.util.Status;
 

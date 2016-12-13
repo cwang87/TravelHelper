@@ -13,7 +13,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import cs601.controller.main.BaseServlet;
-import cs601.tableData.ReviewDB;
+import cs601.modelData.ReviewDB;
 import cs601.tablesHandler.ReviewsHandler;
 
 

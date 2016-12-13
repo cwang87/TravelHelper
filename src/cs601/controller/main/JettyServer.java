@@ -19,7 +19,7 @@ import cs601.controller.userSave.MyReviewServlet;
 import cs601.controller.userSave.SaveHotelsServlet;
 
 
-/** A class use Jetty and Servlets to handle the HTTP GET request from client */
+/** A server class - use Jetty and Servlets to handle the HTTP GET request from client */
 public class JettyServer {
 
 	public static final int PORT = 2050;

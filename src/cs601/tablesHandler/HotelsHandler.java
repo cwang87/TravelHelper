@@ -5,11 +5,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cs601.modelData.HotelAveRate;
+import cs601.modelData.HotelDB;
 import cs601.sqlHelper.SqlHelper;
-import cs601.tableData.HotelAveRate;
-import cs601.tableData.HotelDB;
 import cs601.util.Status;
 import cs601.util.Tools;
+
+/**
+ * A class - contains methods to manipulate data from hotels table in mySql. 
+ */
 
 public class HotelsHandler {
 

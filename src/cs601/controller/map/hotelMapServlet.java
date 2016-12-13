@@ -40,14 +40,19 @@ public class hotelMapServlet extends BaseServlet{
 		}
 		
 		
-		
-		
-		
 		StringWriter writer = new StringWriter();
 		template.merge(context, writer);
 		out.println(writer.toString());
 		
 	}
+	
+	
+	/** Process Post request: request will be resent to doGet();  */
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		this.doGet(request, response);
+	}
+	
 	
 
 }
