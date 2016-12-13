@@ -27,7 +27,7 @@
 			#foreach($review in $reviewList)
 			<tr>
 				<td width="25%">
-				<a href="http://localhost:2050/hotelWiki?hotelId=${review.hotelId}" target="_blank">
+				<a href="/hotelWiki?hotelId=${review.hotelId}" target="_blank">
 				$review.hotelName
 				</a></td>
 				
@@ -39,12 +39,12 @@
 			
 			<tr>
 			<td valign="bottom">
-				<a href="http://localhost:2050/modify_review?reviewId=${review.reviewId}&hotelName=${review.hotelName}" 
+				<a href="/modify_review?reviewId=${review.reviewId}&hotelName=${review.hotelName}" 
                    class="btn btn-xs btn-success">Modify
                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                 </a> 
                 
-                <a href="http://localhost:2050/delete_review?reviewId=${review.reviewId}" 
+                <a href="/delete_review?reviewId=${review.reviewId}" 
                 	class="btn btn-xs btn-primary">Delete
                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                 </a>    

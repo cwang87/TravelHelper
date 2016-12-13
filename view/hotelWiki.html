@@ -34,13 +34,13 @@
             
             <ul class="nav nav-tabs">
                 <li class="active" role="presentation">
-                <a href= "http://localhost:2050/reviews?hotelId=${hotelId}" target="frame">Reviews</a></li>
+                <a href= "/reviews?hotelId=${hotelId}" target="frame">Reviews</a></li>
                 
                 <li class="active" role="presentation">
-                <a href="http://localhost:2050/attractions?hotelId=${hotelId}" target="frame">Attraction Search</a></li>
+                <a href="/attractions?hotelId=${hotelId}" target="frame">Attraction Search</a></li>
                 
                 <li class="active" role="presentation" >
-                <a href="http://localhost:2050/hotelMap?hotelId=${hotelId}" target="frame">Google Map&nbsp;&nbsp;</a></li>        
+                <a href="/hotelMap?hotelId=${hotelId}" target="frame">Google Map&nbsp;&nbsp;</a></li>        
             </ul>
             </div>
         
@@ -48,7 +48,7 @@
             
         <div class="container-fluid" height="1000">
             <br>
-            <iframe src="http://localhost:2050/reviews?hotelId=${hotelId}" name="frame" frameborder="0" 
+            <iframe src="/reviews?hotelId=${hotelId}" name="frame" frameborder="0" 
             onload="this.height=frame.document.body.scrollHeight" width="100%">
             </iframe>
                  

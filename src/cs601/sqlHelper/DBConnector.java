@@ -38,8 +38,8 @@ public class DBConnector {
 		// load configuration from file
 		Properties config = null;
 		try {
-//			config = loadConfig("localDB.properties");
-			config = loadConfig("database.properties");
+			config = loadConfig("localDB.properties");
+//			config = loadConfig("database.properties");
 		} catch (FileNotFoundException e) {
 			System.out.println(Status.MISSING_CONFIG + ": " + e.getMessage());
 		} catch (IOException e) {
