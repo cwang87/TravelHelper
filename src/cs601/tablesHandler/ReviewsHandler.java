@@ -137,12 +137,10 @@ public class ReviewsHandler {
 				boolean isRecom= Tools.int2bool(rs.getInt(7));
 				int overallRating = rs.getInt(8);
 				int userId = rs.getInt(9);
-				int likeCount = rs.getInt(10);
 				
 				ReviewDB review = new ReviewDB(hotelId, reviewId, username, reviewTitle, reviewText,
-						Tools.toStringDate(reviewDate), Tools.bool2yn(isRecom), Integer.toString(overallRating), 
-						Integer.toString(userId), Integer.toString(likeCount));
-				
+								Tools.toStringDate(reviewDate), Tools.bool2yn(isRecom), Integer.toString(overallRating), 
+								Integer.toString(userId));
 				reviews.add(review);
 			}
 		}catch (SQLException e) {
@@ -300,11 +298,10 @@ public class ReviewsHandler {
 				boolean isRecom= Tools.int2bool(rs.getInt(7));
 				int overallRating = rs.getInt(8);
 				int userId = rs.getInt(9);
-				int likeCount = rs.getInt(10);
 				
 				review = new ReviewDB(hotelId, reviewId, username, reviewTitle, reviewText,
 						Tools.toStringDate(reviewDate), Tools.bool2yn(isRecom), Integer.toString(overallRating),
-						Integer.toString(userId), Integer.toString(likeCount));
+						Integer.toString(userId));
 				
 			}
 		}catch (SQLException e) {

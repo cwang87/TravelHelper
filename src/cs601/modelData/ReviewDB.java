@@ -15,7 +15,6 @@ public class ReviewDB implements Comparable<ReviewDB> {
 	private String isRecom;
 	private String overallRating;
 	private String userId;
-	private String likeCount;
 	
 	
 	/** Constructor (convert the Data type of date from String to Date)
@@ -29,10 +28,9 @@ public class ReviewDB implements Comparable<ReviewDB> {
 	 * @param isRecom
 	 * @param overallRating
 	 * @param userId
-	 * @param likeCount
 	 */
 	public ReviewDB(String hotelId, String reviewId, String username, String reviewTitle, String reviewText, String reviewDate, 
-			String isRecom, String overallRating, String userId, String likeCount) {
+			String isRecom, String overallRating, String userId) {
 		
 		this.hotelId = hotelId;
 		this.reviewId = reviewId;
@@ -43,7 +41,6 @@ public class ReviewDB implements Comparable<ReviewDB> {
 		this.isRecom = isRecom;
 		this.overallRating = overallRating;
 		this.userId = userId;
-		this.likeCount = likeCount;
 	}
 
 
@@ -117,10 +114,6 @@ public class ReviewDB implements Comparable<ReviewDB> {
 	}
 
 
-	public String getLikeCount() {
-		return likeCount;
-	}
-	
 
 
 
