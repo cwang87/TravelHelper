@@ -49,7 +49,7 @@ public class MyReviewServlet extends BaseServlet {
 		    	context.put("noReviewMessage", "You haven't written any reviews yet!");
 		    }
 		}else{
-			context.put("reloadParent", "parent.location.reload();");
+			redirect(response, "/login");
 		}
 		
 		

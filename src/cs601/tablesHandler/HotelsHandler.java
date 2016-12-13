@@ -86,10 +86,11 @@ public class HotelsHandler {
 				String state = rs.getString(4);
 				String strAddr = rs.getString(5);
 				String country = rs.getString(6);
+				
+				Double rating = rs.getDouble(7);
 				String aveRating = "no reviews";
-				if(rs.getObject(7) != null){
-					Double d = rs.getDouble(7);
-					aveRating = Tools.formatDouble(d);
+				if(rating != null){
+					aveRating = Tools.formatDouble(rating);
 				}
 				String hotelAddr = strAddr + ", " + city + ", " + state + ", " + country;
 				

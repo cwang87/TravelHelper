@@ -34,6 +34,7 @@ public class hotelMapServlet extends BaseServlet{
 		
 		if(hotelId == null || hotelId.isEmpty()){
 			context.put("message", "Please select a hotel to display!");
+			context.put("display", "none");
 		}else{
 			String url = MapAPIHelper.getInstance().getHotelMapRequest(hotelId);
 			context.put("url", url);

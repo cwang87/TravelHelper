@@ -44,10 +44,12 @@ public class ReviewsServlet extends BaseServlet {
 		String hotelId = request.getParameter("hotelId");
 		String sortType = request.getParameter("sortType");
 		
-		if(!reviewsHandler.hasReviewHotelId(hotelId)){
+		if(hotelId == null || hotelId.isEmpty()){
+			context.put("noReviewMessage", "Please specify the hotelId you would like to search!");
+			context.put("display", "none");
+		}else if(!reviewsHandler.hasReviewHotelId(hotelId)){
 			context.put("noReviewMessage", "This hotel has no reviews!");
 			context.put("display", "none");
-		
 		}else if(sortType == null || sortType.isEmpty()){
 			ArrayList<ReviewDB> reviewList = reviewsHandler.getHotelReviews(hotelId);
 			context.put("reviewList", reviewList);

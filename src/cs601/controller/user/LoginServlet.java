@@ -44,18 +44,17 @@ public class LoginServlet extends BaseServlet {
 		if(checkRequestError(request)!=null){
 			template = velocity.getTemplate("view/login.html");
 			context.put("errorMessage", checkRequestError(request));
+			StringWriter writer = new StringWriter();
+			template.merge(context, writer);
+			out.println(writer.toString());
 		}else if(username != null){
-			template = velocity.getTemplate("view/account.html");
-			context.put("username", username);
+			redirect(response, "/account");
 		}else{
 			template = velocity.getTemplate("view/login.html");
+			StringWriter writer = new StringWriter();
+			template.merge(context, writer);
+			out.println(writer.toString());
 		}
-		
-		
-		StringWriter writer = new StringWriter();
-		template.merge(context, writer);
-
-		out.println(writer.toString());
 		
 	}
 

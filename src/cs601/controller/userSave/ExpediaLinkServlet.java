@@ -88,7 +88,7 @@ public class ExpediaLinkServlet extends BaseServlet{
 		}
 		
 		if(expediaHistory == null || expediaHistory.isEmpty()){
-			context.put("message", "You haven't visit any Expedia Webpage yet!");
+			context.put("message", "You have no Expedia history!");
 			context.put("displayTable", "none");
 		}else {
 			String[] hotelIdList = expediaHistory.split(",");

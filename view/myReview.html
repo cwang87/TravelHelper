@@ -21,13 +21,12 @@
 				<th width="40%">Review Title</th>
 				<th width="10%">Recom</th>
 				<th width="10%">Rating</th>
-				<th width="10%">Liked</th>
-				<th width="10%">Date</th>
+				<th width="10%">Review Date</th>
 			</tr>
 	
 			#foreach($review in $reviewList)
 			<tr>
-				<td width="20%">
+				<td width="25%">
 				<a href="http://localhost:2050/hotelWiki?hotelId=${review.hotelId}" target="_blank">
 				$review.hotelName
 				</a></td>
@@ -35,8 +34,7 @@
 				<td width="40%">$review.reviewTitle</td>
 				<td width="10%">$review.isRecom</td>
 				<td width="10%">$review.overallRating</td>
-				<td width="10%">$review.likeCount</td>
-				<td width="10%">$review.reviewDate</td>
+				<td width="15%">$review.reviewDate</td>
 			</tr>
 			
 			<tr>
@@ -66,8 +64,6 @@
 	
 </div>
      
-    <script>$!reloadParent</script> 
-    
     
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

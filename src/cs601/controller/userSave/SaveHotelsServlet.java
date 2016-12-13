@@ -40,7 +40,7 @@ public class SaveHotelsServlet extends BaseServlet{
 		}else{
 			List<HotelSimple> hotelList = SavedHotelsHandler.getInstance().getSavedHotels(username);
 			if(hotelList == null || hotelList.isEmpty()){
-				context.put("message", "You haven't save any hotels yet!");
+				context.put("message", "You have no saved hotels!");
 				context.put("displayTable", "none");
 			}else{
 				context.put("message", "Here's your hotel list:");
