@@ -42,7 +42,6 @@ public class DatabaseWriter {
 			System.out.println("Successfully write reviews Table");
 			
 			
-			
 			/* register users in json files with uniform password "123456" */
 			handler.registerZusers();
 			System.out.println("Successfully register json users");
@@ -52,8 +51,7 @@ public class DatabaseWriter {
 			/* add columns to reviews table */
 			handler.addUserIdCol();
 			System.out.println("add userId column to reviews");
-			handler.addLikeCountCol();
-			System.out.println("add likeCount column to reviews");
+			
 			
 			/* update userId column in reviews*/
 			handler.updateUserId();

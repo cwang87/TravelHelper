@@ -211,12 +211,6 @@ public class DatabaseHandler {
 		SqlHelper.executeUpdate(sql);
 	}
 	
-	/** add likeCount column to reviews table */
-	public void addLikeCountCol(){
-		String sql = "ALTER TABLE reviews ADD likeCount INTEGER DEFAULT 0;";
-		SqlHelper.executeUpdate(sql);
-	}
-	
 	
 	/** update userId info in reviews table */
 	public void updateUserId(){
