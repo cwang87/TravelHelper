@@ -15,7 +15,6 @@ public class ReviewHotelName implements Comparable<ReviewHotelName> {
 	private String isRecom;
 	private String overallRating;
 	private String userId;
-	private String likeCount;
 	private String hotelName;
 	
 	
@@ -33,7 +32,7 @@ public class ReviewHotelName implements Comparable<ReviewHotelName> {
 	 * @param likeCount
 	 */
 	public ReviewHotelName(String hotelId, String reviewId, String username, String reviewTitle, String reviewText, String reviewDate, 
-			String isRecom, String overallRating, String userId, String likeCount, String hotelName) {
+			String isRecom, String overallRating, String userId, String hotelName) {
 		
 		this.hotelId = hotelId;
 		this.reviewId = reviewId;
@@ -44,7 +43,6 @@ public class ReviewHotelName implements Comparable<ReviewHotelName> {
 		this.isRecom = isRecom;
 		this.overallRating = overallRating;
 		this.userId = userId;
-		this.likeCount = likeCount;
 		this.hotelName = hotelName;
 	}
 
@@ -117,12 +115,6 @@ public class ReviewHotelName implements Comparable<ReviewHotelName> {
 	public String getUserId() {
 		return userId;
 	}
-
-
-	public String getLikeCount() {
-		return likeCount;
-	}
-
 
 
 	public String getHotelName() {

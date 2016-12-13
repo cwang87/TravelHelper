@@ -30,7 +30,7 @@ public class ReviewsHandler {
 	private static final String DELETE_REVIEW = "DELETE FROM reviews WHERE reviewId = ?;";
 	
 	private static final String SEARCH_USER_REVIEW_USERNAME = "SELECT reviews.hotelId, reviewId, username, reviewTitle, "
-			+ "reviewText, reviewDate, isRecom, overallRating, userId, likeCount, hotels.hotelName "
+			+ "reviewText, reviewDate, isRecom, overallRating, userId, hotels.hotelName "
 			+ "FROM reviews LEFT OUTER JOIN hotels "
 			+ "ON reviews.hotelId = hotels.hotelId "
 			+ "WHERE reviews.username = ?;";
@@ -71,7 +71,7 @@ public class ReviewsHandler {
 	
 	/*---------------------------------------------Get ReviewLists-------------------------------------------*/
 	
-	/** Get all reveiws of a particular hotel ordered by likecount desc as a default order. */
+	/** Get all reveiws of a particular hotel ordered by isRecom desc as a default order. */
 	public ArrayList<ReviewDB> getHotelReviews(String hotelId){
 		ArrayList<ReviewDB> reviews = new ArrayList<>();
 		
@@ -171,12 +171,11 @@ public class ReviewsHandler {
 					boolean isRecom= Tools.int2bool(rs.getInt(7));
 					int overallRating = rs.getInt(8);
 					int userId = rs.getInt(9);
-					int likeCount = rs.getInt(10);
-					String hotelName = rs.getString(11);
+					String hotelName = rs.getString(10);
 					
 					ReviewHotelName review = new ReviewHotelName(hotelId, reviewId, username, reviewTitle, reviewText,
 							Tools.toStringDate(reviewDate), Tools.bool2yn(isRecom), Integer.toString(overallRating), 
-							Integer.toString(userId), Integer.toString(likeCount), hotelName);
+							Integer.toString(userId), hotelName);
 					
 					reviews.add(review);
 				}
